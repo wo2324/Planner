@@ -10,6 +10,10 @@
     <Grid>
         <Border Style="{StaticResource BorderStyle}" Height="260" Width="230">
             <StackPanel Style="{StaticResource StackPanelStyle}">
+                <Label Style="{StaticResource Label1Style}" Content="Change password"/>
+                <Label Style="{StaticResource Label2Style}" Content="Password"/>
+                <Label Style="{StaticResource Label2Style}" Content="New password"/>
+                <Label Style="{StaticResource Label2Style}" Content="Confirm new password"/>
 
             </StackPanel>
         </Border>

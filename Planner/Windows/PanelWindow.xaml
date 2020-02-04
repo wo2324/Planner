@@ -9,23 +9,26 @@
         Style="{StaticResource WindowStyle}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*" x:Name="GridColumn"/>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" Margin="10">
+        <Border Grid.Column="0" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
             <StackPanel Style="{StaticResource StackPanelStyle}">
+                <Label Style="{StaticResource Label1Style}" Content="Open existing planner"/>
 
             </StackPanel>
         </Border>
-        <Border Grid.Column="1" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" Margin="10">
+        <Border Grid.Column="1" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
             <StackPanel Style="{StaticResource StackPanelStyle}">
-
+                <Label Style="{StaticResource Label1Style}" Content="Create new planner"/>
+                <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
             </StackPanel>
         </Border>
-        <Border Grid.Column="3" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" Margin="10">
+        <Border Grid.Column="3" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
             <StackPanel Style="{StaticResource StackPanelStyle}">
+                <Label Style="{StaticResource Label1Style}" Content="Account"/>
 
             </StackPanel>
         </Border>

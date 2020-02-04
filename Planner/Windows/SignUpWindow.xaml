@@ -10,7 +10,13 @@
     <Grid>
         <Border Style="{StaticResource BorderStyle}" Height="260" Width="230">
             <StackPanel Style="{StaticResource StackPanelStyle}">
-
+                <Label Style="{StaticResource Label1Style}" Content="Sign up"/>
+                <Label Style="{StaticResource Label2Style}" Content="Login"/>
+                <Label Style="{StaticResource Label2Style}" Content="Password"/>
+                <Label Style="{StaticResource Label2Style}" Content="Confirm password"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource Label3Style}" Content="Already have an account"/>
+                </StackPanel>
             </StackPanel>
         </Border>
     </Grid>
