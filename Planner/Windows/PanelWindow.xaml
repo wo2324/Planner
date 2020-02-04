@@ -25,6 +25,8 @@
                 <Label Style="{StaticResource Label1Style}" Content="Create new planner"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
+                <TextBox x:Name="NewPlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+
             </StackPanel>
         </Border>
         <Border Grid.Column="3" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">

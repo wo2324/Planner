@@ -21,6 +21,8 @@
         </StackPanel>
         <StackPanel Grid.Column="1">
             <Label Style="{StaticResource Label3Style}" Content="Name"/>
+            <TextBox x:Name="TaskName" Style="{StaticResource TextBoxStyle}"/>
+
             <StackPanel Orientation="Horizontal">
                 <Label Style="{StaticResource Label3Style}" Content="Is visible"/>
             </StackPanel>

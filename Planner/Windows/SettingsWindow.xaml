@@ -13,8 +13,14 @@
                 <Label Style="{StaticResource Label1Style}" Content="Change password"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Password"/>
+                <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
+
                 <Label Style="{StaticResource Label2Style}" Content="New password"/>
+                <PasswordBox x:Name="NewPasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
+
                 <Label Style="{StaticResource Label2Style}" Content="Confirm new password"/>
+                <PasswordBox x:Name="NewPasswordBox_1" Style="{StaticResource PasswordBoxStyle}"/>
+
             </StackPanel>
         </Border>
     </Grid>

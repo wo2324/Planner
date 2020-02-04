@@ -13,7 +13,11 @@
                 <Label Style="{StaticResource Label1Style}" Content="Log in"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Login"/>
+                <TextBox x:Name="LoginTextBox" Style="{StaticResource TextBoxStyle}"/>
+
                 <Label Style="{StaticResource Label2Style}" Content="Password"/>
+                <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
+
                 <StackPanel Orientation="Horizontal">
                     <Label Style="{StaticResource Label3Style}" Content="Don't have an account?"/>
                 </StackPanel>
