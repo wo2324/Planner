@@ -1,11 +1,11 @@
-﻿<Window x:Class="Planner.LoginWindow"
+﻿<Window x:Class="Planner.LogInWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Planner"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="450" Width="800"
+        Title="LogInWindow" Height="450" Width="800"
         Style="{StaticResource WindowStyle}">
     <Grid>
         <Border Style="{StaticResource BorderStyle}" Height="260" Width="230">
@@ -17,7 +17,7 @@
 
                 <Label Style="{StaticResource Label2Style}" Content="Password"/>
                 <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
-                <Button x:Name="LogInButton" Style="{StaticResource ButtonStyle}" Content="Login" HorizontalAlignment="Right" Click="LogInButton_Click"/>
+                <Button x:Name="LogInButton" Style="{StaticResource ButtonStyle}" Content="Log in" HorizontalAlignment="Right" Click="LogInButton_Click"/>
 
                 <StackPanel Orientation="Horizontal">
                     <Label Style="{StaticResource Label3Style}" Content="Don't have an account?"/>

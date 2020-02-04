@@ -11,7 +11,7 @@ namespace Planner.Utils
 {
     public static class DbInterchanger
     {
-        public static int ParticipantIdGet(string login, string password)
+        public static int ParticipantGet(string login, string password)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -42,6 +42,24 @@ namespace Planner.Utils
                     {
                         return 0;
                     }
+                }
+            }
+        }
+
+        public static void ParticipantAdd(string login, string password)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_ParticipantAdd";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", login));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Password", password));
+                    sqlCommand.ExecuteNonQuery();
                 }
             }
         }

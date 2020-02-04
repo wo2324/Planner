@@ -1,26 +1,16 @@
 ﻿using Planner.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Planner
 {
     /// <summary>
     /// Interaction logic for LoginWindow.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class LogInWindow : Window
     {
-        public LoginWindow()
+        public LogInWindow()
         {
             InitializeComponent();
         }
@@ -36,7 +26,7 @@ namespace Planner
             {
                 try
                 {
-                    int participantId = DbInterchanger.ParticipantIdGet(login, password);
+                    int participantId = DbInterchanger.ParticipantGet(login, password);
                     if (participantId != 0)
                     {
                         PanelWindow panelWindow = new PanelWindow(new Participant(participantId, login, password));
