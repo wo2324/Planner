@@ -63,5 +63,32 @@ namespace Planner.Utils
                 }
             }
         }
+
+        public static DataSet GetPlanner(int participantId)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_Planner_NameGet";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantId));
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+
+                    if (sqlConnection.State == ConnectionState.Closed)
+                    {
+                        sqlConnection.Open();
+                    }
+
+                    DataSet dataSet = new DataSet();
+                    sqlDataAdapter.Fill(dataSet);
+
+                    return dataSet;
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Planner.Utils;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,41 @@ namespace Planner
         {
             this.Participant = participant;
             InitializeComponent();
+            AdjustControls();
+        }
+
+        private void AdjustControls()
+        {
+            AdjustPlannerListBox();
+            AdjustParticipantLabel();
+        }
+
+        private void AdjustPlannerListBox()
+        {
+            PlannerListBox.ItemsSource = GetPlanner(DbInterchanger.GetPlanner(this.Participant.ParticipantId));
+        }
+
+        private List<string> GetPlanner(DataSet dataSet)
+        {
+            List<string> planner = new List<string>();
+            if (dataSet.Tables.Count == 0)
+            {
+                PlannerListBox.Visibility = Visibility.Hidden;
+            }
+            else if (dataSet.Tables.Count == 1)
+            {
+                DataTable dataTable = dataSet.Tables[0];
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    planner.Add(dataRow["Planner_Name"].ToString());
+                }
+            }
+            return planner;
+        }
+
+        private void AdjustParticipantLabel()
+        {
+            ParticipantLabel.Content = this.Participant.ParticipantName;
         }
 
         private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
