@@ -9,7 +9,9 @@
         Style="{StaticResource WindowStyle}">
     <Grid>
         <Border Style="{StaticResource BorderStyle}" Height="260" Width="230">
+            <StackPanel Style="{StaticResource StackPanelStyle}">
 
+            </StackPanel>
         </Border>
     </Grid>
 </Window>
