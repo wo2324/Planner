@@ -10,6 +10,8 @@
             <Setter Property="ResizeMode" Value="NoResize"/>
         </Style>
         <Style x:Key="BorderStyle" TargetType="Border">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Background" Value="#50514F"/>
             <Setter Property="CornerRadius" Value="10"/>
         </Style>

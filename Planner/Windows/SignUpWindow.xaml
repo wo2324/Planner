@@ -8,6 +8,8 @@
         Title="SignUpWindow" Height="450" Width="800"
         Style="{StaticResource WindowStyle}">
     <Grid>
-        
+        <Border Style="{StaticResource BorderStyle}" Height="260" Width="230">
+
+        </Border>
     </Grid>
 </Window>

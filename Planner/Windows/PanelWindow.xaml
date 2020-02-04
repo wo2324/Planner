@@ -8,6 +8,20 @@
         Title="PanelWindow" Height="450" Width="800"
         Style="{StaticResource WindowStyle}">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" Margin="10">
         
+        </Border>
+        <Border Grid.Column="1" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" Margin="10">
+        
+        </Border>
+        <Border Grid.Column="3" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" Margin="10">
+
+        </Border>
     </Grid>
 </Window>
