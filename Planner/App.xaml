@@ -5,23 +5,25 @@
              StartupUri="Windows/LoginWindow.xaml">
     <Application.Resources>
         <Style x:Key="WindowStyle" TargetType="Window">
+            <Setter Property="Title" Value=""/>
             <Setter Property="Background" Value="#747474"/>
+            <Setter Property="ResizeMode" Value="NoResize"/>
         </Style>
         <Style x:Key="BorderStyle" TargetType="Border">
             <Setter Property="Background" Value="#50514F"/>
             <Setter Property="CornerRadius" Value="10"/>
         </Style>
         <Style x:Key="Label1Style" TargetType="Label">
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="Foreground" Value="#D4D4D4" />
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="#D4D4D4"/>
         </Style>
         <Style x:Key="Label2Style" TargetType="Label">
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="Foreground" Value="#D4D4D4" />
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#D4D4D4"/>
         </Style>
         <Style x:Key="Label3Style" TargetType="Label">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Foreground" Value="#D4D4D4" />
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#D4D4D4"/>
         </Style>
     </Application.Resources>
 </Application>
