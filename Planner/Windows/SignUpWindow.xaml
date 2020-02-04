@@ -24,6 +24,9 @@
 
                 <StackPanel Orientation="Horizontal">
                     <Label Style="{StaticResource Label3Style}" Content="Already have an account"/>
+                    <Button x:Name="LogInButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="#D4D4D4">
+                        <TextBlock TextDecorations="Underline">Log in</TextBlock>
+                    </Button>
                 </StackPanel>
             </StackPanel>
         </Border>

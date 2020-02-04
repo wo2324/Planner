@@ -34,6 +34,10 @@
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Account"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
+                <Button x:Name="LogOutButton" Padding="2, 1, 2, 2" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" HorizontalAlignment="Right"  Foreground="#D4D4D4">
+                    <TextBlock TextDecorations="Underline">Log out</TextBlock>
+                </Button>
+
                 <Button x:Name="SettingsButton" Style="{StaticResource ButtonStyle}" Content="Settings" HorizontalAlignment="Left"/>
 
             </StackPanel>
