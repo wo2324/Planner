@@ -18,6 +18,7 @@
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Open existing planner"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
+                <ListBox x:Name="PlannerListBox" Style="{StaticResource ListBoxStyle}"/>
             </StackPanel>
         </Border>
         <Border Grid.Column="1" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
@@ -26,6 +27,9 @@
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
                 <TextBox x:Name="NewPlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+                <Expander Style="{StaticResource ExpanderStyle}" Header="Custom">
+
+                </Expander>
                 <Button x:Name="CreatePlannerButton" Style="{StaticResource ButtonStyle}" Content="Create planner" HorizontalAlignment="Left"/>
 
             </StackPanel>
