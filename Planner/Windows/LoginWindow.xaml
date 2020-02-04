@@ -17,6 +17,7 @@
 
                 <Label Style="{StaticResource Label2Style}" Content="Password"/>
                 <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
+                <Button x:Name="LogInButton" Style="{StaticResource ButtonStyle}" Content="Login" HorizontalAlignment="Right"/>
 
                 <StackPanel Orientation="Horizontal">
                     <Label Style="{StaticResource Label3Style}" Content="Don't have an account?"/>

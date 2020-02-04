@@ -20,6 +20,7 @@
 
                 <Label Style="{StaticResource Label2Style}" Content="Confirm password"/>
                 <PasswordBox x:Name="PasswordBox_1" Style="{StaticResource PasswordBoxStyle}"/>
+                <Button x:Name="SignUpButton" Style="{StaticResource ButtonStyle}" Content="Sign in" HorizontalAlignment="Right"/>
 
                 <StackPanel Orientation="Horizontal">
                     <Label Style="{StaticResource Label3Style}" Content="Already have an account"/>

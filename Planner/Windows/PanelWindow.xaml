@@ -26,6 +26,7 @@
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
                 <TextBox x:Name="NewPlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+                <Button x:Name="CreatePlannerButton" Style="{StaticResource ButtonStyle}" Content="Create planner" HorizontalAlignment="Left"/>
 
             </StackPanel>
         </Border>
@@ -33,6 +34,8 @@
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Account"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
+                <Button x:Name="SettingsButton" Style="{StaticResource ButtonStyle}" Content="Settings" HorizontalAlignment="Left"/>
+
             </StackPanel>
         </Border>
     </Grid>

@@ -37,11 +37,15 @@
         </Style>
         <Style x:Key="TextBoxStyle" TargetType="TextBox">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="Foreground" Value="#50514F"/>
-            <Setter Property="Background" Value="#D4D4D4"/>
+            <Setter Property="Foreground" Value="#747474"/>
+            <Setter Property="Background" Value="#E9E9E9"/>
         </Style>
         <Style x:Key="PasswordBoxStyle" TargetType="PasswordBox">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Foreground" Value="#747474"/>
+            <Setter Property="Background" Value="#E9E9E9"/>
+        </Style>
+        <Style x:Key="ButtonStyle" TargetType="Button">
             <Setter Property="Foreground" Value="#50514F"/>
             <Setter Property="Background" Value="#D4D4D4"/>
         </Style>

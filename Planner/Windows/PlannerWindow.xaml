@@ -19,7 +19,9 @@
                 </DataGrid>
             </ScrollViewer>
         </StackPanel>
-        <StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1" Background="#50514F">
+            <Button x:Name="ConfirmButton" Style="{StaticResource ButtonStyle}" Content="Confirm"/>
+
             <Label Style="{StaticResource Label3Style}" Content="Name"/>
             <TextBox x:Name="TaskName" Style="{StaticResource TextBoxStyle}"/>
 
@@ -27,6 +29,8 @@
                 <Label Style="{StaticResource Label3Style}" Content="Is visible"/>
             </StackPanel>
             <Label Style="{StaticResource Label3Style}" Content="Color"/>
+            <Button x:Name="AddTaskButton" Style="{StaticResource ButtonStyle}" Content="Add task"/>
+
         </StackPanel>
     </Grid>
 </Window>
