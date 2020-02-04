@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Planner.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +20,11 @@ namespace Planner
     /// </summary>
     public partial class PanelWindow : Window
     {
-        public PanelWindow()
+        public Participant Participant { get; }
+
+        public PanelWindow(Participant participant)
         {
+            this.Participant = participant;
             InitializeComponent();
         }
 
