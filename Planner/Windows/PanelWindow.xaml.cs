@@ -23,5 +23,25 @@ namespace Planner
         {
             InitializeComponent();
         }
+
+        private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LogOutButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

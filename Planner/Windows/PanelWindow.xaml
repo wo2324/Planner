@@ -18,7 +18,7 @@
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Open existing planner"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
-                <ListBox x:Name="PlannerListBox" Style="{StaticResource ListBoxStyle}"/>
+                <ListBox x:Name="PlannerListBox" Style="{StaticResource ListBoxStyle}" SelectionChanged="PlannerListBox_SelectionChanged"/>
             </StackPanel>
         </Border>
         <Border Grid.Column="1" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
@@ -30,7 +30,7 @@
                 <Expander Style="{StaticResource ExpanderStyle}" Header="Custom">
 
                 </Expander>
-                <Button x:Name="CreatePlannerButton" Style="{StaticResource ButtonStyle}" Content="Create planner" HorizontalAlignment="Left"/>
+                <Button x:Name="CreatePlannerButton" Style="{StaticResource ButtonStyle}" Content="Create planner" HorizontalAlignment="Left" Click="CreatePlannerButton_Click"/>
 
             </StackPanel>
         </Border>
@@ -38,11 +38,11 @@
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Account"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
-                <Button x:Name="LogOutButton" Padding="2, 1, 2, 2" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" HorizontalAlignment="Right"  Foreground="#D4D4D4">
+                <Button x:Name="LogOutButton" Padding="2, 1, 2, 2" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" HorizontalAlignment="Right"  Foreground="#D4D4D4" Click="LogOutButton_Click">
                     <TextBlock TextDecorations="Underline">Log out</TextBlock>
                 </Button>
 
-                <Button x:Name="SettingsButton" Style="{StaticResource ButtonStyle}" Content="Settings" HorizontalAlignment="Left"/>
+                <Button x:Name="SettingsButton" Style="{StaticResource ButtonStyle}" Content="Settings" HorizontalAlignment="Left" Click="SettingsButton_Click"/>
 
             </StackPanel>
         </Border>

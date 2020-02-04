@@ -20,7 +20,7 @@
 
                 <Label Style="{StaticResource Label2Style}" Content="Confirm new password"/>
                 <PasswordBox x:Name="NewPasswordBox_1" Style="{StaticResource PasswordBoxStyle}"/>
-                <Button x:Name="ChangePasswordButton"  Style="{StaticResource ButtonStyle}" Content="Change" HorizontalAlignment="Right"/>
+                <Button x:Name="ChangePasswordButton"  Style="{StaticResource ButtonStyle}" Content="Change" HorizontalAlignment="Right" Click="ChangePasswordButton_Click"/>
 
             </StackPanel>
         </Border>

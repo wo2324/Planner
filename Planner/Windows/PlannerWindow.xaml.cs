@@ -23,5 +23,20 @@ namespace Planner
         {
             InitializeComponent();
         }
+
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AssignedTasksListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

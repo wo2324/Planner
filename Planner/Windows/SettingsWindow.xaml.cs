@@ -23,5 +23,10 @@ namespace Planner
         {
             InitializeComponent();
         }
+
+        private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
