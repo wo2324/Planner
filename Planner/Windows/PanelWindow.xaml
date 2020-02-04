@@ -17,19 +17,20 @@
         <Border Grid.Column="0" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Open existing planner"/>
-
+                <Separator Style="{StaticResource SeparatorStyle}"/>
             </StackPanel>
         </Border>
         <Border Grid.Column="1" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Create new planner"/>
+                <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
             </StackPanel>
         </Border>
         <Border Grid.Column="3" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Account"/>
-
+                <Separator Style="{StaticResource SeparatorStyle}"/>
             </StackPanel>
         </Border>
     </Grid>
