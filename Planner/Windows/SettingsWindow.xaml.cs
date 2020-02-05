@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Planner.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +20,11 @@ namespace Planner
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        public SettingsWindow()
+        public Participant Participant { get; set; }
+
+        public SettingsWindow(Participant Participant)
         {
+            this.Participant = Participant;
             InitializeComponent();
         }
 

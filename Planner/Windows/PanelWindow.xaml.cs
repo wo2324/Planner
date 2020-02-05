@@ -174,14 +174,15 @@ namespace Planner
 
         }
 
-        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        private void LogOutButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void LogOutButton_Click(object sender, RoutedEventArgs e)
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-
+            SettingsWindow settingsWindow = new SettingsWindow(this.Participant);
+            settingsWindow.ShowDialog();
         }
     }
 }
