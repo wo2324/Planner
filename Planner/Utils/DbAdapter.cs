@@ -212,7 +212,45 @@ namespace Planner.Utils
         }
 
         //
+        public static void EditTask(int plannerId, DataTable task)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_TaskEdit";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Id", plannerId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_tvp_Task", task));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
 
+        public static void TaskTypeAdd(int plannerId, string taskTypeName, bool taskTypeTextVisibility, string color)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_TaskTypeAdd";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Id", plannerId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Description", ""));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeTextVisibility));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Color", color));
+
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
         //
 
         public static void EditPassword(int participantId, string newPassword)

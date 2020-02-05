@@ -67,7 +67,7 @@ namespace Planner
         {
             PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString()));
             plannerWindow.Show();
-            plannerWindow.Color();
+            plannerWindow.ColorPlanner();
         }
 
         private Utils.Planner GetPlanner(int participantId, string plannerName)

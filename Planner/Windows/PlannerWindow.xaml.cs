@@ -10,10 +10,13 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using DataGridCell = System.Windows.Controls.DataGridCell;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Planner
 {
@@ -29,9 +32,38 @@ namespace Planner
             this.Planner = Planner;
             InitializeComponent();
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
+            AdjustControls();
         }
 
-        public void Color()
+        private void AdjustControls()
+        {
+            AdjustAssignedTasksListBox();
+            //AdjustPlannerDetailsListBox();
+        }
+
+        private void AdjustAssignedTasksListBox()
+        {
+            AssignedTasksListBox.ItemsSource = GetTaskList(DbAdapter.GetTaskType(this.Planner.PlannerId));
+        }
+
+        private List<string> GetTaskList(DataTable dataTable)
+        {
+            List<string> task = new List<string>();
+            if (dataTable == null)
+            {
+                AssignedTasksListBox.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    task.Add(dataRow["TaskType_Name"].ToString());
+                }
+            }
+            return task;
+        }
+
+        public void ColorPlanner()
         {
             DataTable dataTable = DbAdapter.GetTaskType(this.Planner.PlannerId);
 
@@ -113,19 +145,111 @@ namespace Planner
             return child;
         }
 
-        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
         {
+            try
+            {
+                DataView value = PlannerDataGrid.ItemsSource as DataView;
+                DataTable dataTable = value.ToTable();
+                DataTable result = new DataTable("Result");
+                result.Columns.Add("task", typeof(string));
+                result.Columns.Add("day", typeof(string));
+                result.Columns.Add("time", typeof(string));
 
+                string StartTime = "05:00";
+                string StopTime = "00:00";
+                string TimeSpan = "00:30";
+
+                int counter = 0;
+                string day;
+                string hour;
+                //value, day, hour
+                int startHour = Int32.Parse(StartTime.Substring(0, 2));
+                int startMinute = Int32.Parse(StartTime.Substring(3, 2));
+                int stopHour = Int32.Parse(StopTime.Substring(0, 2));
+                int stopMinute = Int32.Parse(StopTime.Substring(3, 2));
+                int timeSpanHour = Int32.Parse(TimeSpan.Substring(0, 2));
+                int timeSpanMinute = Int32.Parse(TimeSpan.Substring(3, 2));
+
+                int actualHour = startHour;
+                int actualMinute = startMinute;
+
+                while (actualHour != stopHour)
+                {
+                    while (actualMinute != 60)
+                    {
+                        string time = $"{actualHour.ToString("D2")}:{actualMinute.ToString("D2")}";
+                        result.Rows.Add(dataTable.Rows[counter]["Monday"], "Monday", time);
+                        result.Rows.Add(dataTable.Rows[counter]["Tuesday"], "Tuesday", time);
+                        result.Rows.Add(dataTable.Rows[counter]["Wedneday"], "Wednesday", time);
+                        result.Rows.Add(dataTable.Rows[counter]["Thursday"], "Thursday", time);
+                        result.Rows.Add(dataTable.Rows[counter]["Friday"], "Friday", time);
+                        result.Rows.Add(dataTable.Rows[counter]["Saturday"], "Saturday", time);
+                        result.Rows.Add(dataTable.Rows[counter]["Sunday"], "Sunday", time);
+                        actualMinute += timeSpanMinute;
+                        counter++;
+                        if (counter == 38)
+                        {
+                            int s = 1;
+                        }
+                    }
+                    actualMinute = 0;
+                    actualHour++;
+                    if (actualHour == 24)
+                    {
+                        actualHour = 0;
+                    }
+                }
+
+                DbAdapter.EditTask(this.Planner.PlannerId, result);
+
+                //GetDataGridRows();
+                ColorPlanner();
+
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
-        private void AddTaskButton_Click(object sender, RoutedEventArgs e)
+        private void ColorPickerButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
         {
+            ColorDialog colorDialog = new ColorDialog();
+            colorDialog.ShowDialog();
+            ColorPickerButton.Background = new SolidColorBrush(Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+        }
 
+        private void AddTaskButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!   //Sprawdzić nazewnictwo kontrole TextBox
+        {
+            DbAdapter.TaskTypeAdd(this.Planner.PlannerId, TaskNameTextBox.Text, TextVisibility.IsEnabled, ColorPickerButton.Background.ToString());
         }
 
         private void AssignedTasksListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //WYświetlanie zaznaczonych komórek DataGrid PlannerDataGrid
 
+            //1 rozwiązanie
+            //DataGridCellInfo cellInfo = PlannerDataGrid.SelectedCells[0];
+
+            //DataGridBoundColumn column = cellInfo.Column as DataGridBoundColumn;
+
+            //FrameworkElement element = new FrameworkElement() { DataContext = cellInfo.Item };
+            //BindingOperations.SetBinding(element, TagProperty, column.Binding);
+
+            //MessageBox.Show(element.Tag.ToString());
+
+            //2 rozwiązanie
+            var cellInfo = PlannerDataGrid.SelectedCells[0];
+            var content = (cellInfo.Column.GetCellContent(cellInfo.Item) as TextBlock).Text;
+            MessageBox.Show(content);
+
+            //wyznaczenie kolumny
+            //wyznaczenie wiersza
+            //wyliczenie godziny na podstawie wyznaczonego wiersza
+            //edit na wybranych komórkach
+                //wybranie wartości TaskType z zaznaczonego elementu ListBox
+            //refrech plannera
         }
     }
 }

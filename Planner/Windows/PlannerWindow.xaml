@@ -31,12 +31,16 @@
             <Expander Style="{StaticResource ExpanderStyle}" Header="Create task">
                 <StackPanel>
                     <Label Style="{StaticResource Label3Style}" Content="Name"/>
-                    <TextBox x:Name="TaskName" Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox x:Name="TaskNameTextBox" Style="{StaticResource TextBoxStyle}"/>
 
                     <StackPanel Orientation="Horizontal">
                         <Label Style="{StaticResource Label3Style}" Content="Is visible"/>
+                        <CheckBox  x:Name="TextVisibility" IsChecked="False"/>
                     </StackPanel>
-                    <Label Style="{StaticResource Label3Style}" Content="Color"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Style="{StaticResource Label3Style}" Content="Color"/>
+                        <Button x:Name="ColorPickerButton" Height="20" Width="20" Click="ColorPickerButton_Click"/>
+                    </StackPanel>
                     <Button x:Name="AddTaskButton" Style="{StaticResource ButtonStyle}" Content="Add task" Click="AddTaskButton_Click"/>
                 </StackPanel>
             </Expander>
