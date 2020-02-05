@@ -280,5 +280,16 @@ namespace Planner
         {
 
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            foreach (Window item in Application.Current.Windows)
+            {
+                if (item.Title == "PlannerWindow")
+                {
+                    item.Close();
+                }
+            }
+        }
     }
 }

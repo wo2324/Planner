@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Planner"
         mc:Ignorable="d"
         Title="PanelWindow" Height="450" Width="800"
-        Style="{StaticResource WindowStyle}">
+        Style="{StaticResource WindowStyle}"
+        Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" x:Name="GridColumn"/>
