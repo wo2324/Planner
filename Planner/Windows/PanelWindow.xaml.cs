@@ -80,7 +80,7 @@ namespace Planner
         {
             int plannerId = DbAdapter.GetPlannerId(participantId, plannerName);
             DataTable task = AdjustTask(DbAdapter.GetPlannerTask(plannerId));
-            return new Utils.Planner(plannerId, plannerName, task);
+            return new Utils.Planner(plannerId, plannerName, task, null, null, null, null);
         }
 
         //Liczenie czasu
@@ -189,8 +189,13 @@ namespace Planner
         private void CreatePlanner(int participantId, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan)
         {
             DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription, firstDay, startHour, stopHour, timeSpan);
-            int plannerId = DbAdapter.GetPlannerId(participantId, plannerName);
-            InitializeTask(plannerId);
+            DataTable planner = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
+            //InitializeTask(planner);
+        }
+
+        private void ToPlanner()
+        {
+
         }
 
         //Liczenie czasu

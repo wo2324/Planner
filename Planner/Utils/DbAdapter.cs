@@ -146,6 +146,35 @@ namespace Planner.Utils
             }
         }
 
+        public static DataTable GetPlanner(int participantId, string plannerName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_WholePlannerGet";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+
+                    if (sqlConnection.State == ConnectionState.Closed)
+                    {
+                        sqlConnection.Open();
+                    }
+
+                    DataSet dataSet = new DataSet();
+                    sqlDataAdapter.Fill(dataSet);
+
+                    return dataSet.Tables[0];
+                }
+            }
+        }
+
         public static DataTable GetTaskType(int plannerId)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
