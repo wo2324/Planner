@@ -176,7 +176,20 @@ namespace Planner
 
         private void LogOutButton_Click(object sender, RoutedEventArgs e)
         {
+            LogInWindow logInWindow = new LogInWindow();
+            logInWindow.Show();
+            CloseWindows();
+        }
 
+        private void CloseWindows()
+        {
+            foreach (Window item in Application.Current.Windows)
+            {
+                if (item.Title == "PlannerWindow" || item.Title == "PanelWindow")
+                {
+                    item.Close();
+                }
+            }
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
