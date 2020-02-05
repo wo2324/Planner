@@ -1,5 +1,6 @@
 ﻿using Planner.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -240,16 +241,33 @@ namespace Planner
             //MessageBox.Show(element.Tag.ToString());
 
             //2 rozwiązanie
-            var cellInfo = PlannerDataGrid.SelectedCells[0];
-            var content = (cellInfo.Column.GetCellContent(cellInfo.Item) as TextBlock).Text;
-            MessageBox.Show(content);
+            //DataGridCellInfo cellInfo = PlannerDataGrid.SelectedCells[0];
+            //string column = cellInfo.Column.Header.ToString();
+            //string rowIndex = cellInfo.Column.DisplayIndex.ToString();
+            //MessageBox.Show($"column: {column}, row index: {rowIndex}");
 
-            //wyznaczenie kolumny
-            //wyznaczenie wiersza
+            ////3 rozwiązanie
+            //IList rows = PlannerDataGrid.SelectedItems;
+            //int x = 5;
+
+            //4 rozwiązanie
+            IList<DataGridCellInfo> selectedCells = this.PlannerDataGrid.SelectedCells;
+            foreach (DataGridCellInfo cell in selectedCells)
+            {
+                string column = cell.Column.Header.ToString();
+                int rowIndex = PlannerDataGrid.Items.IndexOf(cell.Item);
+                MessageBox.Show($"column: {column}, row index: {rowIndex}");
+            }
+
             //wyliczenie godziny na podstawie wyznaczonego wiersza
             //edit na wybranych komórkach
-                //wybranie wartości TaskType z zaznaczonego elementu ListBox
+            //wybranie wartości TaskType z zaznaczonego elementu ListBox
             //refrech plannera
+        }
+
+        private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)  //Do poprawy!
+        {
+            e.Row.Header = (e.Row.GetIndex()).ToString() + "Test";
         }
     }
 }
