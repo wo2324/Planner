@@ -270,5 +270,22 @@ namespace Planner.Utils
                 }
             }
         }
+
+        public static void DeleteAccount(int participantId)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_ParticipantDelete";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantId));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

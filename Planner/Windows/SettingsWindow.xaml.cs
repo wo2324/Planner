@@ -86,5 +86,58 @@ namespace Planner
             NewPasswordBox.Clear();
             NewPasswordBox_1.Clear();
         }
+
+        private void DeleteAccountButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteAccount(PasswordBox_1.Password);
+        }
+
+        private void DeleteAccount(string password)
+        {
+            if (password.Length != 0)
+            {
+                if (this.Participant.ParticipantPassword == password)
+                {
+                    try
+                    {
+                        MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete Confirmation", System.Windows.MessageBoxButton.YesNo);
+                        if (messageBoxResult == MessageBoxResult.Yes)
+                        {
+                            DbAdapter.DeleteAccount(this.Participant.ParticipantId);
+                            LogInWindow logInWindow = new LogInWindow();
+                            logInWindow.Show();
+                            CloseWindows();
+                            MessageBox.Show($"Account {this.Participant.ParticipantName} has been deleted");
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message);
+                        PasswordBoxClear();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Bad password");
+                    PasswordBoxClear();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Password field must be filled");
+                PasswordBoxClear();
+            }
+        }
+
+        private void CloseWindows()
+        {
+            foreach (Window item in Application.Current.Windows)
+            {
+                if (item.Title == "PlannerWindow" || item.Title == "PanelWindow" || item.Title == "SettingsWindow")
+                {
+                    item.Close();
+                }
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@
         Title="SettingsWindow" Height="450" Width="800"
         Style="{StaticResource WindowStyle}">
     <Grid>
-        <Border Style="{StaticResource BorderStyle}" Height="260" Width="230">
+        <Border Style="{StaticResource BorderStyle}" Height="360" Width="230">
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Change password"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
@@ -21,6 +21,11 @@
                 <Label Style="{StaticResource Label2Style}" Content="Confirm new password"/>
                 <PasswordBox x:Name="NewPasswordBox_1" Style="{StaticResource PasswordBoxStyle}"/>
                 <Button x:Name="ChangePasswordButton"  Style="{StaticResource ButtonStyle}" Content="Change" HorizontalAlignment="Right" Click="ChangePasswordButton_Click"/>
+                <Label Style="{StaticResource Label1Style}" Content="Delete account"/>
+                <Separator Style="{StaticResource SeparatorStyle}"/>
+                <Label Style="{StaticResource Label2Style}" Content="Password"/>
+                <PasswordBox x:Name="PasswordBox_1" Style="{StaticResource PasswordBoxStyle}"/>
+                <Button x:Name="DeleteAccountButton"  Style="{StaticResource ButtonStyle}" Content="Delete" HorizontalAlignment="Right" Click="DeleteAccountButton_Click"/>
 
             </StackPanel>
         </Border>
