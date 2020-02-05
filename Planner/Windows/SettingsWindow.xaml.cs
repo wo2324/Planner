@@ -30,7 +30,61 @@ namespace Planner
 
         private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
         {
+            ChangePassword(PasswordBox.Password, NewPasswordBox.Password, NewPasswordBox_1.Password);
+        }
 
+        private void ChangePassword(string password, string newPassword, string newPasswordSample)
+        {
+            if (password.Length != 0 && newPassword.Length != 0 && newPasswordSample.Length != 0)
+            {
+                if (this.Participant.ParticipantPassword == password)
+                {
+                    if (newPassword == newPasswordSample)
+                    {
+                        if (password != newPassword)
+                        {
+                            try
+                            {
+                                DbAdapter.EditPassword(this.Participant.ParticipantId, newPassword);
+                                MessageBox.Show("Password has been edit");
+                                this.Close();
+                            }
+                            catch (Exception exception)
+                            {
+                                MessageBox.Show(exception.Message);
+                                PasswordBoxClear();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("The new password must be different from the current one");
+                            PasswordBoxClear();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Given new passwords are non-identical");
+                        PasswordBoxClear();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Bad password");
+                    PasswordBoxClear();
+                }
+            }
+            else
+            {
+                MessageBox.Show("All fields must be filled");
+                PasswordBoxClear();
+            }
+        }
+
+        private void PasswordBoxClear()
+        {
+            PasswordBox.Clear();
+            NewPasswordBox.Clear();
+            NewPasswordBox_1.Clear();
         }
     }
 }

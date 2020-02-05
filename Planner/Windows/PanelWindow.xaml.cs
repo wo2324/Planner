@@ -38,7 +38,7 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            PlannerListBox.ItemsSource = GetPlannerList(DbInterchanger.GetPlannerList(this.Participant.ParticipantId));
+            PlannerListBox.ItemsSource = GetPlannerList(DbAdapter.GetPlannerList(this.Participant.ParticipantId));
         }
 
         private List<string> GetPlannerList(DataTable dataTable)
@@ -72,8 +72,8 @@ namespace Planner
 
         private Utils.Planner GetPlanner(int participantId, string plannerName)
         {
-            int plannerId = DbInterchanger.GetPlannerId(participantId, plannerName);
-            DataTable task = AdjustTask(DbInterchanger.GetPlannerTask(plannerId));
+            int plannerId = DbAdapter.GetPlannerId(participantId, plannerName);
+            DataTable task = AdjustTask(DbAdapter.GetPlannerTask(plannerId));
             return new Utils.Planner(plannerId, plannerName, task);
         }
 
@@ -180,8 +180,8 @@ namespace Planner
 
         private void CreatePlanner(int participantId, string plannerName, string plannerDescription)
         {
-            DbInterchanger.PlannerAdd(participantId, plannerName, plannerDescription);
-            int plannerId = DbInterchanger.GetPlannerId(participantId, plannerName);
+            DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription);
+            int plannerId = DbAdapter.GetPlannerId(participantId, plannerName);
             InitializeTask(plannerId);
         }
 
@@ -238,7 +238,7 @@ namespace Planner
                 dayOfWeek++;
             }
 
-            DbInterchanger.TaskAdd(plannerId, task);
+            DbAdapter.TaskAdd(plannerId, task);
         }
 
         private void LogOutButton_Click(object sender, RoutedEventArgs e)

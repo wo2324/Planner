@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Planner.Utils
 {
-    public static class DbInterchanger
+    public static class DbAdapter
     {
         public static int ParticipantGet(string login, string password)
         {
@@ -206,6 +206,28 @@ namespace Planner.Utils
                     sqlCommand.CommandText = "mc.usp_TaskAdd";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Task_Planner_Id", plannerId));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_tvp_Task", task));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        //
+
+        //
+
+        public static void EditPassword(int participantId, string newPassword)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_PasswordEdit";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_NewPassword", newPassword));
                     sqlCommand.ExecuteNonQuery();
                 }
             }

@@ -60,7 +60,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utils\DbInterchanger.cs" />
+    <Compile Include="Utils\DbAdapter.cs" />
     <Compile Include="Utils\TaskConverter.cs" />
     <Compile Include="Windows\PanelWindow.xaml.cs">
       <DependentUpon>PanelWindow.xaml</DependentUpon>

@@ -26,7 +26,7 @@ namespace Planner
             {
                 try
                 {
-                    int participantId = DbInterchanger.ParticipantGet(login, password);
+                    int participantId = DbAdapter.ParticipantGet(login, password);
                     if (participantId != 0)
                     {
                         PanelWindow panelWindow = new PanelWindow(new Participant(participantId, login, password));

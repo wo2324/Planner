@@ -33,7 +33,7 @@ namespace Planner
 
         public void Color()
         {
-            DataTable dataTable = DbInterchanger.GetTaskType(this.Planner.PlannerId);
+            DataTable dataTable = DbAdapter.GetTaskType(this.Planner.PlannerId);
 
             foreach (DataRow dataRow in dataTable.Rows)
             {

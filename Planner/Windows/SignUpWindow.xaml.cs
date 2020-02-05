@@ -29,7 +29,7 @@ namespace Planner
                 {
                     try
                     {
-                        DbInterchanger.ParticipantAdd(login, password);
+                        DbAdapter.ParticipantAdd(login, password);
                         MessageBox.Show($"Account {login} has been created");
                         LogInWindow logInWindow = new LogInWindow();
                         logInWindow.LogIn(login, password);
