@@ -14,9 +14,17 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <DataGrid>
-
-                </DataGrid>
+                <DataGrid x:Name="PlannerDataGrid"
+                          AutoGenerateColumns="True"
+                          HeadersVisibility="Column"
+                          ColumnWidth="*"
+                          CanUserResizeColumns="False" 
+                          CanUserReorderColumns="False" 
+                          CanUserSortColumns="False" 
+                          CanUserResizeRows="False"
+                          CanUserAddRows="False"
+                          SelectionUnit="Cell"
+                          SelectionMode="Extended"/>
             </ScrollViewer>
         </StackPanel>
         <StackPanel Grid.Column="1" Background="#50514F">

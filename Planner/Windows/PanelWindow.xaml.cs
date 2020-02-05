@@ -1,5 +1,4 @@
-﻿using Planner.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -13,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Planner.Utils;
 
 namespace Planner
 {
@@ -38,19 +38,18 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            PlannerListBox.ItemsSource = GetPlanner(DbInterchanger.GetPlanner(this.Participant.ParticipantId));
+            PlannerListBox.ItemsSource = GetPlannerList(DbInterchanger.GetPlannerList(this.Participant.ParticipantId));
         }
 
-        private List<string> GetPlanner(DataSet dataSet)
+        private List<string> GetPlannerList(DataTable dataTable)
         {
             List<string> planner = new List<string>();
-            if (dataSet.Tables.Count == 0)
+            if (dataTable == null)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
             }
-            else if (dataSet.Tables.Count == 1)
+            else
             {
-                DataTable dataTable = dataSet.Tables[0];
                 foreach (DataRow dataRow in dataTable.Rows)
                 {
                     planner.Add(dataRow["Planner_Name"].ToString());
@@ -66,7 +65,108 @@ namespace Planner
 
         private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString()));
+            plannerWindow.Show();
+            plannerWindow.Color();  //Do poprawy!
+        }
 
+        private Utils.Planner GetPlanner(int participantId, string plannerName)
+        {
+            int plannerId = DbInterchanger.GetPlannerId(participantId, plannerName);
+            DataTable task = AdjustTask(DbInterchanger.GetPlannerTask(plannerId));
+            return new Utils.Planner(plannerId, plannerName, task);
+        }
+
+        private DataTable AdjustTask(DataTable dataTable)   //Do poprawy!
+        {
+            DataTable result = new DataTable("Result");
+            result.Columns.Add("Monday", typeof(string));
+            result.Columns.Add("Tuesday", typeof(string));
+            result.Columns.Add("Wedneday", typeof(string));
+            result.Columns.Add("Thursday", typeof(string));
+            result.Columns.Add("Friday", typeof(string));
+            result.Columns.Add("Saturday", typeof(string));
+            result.Columns.Add("Sunday", typeof(string));
+
+            string time;
+            int hour;
+            int minute;
+
+            int startHour = 5;
+            int startMinute = 0;
+            int stopHour = 0;
+            int stopMinute = 0;
+
+            int timeSpan = 30;
+
+            hour = startHour;
+            minute = startMinute;
+
+            while (hour != stopHour && minute != stopMinute)
+            {
+                time = $"{hour.ToString("D2")}:{minute.ToString("D2")}";
+                var results =
+                    from row in dataTable.AsEnumerable()
+                    where row.Field<string>("Task_Time") == time
+                    select row;
+
+                TaskConverter taskConverter = new TaskConverter();
+
+                foreach (var item in results)
+                {
+
+                    if (item["Task_Day"].ToString() == "Monday")
+                    {
+                        taskConverter.MondayTask = item["Task_Name"].ToString();
+                    }
+                    else if (item["Task_Day"].ToString() == "Tuesday")
+                    {
+                        taskConverter.TuesdayTask = item["Task_Name"].ToString();
+                    }
+                    else if (item["Task_Day"].ToString() == "Wednesday")
+                    {
+                        taskConverter.WednesdayTask = item["Task_Name"].ToString();
+                    }
+                    else if (item["Task_Day"].ToString() == "Thursday")
+                    {
+                        taskConverter.ThursdayTask = item["Task_Name"].ToString();
+                    }
+                    else if (item["Task_Day"].ToString() == "Friday")
+                    {
+                        taskConverter.FridayTask = item["Task_Name"].ToString();
+                    }
+                    else if (item["Task_Day"].ToString() == "Saturday")
+                    {
+                        taskConverter.SaturdayTask = item["Task_Name"].ToString();
+                    }
+                    else if (item["Task_Day"].ToString() == "Sunday")
+                    {
+                        taskConverter.SundayTask = item["Task_Name"].ToString();
+                    }
+                }
+
+                result.Rows.Add(taskConverter.MondayTask, taskConverter.TuesdayTask, taskConverter.WednesdayTask, taskConverter.ThursdayTask
+                        , taskConverter.FridayTask, taskConverter.SaturdayTask, taskConverter.SundayTask);
+
+                if (minute < 60 - timeSpan)
+                {
+                    minute += timeSpan;
+                }
+                else
+                {
+                    if (hour != 23)
+                    {
+                        hour++;
+                    }
+                    else
+                    {
+                        hour = 0;
+                    }
+                    minute = 0;
+                }
+            }
+
+            return result;
         }
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
