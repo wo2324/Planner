@@ -173,5 +173,42 @@ namespace Planner.Utils
                 }
             }
         }
+
+        public static void PlannerAdd(int participantId, string plannerName, string plannerDescription) //Do poprawy!
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_PlannerAdd";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Participant_Id", participantId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Description", plannerDescription));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void TaskAdd(int plannerId, DataTable task)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_TaskAdd";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Task_Planner_Id", plannerId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_tvp_Task", task));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

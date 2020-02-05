@@ -171,7 +171,74 @@ namespace Planner
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
+            CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null);
+            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text));
+            plannerWindow.Show();
+            AdjustPlannerListBox();
+            NewPlannerNameTextBox.Clear();
+        }
 
+        private void CreatePlanner(int participantId, string plannerName, string plannerDescription)
+        {
+            DbInterchanger.PlannerAdd(participantId, plannerName, plannerDescription);
+            int plannerId = DbInterchanger.GetPlannerId(participantId, plannerName);
+            InitializeTask(plannerId);
+        }
+
+        private void InitializeTask(int plannerId)
+        {
+            DataTable task = new DataTable("EmptyPlanner");
+            task.Columns.Add("tvp_Task_Name", typeof(string));
+            task.Columns.Add("tvp_Task_Description", typeof(string));
+            task.Columns.Add("tvp_Task_Day", typeof(string));
+            task.Columns.Add("tvp_Task_Time", typeof(string));
+            task.Columns.Add("tvp_Task_Color", typeof(string));
+
+            DayOfWeek dayOfWeek = (DayOfWeek)0;
+            string time;
+            int hour;
+            int minute;
+
+            int startHour = 5;
+            int startMinute = 0;
+
+            int stopHour = 0;
+            int stopMinute = 0;
+
+            int timeSpan = 30;
+
+            hour = startHour;
+            minute = startMinute;
+
+            while ((int)dayOfWeek < 7)
+            {
+                while (!(hour == stopHour && minute == stopMinute))
+                {
+                    time = $"{hour.ToString("D2")}:{minute.ToString("D2")}";
+                    task.Rows.Add(null, null, dayOfWeek.ToString(), time, null);
+                    if (minute < 60 - timeSpan)
+                    {
+                        minute += timeSpan;
+                    }
+                    else
+                    {
+                        if (hour != 23)
+                        {
+                            hour++;
+                        }
+                        else
+                        {
+                            hour = 0;
+                        }
+                        minute = 0;
+                    }
+                }
+                hour = startHour;
+                minute = startMinute;
+                dayOfWeek++;
+            }
+
+            DbInterchanger.TaskAdd(plannerId, task);
         }
 
         private void LogOutButton_Click(object sender, RoutedEventArgs e)
