@@ -65,9 +65,15 @@ namespace Planner
 
         private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString()));
-            plannerWindow.Show();
-            plannerWindow.ColorPlanner();
+
+            if (PlannerListBox.SelectedItem != null)
+            {
+                PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString()));
+                plannerWindow.Show();
+                plannerWindow.ColorPlanner();
+
+                PlannerListBox.SelectedItem = null;
+            }
         }
 
         private Utils.Planner GetPlanner(int participantId, string plannerName)
@@ -263,6 +269,16 @@ namespace Planner
         {
             SettingsWindow settingsWindow = new SettingsWindow(this.Participant);
             settingsWindow.ShowDialog();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
