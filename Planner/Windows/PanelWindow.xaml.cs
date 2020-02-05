@@ -67,7 +67,7 @@ namespace Planner
         {
             PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString()));
             plannerWindow.Show();
-            plannerWindow.Color();  //Do poprawy!
+            plannerWindow.Color();
         }
 
         private Utils.Planner GetPlanner(int participantId, string plannerName)
@@ -102,7 +102,7 @@ namespace Planner
             hour = startHour;
             minute = startMinute;
 
-            while (hour != stopHour && minute != stopMinute)
+            while (!(hour == stopHour && minute == stopMinute))
             {
                 time = $"{hour.ToString("D2")}:{minute.ToString("D2")}";
                 var results =

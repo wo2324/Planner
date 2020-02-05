@@ -28,6 +28,7 @@ namespace Planner
         {
             this.Planner = Planner;
             InitializeComponent();
+            PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
         }
 
         public void Color()
