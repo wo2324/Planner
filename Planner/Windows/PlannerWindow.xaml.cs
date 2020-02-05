@@ -146,6 +146,7 @@ namespace Planner
             return child;
         }
 
+        //Liczenie czasu
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
         {
             try
@@ -228,29 +229,6 @@ namespace Planner
 
         private void AssignedTasksListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //WYświetlanie zaznaczonych komórek DataGrid PlannerDataGrid
-
-            //1 rozwiązanie
-            //DataGridCellInfo cellInfo = PlannerDataGrid.SelectedCells[0];
-
-            //DataGridBoundColumn column = cellInfo.Column as DataGridBoundColumn;
-
-            //FrameworkElement element = new FrameworkElement() { DataContext = cellInfo.Item };
-            //BindingOperations.SetBinding(element, TagProperty, column.Binding);
-
-            //MessageBox.Show(element.Tag.ToString());
-
-            //2 rozwiązanie
-            //DataGridCellInfo cellInfo = PlannerDataGrid.SelectedCells[0];
-            //string column = cellInfo.Column.Header.ToString();
-            //string rowIndex = cellInfo.Column.DisplayIndex.ToString();
-            //MessageBox.Show($"column: {column}, row index: {rowIndex}");
-
-            ////3 rozwiązanie
-            //IList rows = PlannerDataGrid.SelectedItems;
-            //int x = 5;
-
-            //4 rozwiązanie
             IList<DataGridCellInfo> selectedCells = this.PlannerDataGrid.SelectedCells;
             foreach (DataGridCellInfo cell in selectedCells)
             {
@@ -258,11 +236,6 @@ namespace Planner
                 int rowIndex = PlannerDataGrid.Items.IndexOf(cell.Item);
                 MessageBox.Show($"column: {column}, row index: {rowIndex}");
             }
-
-            //wyliczenie godziny na podstawie wyznaczonego wiersza
-            //edit na wybranych komórkach
-            //wybranie wartości TaskType z zaznaczonego elementu ListBox
-            //refrech plannera
         }
 
         private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)  //Do poprawy!

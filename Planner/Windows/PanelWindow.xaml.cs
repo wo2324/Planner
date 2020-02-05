@@ -83,6 +83,7 @@ namespace Planner
             return new Utils.Planner(plannerId, plannerName, task);
         }
 
+        //Liczenie czasu
         private DataTable AdjustTask(DataTable dataTable)   //Do poprawy!
         {
             DataTable result = new DataTable("Result");
@@ -175,22 +176,24 @@ namespace Planner
             return result;
         }
 
+        //Tworzenie plannera
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null);
+            CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
             PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text));
             plannerWindow.Show();
             AdjustPlannerListBox();
             NewPlannerNameTextBox.Clear();
         }
 
-        private void CreatePlanner(int participantId, string plannerName, string plannerDescription)
+        private void CreatePlanner(int participantId, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan)
         {
-            DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription);
+            DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription, firstDay, startHour, stopHour, timeSpan);
             int plannerId = DbAdapter.GetPlannerId(participantId, plannerName);
             InitializeTask(plannerId);
         }
 
+        //Liczenie czasu
         private void InitializeTask(int plannerId)
         {
             DataTable task = new DataTable("EmptyPlanner");

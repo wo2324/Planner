@@ -174,7 +174,7 @@ namespace Planner.Utils
             }
         }
 
-        public static void PlannerAdd(int participantId, string plannerName, string plannerDescription) //Do poprawy!
+        public static void PlannerAdd(int participantId, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan) //Do poprawy!
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -188,6 +188,10 @@ namespace Planner.Utils
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Participant_Id", participantId));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Description", plannerDescription));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_FirstDay", firstDay));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_StartHour", startHour));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_StopHour", stopHour));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_TimeSpan", timeSpan));
                     sqlCommand.ExecuteNonQuery();
                 }
             }
