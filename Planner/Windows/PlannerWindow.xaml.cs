@@ -32,8 +32,54 @@ namespace Planner
         {
             this.Planner = Planner;
             InitializeComponent();
+            Planner.AssignTask();
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
             AdjustControls();
+        }
+
+        private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)  //Do poprawy!
+        {
+            e.Row.Header = (e.Row.GetIndex()).ToString() + "Test";
+
+            int startHour = Int32.Parse(this.Planner.StartHour.Substring(0, 2));
+            int startMinute = Int32.Parse(this.Planner.StartHour.Substring(3, 2));
+
+            int stopHour = Int32.Parse(this.Planner.StopHour.Substring(0, 2));
+            int stopMinute = Int32.Parse(this.Planner.StopHour.Substring(3, 2));
+
+            int timeSpan = Int32.Parse(this.Planner.TimeSpan.Substring(3, 2));
+
+            int hour = startHour;
+            int minute = startMinute;
+
+            string rowName;
+
+            while (!(hour == stopHour && minute == stopMinute))
+            {
+                rowName = $"{hour}:{minute}";
+                //e.Row.Header = $"{e.Row.GetIndex() + startHour == 24 ? 0 : 1}:{e.Row.GetIndex() * startMinute}";
+                e.Row.Header = ((e.Row.GetIndex() / (60 / timeSpan)) + startHour >= 24 ? (e.Row.GetIndex() / (60 / timeSpan)) + startHour - 24 : (e.Row.GetIndex() / (60 / timeSpan)) + startHour).ToString("D2") + 
+                    ":" + 
+                    (e.Row.GetIndex() * timeSpan + startMinute - (e.Row.GetIndex() / (60 / timeSpan) * 60)).ToString("D2");
+
+
+                if (minute < 60 - timeSpan)
+                {
+                    minute += timeSpan;
+                }
+                else
+                {
+                    if (hour != 23)
+                    {
+                        hour++;
+                    }
+                    else
+                    {
+                        hour = 0;
+                    }
+                    minute = 0;
+                }
+            }
         }
 
         private void AdjustControls()
@@ -238,9 +284,6 @@ namespace Planner
             }
         }
 
-        private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)  //Do poprawy!
-        {
-            e.Row.Header = (e.Row.GetIndex()).ToString() + "Test";
-        }
+
     }
 }

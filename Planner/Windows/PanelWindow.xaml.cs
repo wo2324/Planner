@@ -78,102 +78,12 @@ namespace Planner
 
         private Utils.Planner GetPlanner(int participantId, string plannerName)
         {
-            int plannerId = DbAdapter.GetPlannerId(participantId, plannerName);
-            DataTable task = AdjustTask(DbAdapter.GetPlannerTask(plannerId));
-            return new Utils.Planner(plannerId, plannerName, task, null, null, null, null);
-        }
-
-        //Liczenie czasu
-        private DataTable AdjustTask(DataTable dataTable)   //Do poprawy!
-        {
-            DataTable result = new DataTable("Result");
-            result.Columns.Add("Monday", typeof(string));
-            result.Columns.Add("Tuesday", typeof(string));
-            result.Columns.Add("Wedneday", typeof(string));
-            result.Columns.Add("Thursday", typeof(string));
-            result.Columns.Add("Friday", typeof(string));
-            result.Columns.Add("Saturday", typeof(string));
-            result.Columns.Add("Sunday", typeof(string));
-
-            string time;
-            int hour;
-            int minute;
-
-            int startHour = 5;
-            int startMinute = 0;
-            int stopHour = 0;
-            int stopMinute = 0;
-
-            int timeSpan = 30;
-
-            hour = startHour;
-            minute = startMinute;
-
-            while (!(hour == stopHour && minute == stopMinute))
-            {
-                time = $"{hour.ToString("D2")}:{minute.ToString("D2")}";
-                var results =
-                    from row in dataTable.AsEnumerable()
-                    where row.Field<string>("Task_Time") == time
-                    select row;
-
-                TaskConverter taskConverter = new TaskConverter();
-
-                foreach (var item in results)
-                {
-
-                    if (item["Task_Day"].ToString() == "Monday")
-                    {
-                        taskConverter.MondayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Tuesday")
-                    {
-                        taskConverter.TuesdayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Wednesday")
-                    {
-                        taskConverter.WednesdayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Thursday")
-                    {
-                        taskConverter.ThursdayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Friday")
-                    {
-                        taskConverter.FridayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Saturday")
-                    {
-                        taskConverter.SaturdayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Sunday")
-                    {
-                        taskConverter.SundayTask = item["Task_Name"].ToString();
-                    }
-                }
-
-                result.Rows.Add(taskConverter.MondayTask, taskConverter.TuesdayTask, taskConverter.WednesdayTask, taskConverter.ThursdayTask
-                        , taskConverter.FridayTask, taskConverter.SaturdayTask, taskConverter.SundayTask);
-
-                if (minute < 60 - timeSpan)
-                {
-                    minute += timeSpan;
-                }
-                else
-                {
-                    if (hour != 23)
-                    {
-                        hour++;
-                    }
-                    else
-                    {
-                        hour = 0;
-                    }
-                    minute = 0;
-                }
-            }
-
-            return result;
+            DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
+            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()), dataTable.Rows[0]["Planner_Name"].ToString(),
+                dataTable.Rows[0]["Planner_FirstDay"].ToString(),
+                dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
+                dataTable.Rows[0]["Planner_TimeSpan"].ToString());
+            return planner;
         }
 
         //Tworzenie plannera
@@ -189,8 +99,12 @@ namespace Planner
         private void CreatePlanner(int participantId, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan)
         {
             DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription, firstDay, startHour, stopHour, timeSpan);
-            DataTable planner = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
-            //InitializeTask(planner);
+            DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
+            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()), dataTable.Rows[0]["Planner_Name"].ToString(),
+                dataTable.Rows[0]["Planner_FirstDay"].ToString(),
+                dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
+                dataTable.Rows[0]["Planner_TimeSpan"].ToString());
+            InitializeTask(planner);
         }
 
         private void ToPlanner()
@@ -199,7 +113,7 @@ namespace Planner
         }
 
         //Liczenie czasu
-        private void InitializeTask(int plannerId)
+        private void InitializeTask(Utils.Planner planner)
         {
             DataTable task = new DataTable("EmptyPlanner");
             task.Columns.Add("tvp_Task_Name", typeof(string));
@@ -213,13 +127,13 @@ namespace Planner
             int hour;
             int minute;
 
-            int startHour = 5;
-            int startMinute = 0;
+            int startHour = Int32.Parse(planner.StartHour.Substring(0,2));
+            int startMinute = Int32.Parse(planner.StartHour.Substring(3, 2));
 
-            int stopHour = 0;
-            int stopMinute = 0;
+            int stopHour = Int32.Parse(planner.StopHour.Substring(0, 2));
+            int stopMinute = Int32.Parse(planner.StopHour.Substring(3, 2));
 
-            int timeSpan = 30;
+            int timeSpan = Int32.Parse(planner.TimeSpan.Substring(3, 2));
 
             hour = startHour;
             minute = startMinute;
@@ -252,7 +166,7 @@ namespace Planner
                 dayOfWeek++;
             }
 
-            DbAdapter.TaskAdd(plannerId, task);
+            DbAdapter.TaskAdd(planner.PlannerId, task);
         }
 
         private void LogOutButton_Click(object sender, RoutedEventArgs e)
