@@ -36,13 +36,32 @@ namespace Planner.Utils
 
 
             DataTable result = new DataTable("Result");
-            result.Columns.Add("Monday", typeof(string));
-            result.Columns.Add("Tuesday", typeof(string));
-            result.Columns.Add("Wedneday", typeof(string));
-            result.Columns.Add("Thursday", typeof(string));
-            result.Columns.Add("Friday", typeof(string));
-            result.Columns.Add("Saturday", typeof(string));
-            result.Columns.Add("Sunday", typeof(string));
+
+            //algorytm do ustawiania kolejności kolumn
+            //result.Columns.Add("Monday", typeof(string));
+            //result.Columns.Add("Tuesday", typeof(string));
+            //result.Columns.Add("Wedneday", typeof(string));
+            //result.Columns.Add("Thursday", typeof(string));
+            //result.Columns.Add("Friday", typeof(string));
+            //result.Columns.Add("Saturday", typeof(string));
+            //result.Columns.Add("Sunday", typeof(string));
+
+            MyDayOfWeek myDayOfWeek = (MyDayOfWeek)Enum.Parse(typeof(MyDayOfWeek), this.FirstDay, true);
+
+            do
+            {
+                result.Columns.Add(myDayOfWeek.ToString(), typeof(string));
+                if (myDayOfWeek.ToString() == "Sunday")
+                {
+                    myDayOfWeek = 0;
+                }
+                else
+                {
+                    myDayOfWeek++;
+                }
+            } while (myDayOfWeek != (MyDayOfWeek)Enum.Parse(typeof(MyDayOfWeek), this.FirstDay, true));
+            //koniec tego algorytmu
+
 
             string time;
             int hour;

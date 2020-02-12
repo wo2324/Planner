@@ -64,6 +64,7 @@
     </Compile>
     <Compile Include="Utils\DbAdapter.cs" />
     <Compile Include="Utils\TaskConverter.cs" />
+    <Compile Include="Utils\MyDayOfWeek.cs" />
     <Compile Include="Windows\PanelWindow.xaml.cs">
       <DependentUpon>PanelWindow.xaml</DependentUpon>
     </Compile>

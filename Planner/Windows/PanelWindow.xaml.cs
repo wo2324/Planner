@@ -122,7 +122,7 @@ namespace Planner
             task.Columns.Add("tvp_Task_Time", typeof(string));
             task.Columns.Add("tvp_Task_Color", typeof(string));
 
-            DayOfWeek dayOfWeek = (DayOfWeek)0;
+            DayOfWeek MyDayOfWeek = (DayOfWeek)0; //TUTAJ
             string time;
             int hour;
             int minute;
@@ -138,12 +138,12 @@ namespace Planner
             hour = startHour;
             minute = startMinute;
 
-            while ((int)dayOfWeek < 7)
+            while ((int)MyDayOfWeek < 7)
             {
                 while (!(hour == stopHour && minute == stopMinute))
                 {
                     time = $"{hour.ToString("D2")}:{minute.ToString("D2")}";
-                    task.Rows.Add(null, null, dayOfWeek.ToString(), time, null);
+                    task.Rows.Add(null, null, MyDayOfWeek.ToString(), time, null);
                     if (minute < 60 - timeSpan)
                     {
                         minute += timeSpan;
@@ -163,7 +163,7 @@ namespace Planner
                 }
                 hour = startHour;
                 minute = startMinute;
-                dayOfWeek++;
+                MyDayOfWeek++;
             }
 
             DbAdapter.TaskAdd(planner.PlannerId, task);
