@@ -89,10 +89,45 @@ namespace Planner
         //Tworzenie plannera
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
-            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text));
-            plannerWindow.Show();
-            AdjustPlannerListBox();
+            //Walidacja wprowadzanych danych
+            bool isInputCorrect;
+            int startHour = Int32.Parse(NewPlannerStartHourTextBox.Text.Substring(0, 2));
+            int startMinute = Int32.Parse(NewPlannerStartHourTextBox.Text.Substring(3, 2));
+            int stopHour = Int32.Parse(NewPlannerStopHourTextBox.Text.Substring(0, 2));
+            int stopMinute = Int32.Parse(NewPlannerStopHourTextBox.Text.Substring(3, 2));
+
+            int timeSpan = Int32.Parse(NewPlannerTimeSpanTextBox.Text.Substring(3, 2));
+
+            int x = Math.Abs(stopHour - startHour) * 60;
+            int y = Math.Abs(stopMinute - startMinute);
+            int z = (x + y) % timeSpan;
+            if (z == 0)
+            {
+                isInputCorrect = true;
+            }
+            else
+            {
+                isInputCorrect = false;
+            }
+
+            //Algorym walidacji
+
+            //Koniec algorytmu walidacji
+            //Koniec walidacji danych
+
+
+            if (isInputCorrect)
+            {
+                CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
+                PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text));
+                plannerWindow.Show();
+                AdjustPlannerListBox();
+            }
+            else
+            {
+                MessageBox.Show("Wrong input"); //opis problemu
+            }
+
             NewPlannerNameTextBox.Clear();
         }
 
