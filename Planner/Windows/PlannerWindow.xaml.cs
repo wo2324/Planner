@@ -271,6 +271,13 @@ namespace Planner
         private void AddTaskButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!   //Sprawdzić nazewnictwo kontrole TextBox
         {
             DbAdapter.TaskTypeAdd(this.Planner.PlannerId, TaskNameTextBox.Text, TextVisibility.IsEnabled, ColorPickerButton.Background.ToString());
+            TaskNameTextBox.Clear();
+            TextVisibility.IsChecked = false;
+            var converter = new System.Windows.Media.BrushConverter();
+            var brush = (Brush)converter.ConvertFromString("#D4D4D4");
+            ColorPickerButton.Background = brush;
+            AdjustAssignedTasksListBox();
+            AssignedTasksExpander.IsExpanded = true;
         }
 
         private void AssignedTasksListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

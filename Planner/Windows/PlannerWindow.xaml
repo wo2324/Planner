@@ -45,7 +45,7 @@
                     <Button x:Name="AddTaskButton" Style="{StaticResource ButtonStyle}" Content="Add task" Click="AddTaskButton_Click"/>
                 </StackPanel>
             </Expander>
-            <Expander Style="{StaticResource ExpanderStyle}" Header="Assigned tasks">
+            <Expander x:Name="AssignedTasksExpander" Style="{StaticResource ExpanderStyle}" Header="Assigned tasks">
                 <ListBox x:Name="AssignedTasksListBox" Style="{StaticResource ListBoxStyle}" SelectionChanged="AssignedTasksListBox_SelectionChanged"/>
             </Expander>
             <Expander Style="{StaticResource ExpanderStyle}" Header="Planner details">
