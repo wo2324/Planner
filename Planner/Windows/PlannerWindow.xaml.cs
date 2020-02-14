@@ -58,8 +58,8 @@ namespace Planner
             {
                 rowName = $"{hour}:{minute}";
                 //e.Row.Header = $"{e.Row.GetIndex() + startHour == 24 ? 0 : 1}:{e.Row.GetIndex() * startMinute}";
-                e.Row.Header = ((e.Row.GetIndex() / (60 / timeSpan)) + startHour >= 24 ? (e.Row.GetIndex() / (60 / timeSpan)) + startHour - 24 : (e.Row.GetIndex() / (60 / timeSpan)) + startHour).ToString("D2") + 
-                    ":" + 
+                e.Row.Header = ((e.Row.GetIndex() / (60 / timeSpan)) + startHour >= 24 ? (e.Row.GetIndex() / (60 / timeSpan)) + startHour - 24 : (e.Row.GetIndex() / (60 / timeSpan)) + startHour).ToString("D2") +
+                    ":" +
                     (e.Row.GetIndex() * timeSpan + startMinute - (e.Row.GetIndex() / (60 / timeSpan) * 60)).ToString("D2");
 
 
@@ -282,15 +282,44 @@ namespace Planner
 
         private void AssignedTasksListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            IList<DataGridCellInfo> selectedCells = this.PlannerDataGrid.SelectedCells;
-            foreach (DataGridCellInfo cell in selectedCells)
+            if (AssignedTasksListBox.SelectedItem != null)
             {
-                string column = cell.Column.Header.ToString();
-                int rowIndex = PlannerDataGrid.Items.IndexOf(cell.Item);
-                MessageBox.Show($"column: {column}, row index: {rowIndex}");
+                IList<DataGridCellInfo> selectedCells = this.PlannerDataGrid.SelectedCells;
+                //foreach (DataGridCellInfo cell in selectedCells)
+                //{
+                //    string column = cell.Column.Header.ToString();
+                //    DataGridRow row = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(cell.Item);
+                //    //MessageBox.Show($"column: {column}, row index: {row.Header.ToString()}");
+                //}
+
+                //sprawdzić który element ListBoxa został naciśnięty
+                //sprawdzić które elementy plannera zostały wybrane
+                //zasilić tymi danymi procedurę
+                //odświerzyć planner
+
+                //..
+                string taskName = AssignedTasksListBox.SelectedItem.ToString();
+
+                DataTable dataTable = new DataTable("Result");
+                dataTable.Columns.Add("task", typeof(string));
+                dataTable.Columns.Add("day", typeof(string));
+                dataTable.Columns.Add("time", typeof(string));
+                foreach (DataGridCellInfo cell in selectedCells)
+                {
+                    string column = cell.Column.Header.ToString();
+                    DataGridRow row = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(cell.Item);
+                    dataTable.Rows.Add(taskName, column, row.Header.ToString());
+                }
+
+                DbAdapter.EditTask(this.Planner.PlannerId, dataTable);
+                //wczytaj wszystkie taski
+                Planner.AssignTask();
+                PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
+
+                ColorPlanner();
+
+                AssignedTasksListBox.SelectedItem = null;
             }
         }
-
-
     }
 }
