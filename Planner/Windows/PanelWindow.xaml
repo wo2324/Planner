@@ -19,7 +19,7 @@
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Open existing planner"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
-                <ListBox x:Name="PlannerListBox" Style="{StaticResource ListBoxStyle}"  SelectionChanged="PlannerListBox_SelectionChanged"/>
+                <ListBox x:Name="PlannerListBox" Height="300" Style="{StaticResource ListBoxStyle}" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="PlannerListBox_SelectionChanged"/>
             </StackPanel>
         </Border>
         <Border Grid.Column="1" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
