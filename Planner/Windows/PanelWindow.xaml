@@ -29,33 +29,46 @@
                 <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
                 <TextBox x:Name="NewPlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
                 <Expander Style="{StaticResource ExpanderStyle}" Header="Custom">
-                    <StackPanel>
-                        <Label Style="{StaticResource Label3Style}" Content="First day in week"/>
-                        <ComboBox x:Name="FirstNameComboBox">
-                            <ComboBoxItem Content="Monday" IsSelected="True"/>
-                            <ComboBoxItem Content="Tuesday"/>
-                            <ComboBoxItem Content="Wednesday"/>
-                            <ComboBoxItem Content="Thurday"/>
-                            <ComboBoxItem Content="Fridaty"/>
-                            <ComboBoxItem Content="SaturDay"/>
-                            <ComboBoxItem Content="SunDay"/>
-                        </ComboBox>
-                        <Label Style="{StaticResource Label3Style}" Content="Start hour"/>
-                        <TextBox x:Name="NewPlannerStartHourTextBox" Style="{StaticResource TextBoxStyle}">
-                            05:00
-                        </TextBox>
+                    <ScrollViewer Height="230" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <Label Style="{StaticResource Label3Style}" Content="First day in week"/>
+                            <ComboBox x:Name="FirstNameComboBox">
+                                <ComboBoxItem Content="Monday" IsSelected="True"/>
+                                <ComboBoxItem Content="Tuesday"/>
+                                <ComboBoxItem Content="Wednesday"/>
+                                <ComboBoxItem Content="Thurday"/>
+                                <ComboBoxItem Content="Fridaty"/>
+                                <ComboBoxItem Content="SaturDay"/>
+                                <ComboBoxItem Content="SunDay"/>
+                            </ComboBox>
+                            <Label Style="{StaticResource Label3Style}" Content="Included days"/>
+                            <ListBox SelectionMode="Extended">
+                                <ListBoxItem IsSelected="False">Monday</ListBoxItem>
+                                <ListBoxItem IsSelected="True">Tuesday</ListBoxItem>
+                                <ListBoxItem IsSelected="True">Wednesday</ListBoxItem>
+                                <ListBoxItem IsSelected="True">Thurday</ListBoxItem>
+                                <ListBoxItem IsSelected="True">Fridaty</ListBoxItem>
+                                <ListBoxItem IsSelected="True">SaturDay</ListBoxItem>
+                                <ListBoxItem IsSelected="True">SunDay</ListBoxItem>
+                            </ListBox>
+                            <Label Style="{StaticResource Label3Style}" Content="Start hour"/>
+                            <TextBox x:Name="NewPlannerStartHourTextBox" Style="{StaticResource TextBoxStyle}">
+                                05:00
+                            </TextBox>
 
-                        <Label Style="{StaticResource Label3Style}" Content="Stop hour"/>
-                        <TextBox x:Name="NewPlannerStopHourTextBox" Style="{StaticResource TextBoxStyle}">
-                            00:00
-                        </TextBox>
-                            
-                        <Label Style="{StaticResource Label3Style}" Content="Time span"/>
-                        <TextBox x:Name="NewPlannerTimeSpanTextBox" Style="{StaticResource TextBoxStyle}">
-                            00:30
-                        </TextBox>
+                            <Label Style="{StaticResource Label3Style}" Content="Stop hour"/>
+                            <TextBox x:Name="NewPlannerStopHourTextBox" Style="{StaticResource TextBoxStyle}">
+                                00:00
+                            </TextBox>
 
-                    </StackPanel>
+                            <Label Style="{StaticResource Label3Style}" Content="Time span"/>
+                            <TextBox x:Name="NewPlannerTimeSpanTextBox" Style="{StaticResource TextBoxStyle}">
+                                00:30
+                            </TextBox>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                    
                 </Expander>
                 <Button x:Name="CreatePlannerButton" Style="{StaticResource ButtonStyle}" Content="Create planner" HorizontalAlignment="Left" Click="CreatePlannerButton_Click"/>
 
