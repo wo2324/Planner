@@ -78,7 +78,6 @@
         <StackPanel Grid.Column="3" HorizontalAlignment="Left" Margin="15,240,0,0">
             <Label>ToDo:</Label>
             <Label>Wybieranie dni dla plannera</Label>
-            <Label>Dostosowanie zadania</Label>
             <Label>Wyświetlanie statystyk</Label>
         </StackPanel>
     </Grid>
