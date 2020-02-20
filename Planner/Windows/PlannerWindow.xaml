@@ -33,11 +33,10 @@
                 <StackPanel>
                     <Label Style="{StaticResource Label3Style}" Content="Name"/>
                     <TextBox x:Name="TaskNameTextBox" Style="{StaticResource TextBoxStyle}"/>
-
-                    <StackPanel Orientation="Horizontal">
+                    <!--<StackPanel Orientation="Horizontal">
                         <Label Style="{StaticResource Label3Style}" Content="Is visible"/>
                         <CheckBox  x:Name="TextVisibility" IsChecked="False"/>
-                    </StackPanel>
+                    </StackPanel>-->
                     <StackPanel Orientation="Horizontal">
                         <Label Style="{StaticResource Label3Style}" Content="Color"/>
                         <Button x:Name="ColorPickerButton" Height="20" Width="20" Click="ColorPickerButton_Click"/>
