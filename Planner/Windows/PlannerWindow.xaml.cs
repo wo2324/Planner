@@ -56,11 +56,11 @@ namespace Planner
 
             while (!(hour == stopHour && minute == stopMinute))
             {
-                rowName = $"{hour}:{minute}";
+                rowName = $"{hour}:{minute}";   
                 //e.Row.Header = $"{e.Row.GetIndex() + startHour == 24 ? 0 : 1}:{e.Row.GetIndex() * startMinute}";
                 e.Row.Header = ((e.Row.GetIndex() / (60 / timeSpan)) + startHour >= 24 ? (e.Row.GetIndex() / (60 / timeSpan)) + startHour - 24 : (e.Row.GetIndex() / (60 / timeSpan)) + startHour).ToString("D2") +
                     ":" +
-                    (e.Row.GetIndex() * timeSpan + startMinute - (e.Row.GetIndex() / (60 / timeSpan) * 60)).ToString("D2");
+                    (e.Row.GetIndex() * timeSpan + startMinute - (e.Row.GetIndex() / (60 / timeSpan) * 60)).ToString("D2");//Do poprawy!
 
 
                 if (minute < 60 - timeSpan)
