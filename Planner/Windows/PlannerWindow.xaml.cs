@@ -319,6 +319,17 @@ namespace Planner
 
                 AssignedTasksListBox.SelectedItem = null;
             }
+
+            //wywołanie metody która generuje statystyki
+            Stats();
+        }
+
+        private void Stats()
+        {
+            //pozyskanie wszystkich zadań
+            //przeszukanie tabeli w poszukiwaniu komórek z rozpatrywanym zadaniem
+            //przeliczenie ilości komórek na czas
+            //dodanie elementu do listy
         }
     }
 }

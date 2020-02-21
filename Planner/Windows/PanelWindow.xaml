@@ -42,8 +42,8 @@
                                 <ComboBoxItem Content="SunDay"/>
                             </ComboBox>
                             <Label Style="{StaticResource Label3Style}" Content="Included days"/>
-                            <ListBox SelectionMode="Extended">
-                                <ListBoxItem IsSelected="False">Monday</ListBoxItem>
+                            <ListBox x:Name="IncludedDaysListBox" SelectionMode="Extended">
+                                <ListBoxItem IsSelected="True">Monday</ListBoxItem>
                                 <ListBoxItem IsSelected="True">Tuesday</ListBoxItem>
                                 <ListBoxItem IsSelected="True">Wednesday</ListBoxItem>
                                 <ListBoxItem IsSelected="True">Thurday</ListBoxItem>
@@ -92,6 +92,11 @@
             <Label>ToDo:</Label>
             <Label>Wybieranie dni dla plannera</Label>
             <Label>Wyświetlanie statystyk</Label>
+            <Label>Usuwanie/Edycja Plannerów</Label>
+            <Label>Usuwanie/Edycja Zadań</Label>
+            <Label>Drukowanie planera (wybór elementów do drukowania)</Label>
+
+
         </StackPanel>
     </Grid>
 </Window>

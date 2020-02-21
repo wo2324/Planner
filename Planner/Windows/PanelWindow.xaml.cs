@@ -98,6 +98,15 @@ namespace Planner
 
             int timeSpan = Int32.Parse(NewPlannerTimeSpanTextBox.Text.Substring(3, 2));
 
+            List<MyDayOfWeek> MyDayOfWeekList = new List<MyDayOfWeek>();
+            var selectedCells = this.IncludedDaysListBox.SelectedItems;
+            List<string> days = new List<string>();
+
+            foreach (var item in selectedCells)
+            {
+                days.Add(item.ToString().Substring(36, item.ToString().Length - 36));
+            }
+
             int x = Math.Abs(stopHour - startHour) * 60;
             int y = Math.Abs(stopMinute - startMinute);
             int z = (x + y) % timeSpan;
