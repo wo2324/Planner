@@ -10,13 +10,17 @@ namespace Planner.Utils
     {
         public int ParticipantId { get; }
         public string ParticipantName { get; }
-        public string ParticipantPassword { get; }
+        public string ParticipantPassword { get { return GetParticipantPassword(); } }
 
-        public Participant(int ParticipantId, string ParticipantName, string ParticipantPassword)
+        public Participant(int ParticipantId, string ParticipantName)
         {
             this.ParticipantId = ParticipantId;
             this.ParticipantName = ParticipantName;
-            this.ParticipantPassword = ParticipantPassword;
+        }
+
+        private string GetParticipantPassword()
+        {
+            return DbAdapter.ParticipantPasswordGet(this.ParticipantId);
         }
     }
 }

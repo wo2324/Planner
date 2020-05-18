@@ -30,7 +30,7 @@ namespace Planner
 
         private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangePassword(PasswordBox.Password, NewPasswordBox.Password, NewPasswordBox_1.Password);
+            ChangePassword(OldPasswordBox.Password, NewPasswordBox.Password, NewPasswordBox_1.Password);
         }
 
         private void ChangePassword(string password, string newPassword, string newPasswordSample)
@@ -82,14 +82,14 @@ namespace Planner
 
         private void PasswordBoxClear()
         {
-            PasswordBox.Clear();
+            OldPasswordBox.Clear();
             NewPasswordBox.Clear();
             NewPasswordBox_1.Clear();
         }
 
         private void DeleteAccountButton_Click(object sender, RoutedEventArgs e)
         {
-            DeleteAccount(PasswordBox_1.Password);
+            DeleteAccount(PasswordBox.Password);
         }
 
         private void DeleteAccount(string password)
@@ -109,23 +109,27 @@ namespace Planner
                             CloseWindows();
                             MessageBox.Show($"Account {this.Participant.ParticipantName} has been deleted");
                         }
+                        else if (messageBoxResult == MessageBoxResult.No)
+                        {
+                            PasswordBox.Clear();
+                        }
                     }
                     catch (Exception exception)
                     {
                         MessageBox.Show(exception.Message);
-                        PasswordBoxClear();
+                        PasswordBox.Clear();
                     }
                 }
                 else
                 {
                     MessageBox.Show("Bad password");
-                    PasswordBoxClear();
+                    PasswordBox.Clear();
                 }
             }
             else
             {
                 MessageBox.Show("Password field must be filled");
-                PasswordBoxClear();
+                PasswordBox.Clear();
             }
         }
 

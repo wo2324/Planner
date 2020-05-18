@@ -46,6 +46,40 @@ namespace Planner.Utils
             }
         }
 
+        public static string ParticipantPasswordGet(int participantId)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_ParticipantPasswordGet";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantId));
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+
+                    if (sqlConnection.State == ConnectionState.Closed)
+                    {
+                        sqlConnection.Open();
+                    }
+
+                    DataSet dataSet = new DataSet();
+                    sqlDataAdapter.Fill(dataSet);
+
+                    if (dataSet.Tables[0].Rows.Count != 0)
+                    {
+                        return dataSet.Tables[0].Rows[0]["Participant_Password"].ToString();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+        }
+
         public static void ParticipantAdd(string login, string password)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();

@@ -29,7 +29,7 @@ namespace Planner
                     int participantId = DbAdapter.ParticipantGet(login, password);
                     if (participantId != 0)
                     {
-                        PanelWindow panelWindow = new PanelWindow(new Participant(participantId, login, password));
+                        PanelWindow panelWindow = new PanelWindow(new Participant(participantId, login));
                         panelWindow.Show();
                         this.Close();
                     }
