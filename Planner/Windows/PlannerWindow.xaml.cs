@@ -1,4 +1,4 @@
-﻿using Planner.Utils;
+using Planner.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -229,7 +229,7 @@ namespace Planner
                         string time = $"{actualHour.ToString("D2")}:{actualMinute.ToString("D2")}";
                         result.Rows.Add(dataTable.Rows[counter]["Monday"], "Monday", time);
                         result.Rows.Add(dataTable.Rows[counter]["Tuesday"], "Tuesday", time);
-                        result.Rows.Add(dataTable.Rows[counter]["Wedneday"], "Wednesday", time);
+                        result.Rows.Add(dataTable.Rows[counter]["Wednesday"], "Wednesday", time);
                         result.Rows.Add(dataTable.Rows[counter]["Thursday"], "Thursday", time);
                         result.Rows.Add(dataTable.Rows[counter]["Friday"], "Friday", time);
                         result.Rows.Add(dataTable.Rows[counter]["Saturday"], "Saturday", time);
