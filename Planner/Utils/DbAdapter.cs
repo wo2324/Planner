@@ -98,7 +98,7 @@ namespace Planner.Utils
             }
         }
 
-        public static DataTable GetPlannerList(int participantId)
+        public static DataTable GetPlannersNames(int participantId)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))

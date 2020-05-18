@@ -38,7 +38,7 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            PlannerListBox.ItemsSource = GetPlannerList(DbAdapter.GetPlannerList(this.Participant.ParticipantId));
+            PlannerListBox.ItemsSource = GetPlannerList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId));
         }
 
         private List<string> GetPlannerList(DataTable dataTable)
@@ -124,8 +124,13 @@ namespace Planner
             //Koniec algorytmu walidacji
             //Koniec walidacji danych
 
+            //sprawdzanie czy planner istnieje
 
-            if (isInputCorrect)
+            if (DoPlannerExists())
+            {
+                MessageBox.Show($"Planner {NewPlannerNameTextBox.Text} already exists");
+            }
+            else if (isInputCorrect)
             {
                 CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
                 PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text));
@@ -138,6 +143,23 @@ namespace Planner
             }
 
             NewPlannerNameTextBox.Clear();
+            //czyszczenie pól
+        }
+
+        private bool DoPlannerExists()
+        {
+            DataTable dataTable = DbAdapter.GetPlannersNames(this.Participant.ParticipantId);
+            List<string> PlannersNames = dataTable.AsEnumerable()
+                           .Select(r => r.Field<string>("Planner_Name"))
+                           .ToList();
+            if (PlannersNames.Contains(NewPlannerNameTextBox.Text))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void CreatePlanner(int participantId, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan)
@@ -171,7 +193,7 @@ namespace Planner
             int hour;
             int minute;
 
-            int startHour = Int32.Parse(planner.StartHour.Substring(0,2));
+            int startHour = Int32.Parse(planner.StartHour.Substring(0, 2));
             int startMinute = Int32.Parse(planner.StartHour.Substring(3, 2));
 
             int stopHour = Int32.Parse(planner.StopHour.Substring(0, 2));
