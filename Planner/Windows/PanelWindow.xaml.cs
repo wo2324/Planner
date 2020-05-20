@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -132,7 +132,7 @@ namespace Planner
             }
             else if (isInputCorrect)
             {
-                CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
+                CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, days, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
                 PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text));
                 plannerWindow.Show();
                 AdjustPlannerListBox();
@@ -162,15 +162,16 @@ namespace Planner
             }
         }
 
-        private void CreatePlanner(int participantId, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan)
+        private void CreatePlanner(int participantId, string plannerName, string plannerDescription, string firstDay, List<string> days, string startHour, string stopHour, string timeSpan)
         {
             DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription, firstDay, startHour, stopHour, timeSpan);
             DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
-            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()), dataTable.Rows[0]["Planner_Name"].ToString(),
+            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()), 
+                dataTable.Rows[0]["Planner_Name"].ToString(),
                 dataTable.Rows[0]["Planner_FirstDay"].ToString(),
                 dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
                 dataTable.Rows[0]["Planner_TimeSpan"].ToString());
-            InitializeTask(planner);
+            InitializeTask(planner, days);
         }
 
         private void ToPlanner()
@@ -179,7 +180,7 @@ namespace Planner
         }
 
         //Liczenie czasu
-        private void InitializeTask(Utils.Planner planner)
+        private void InitializeTask(Utils.Planner planner, List<string> days)
         {
             DataTable task = new DataTable("EmptyPlanner");
             task.Columns.Add("tvp_Task_Name", typeof(string));
@@ -204,12 +205,14 @@ namespace Planner
             hour = startHour;
             minute = startMinute;
 
-            while ((int)MyDayOfWeek < 7)
+            //while ((int)MyDayOfWeek < 7)
+            int counter = 0;
+            while (days.Count > counter)
             {
                 while (!(hour == stopHour && minute == stopMinute))
                 {
                     time = $"{hour.ToString("D2")}:{minute.ToString("D2")}";
-                    task.Rows.Add(null, null, MyDayOfWeek.ToString(), time, null);
+                    task.Rows.Add(null, null, days[counter], time, null);
                     if (minute < 60 - timeSpan)
                     {
                         minute += timeSpan;
@@ -229,7 +232,7 @@ namespace Planner
                 }
                 hour = startHour;
                 minute = startMinute;
-                MyDayOfWeek++;
+                counter++;
             }
 
             DbAdapter.TaskAdd(planner.PlannerId, task);

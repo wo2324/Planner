@@ -1,4 +1,4 @@
-using Planner.Utils;
+﻿using Planner.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -326,10 +326,23 @@ namespace Planner
 
         private void Stats()
         {
+
             //pozyskanie wszystkich zadań
+            List<string> tasksType = GetTaskList(DbAdapter.GetTaskType(this.Planner.PlannerId));
+
             //przeszukanie tabeli w poszukiwaniu komórek z rozpatrywanym zadaniem
-            //przeliczenie ilości komórek na czas
-            //dodanie elementu do listy
+            foreach (var item in tasksType)
+            {
+                //foreach (var row in this.Planner.Task.Rows)
+                //{
+                //    string s = row;
+                //}
+                // this.PlannerDataGrid
+                //przeliczenie ilości komórek na czas
+                //dodanie elementu do listy
+            }
+
+
         }
     }
 }

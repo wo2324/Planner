@@ -47,19 +47,21 @@ namespace Planner.Utils
             //result.Columns.Add("Sunday", typeof(string));
 
             MyDayOfWeek myDayOfWeek = (MyDayOfWeek)Enum.Parse(typeof(MyDayOfWeek), this.FirstDay, true);
+            //sprawdzenie jakie dni zostały strolowane i taka sama obsługa
+            DataView view = new DataView(dataTable);
+            DataTable distinctValues = view.ToTable(true, "Task_Day");
+            List<string> includedDays = new List<string>();
+            foreach (DataRow item in distinctValues.Rows)
+            {
+                includedDays.Add(item["Task_Day"].ToString());
+            }
 
+            int counter = 0;
             do
             {
-                result.Columns.Add(myDayOfWeek.ToString(), typeof(string));
-                if (myDayOfWeek.ToString() == "Sunday")
-                {
-                    myDayOfWeek = 0;
-                }
-                else
-                {
-                    myDayOfWeek++;
-                }
-            } while (myDayOfWeek != (MyDayOfWeek)Enum.Parse(typeof(MyDayOfWeek), this.FirstDay, true));
+                result.Columns.Add(includedDays[counter]);
+                counter++;
+            } while (includedDays.Count > counter);
             //koniec tego algorytmu
 
 
@@ -90,12 +92,12 @@ namespace Planner.Utils
 
                 foreach (var item in results)
                 {
-
-                    if (item["Task_Day"].ToString() == "Monday")
+                    string sample = item["Task_Day"].ToString();
+                    if (sample == " Monday")
                     {
                         taskConverter.MondayTask = item["Task_Name"].ToString();
                     }
-                    else if (item["Task_Day"].ToString() == "Tuesday")
+                    else if (sample == " Tuesday")
                     {
                         taskConverter.TuesdayTask = item["Task_Name"].ToString();
                     }
@@ -111,18 +113,27 @@ namespace Planner.Utils
                     {
                         taskConverter.FridayTask = item["Task_Name"].ToString();
                     }
-                    else if (item["Task_Day"].ToString() == "Saturday")
+                    else if (item["Task_Day"].ToString() == "SaturDay")
                     {
                         taskConverter.SaturdayTask = item["Task_Name"].ToString();
                     }
-                    else if (item["Task_Day"].ToString() == "Sunday")
+                    else if (item["Task_Day"].ToString() == "SunDay")
                     {
                         taskConverter.SundayTask = item["Task_Name"].ToString();
                     }
                 }
 
-                result.Rows.Add(taskConverter.MondayTask, taskConverter.TuesdayTask, taskConverter.WednesdayTask, taskConverter.ThursdayTask
-                        , taskConverter.FridayTask, taskConverter.SaturdayTask, taskConverter.SundayTask);
+                //Rozwiązanie problemu: uporządkowanie dni tygodnia od pierwszego dnia poprzez kolejne do końca.
+                //  po przypasowaniu zadania przypisanego do dnia dla rozpartywanej godziny ^, dodanie zadań kolejnych dni do listy
+                //  na końcu przekadanie listy do metody, która na podstawie wielkości listy przekaże odpowiednie argumenty (7 możliwości)
+                #region Collect results
+                List<string> data = new List<string>();
+                data.Add("sample1");
+                data.Add("sample2");
+                result.Rows.Add(data.ToArray());
+                #endregion
+                //result.Rows.Add(taskConverter.MondayTask, taskConverter.TuesdayTask, taskConverter.WednesdayTask, taskConverter.ThursdayTask
+                //        , taskConverter.FridayTask, taskConverter.SaturdayTask, taskConverter.SundayTask);
 
                 if (minute < 60 - timeSpan)
                 {
