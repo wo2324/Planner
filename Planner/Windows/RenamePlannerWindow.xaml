@@ -13,6 +13,7 @@
     <Grid>
         <Border Style="{StaticResource BorderStyle}" Height="360" Width="230">
             <StackPanel Style="{StaticResource StackPanelStyle}">
+                <Button x:Name="ReturnButton"  Style="{StaticResource ButtonStyle}" Content="Return" HorizontalAlignment="Left" Click="ReturnButton_Click"/>
                 <Label Style="{StaticResource Label1Style}" Content="Rename planner"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Current planner name"/>
