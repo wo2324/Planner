@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -38,24 +38,25 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            PlannerListBox.ItemsSource = GetPlannerList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId));
-        }
-
-        private List<string> GetPlannerList(DataTable dataTable)
-        {
-            List<string> planner = new List<string>();
-            if (dataTable == null)
+            List<string> PlannerList = GetPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId));
+            if (PlannerList.Count == 0)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
             }
             else
             {
-                foreach (DataRow dataRow in dataTable.Rows)
-                {
-                    planner.Add(dataRow["Planner_Name"].ToString());
-                }
+                PlannerListBox.ItemsSource = PlannerList;
             }
-            return planner;
+        }
+
+        private List<string> GetPlannersNamesList(DataTable dataTable)
+        {
+            List<string> PlannersNames = new List<string>();
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                PlannersNames.Add(dataRow["Planner_Name"].ToString());
+            }
+            return PlannersNames;
         }
 
         private void AdjustParticipantLabel()
