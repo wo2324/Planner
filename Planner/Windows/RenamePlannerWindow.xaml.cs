@@ -23,5 +23,10 @@ namespace Planner.Windows
         {
             InitializeComponent();
         }
+
+        private void RenamePlannerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

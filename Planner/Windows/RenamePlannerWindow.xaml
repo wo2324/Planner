@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Planner.Windows"
         mc:Ignorable="d"
-        Title="RenamePlannerWindow" Height="450" Width="800">
+        Title="RenamePlannerWindow" Height="450" Width="800"
+        AllowsTransparency="True" WindowStyle="None">
+    <Window.Background>
+        <SolidColorBrush Opacity="0.5" Color="White"/>
+    </Window.Background>
     <Grid>
-        
+        <Border Style="{StaticResource BorderStyle}" Height="360" Width="230">
+            <StackPanel Style="{StaticResource StackPanelStyle}">
+                <Label Style="{StaticResource Label1Style}" Content="Rename planner"/>
+                <Separator Style="{StaticResource SeparatorStyle}"/>
+                <Label Style="{StaticResource Label2Style}" Content="Current planner name"/>
+                <TextBox x:Name="CurrentPlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+                <Label Style="{StaticResource Label2Style}" Content="New planner name"/>
+                <TextBox x:Name="NewPlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+                <Button x:Name="RenamePlannerButton"  Style="{StaticResource ButtonStyle}" Content="Confirm" HorizontalAlignment="Right" Click="RenamePlannerButton_Click"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
