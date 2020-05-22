@@ -280,7 +280,7 @@ namespace Planner
             string selecteditem = PlannerListBox.SelectedItem.ToString();
         }
 
-        private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_Rename(object sender, RoutedEventArgs e)
         {
             string selecteditem = PlannerListBox.SelectedItem.ToString();
         }
