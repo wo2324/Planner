@@ -278,7 +278,8 @@ namespace Planner
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
-            CopyPlanner(GetPlannerCopyName(PlannerListBox.SelectedItem.ToString()));
+            DbAdapter.CopyPlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString(), GetPlannerCopyName(PlannerListBox.SelectedItem.ToString()));
+            AdjustPlannerListBox();
         }
 
         private string GetPlannerCopyName(string plannerName)
@@ -296,11 +297,6 @@ namespace Planner
                     return plannerCopyName;
                 }
             } while (true);
-        }
-
-        private void CopyPlanner(string plannerCopyName)
-        {
-
         }
 
         private void MenuItem_Click_Rename(object sender, RoutedEventArgs e)
