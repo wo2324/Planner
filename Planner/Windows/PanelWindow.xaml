@@ -19,7 +19,7 @@
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Open existing planner"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
-                <ListBox x:Name="PlannerListBox" Height="300" Style="{StaticResource ListBoxStyle}" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="PlannerListBox_SelectionChanged" MouseRightButtonDown="PlannerListBox_MouseRightButtonDown">
+                <ListBox x:Name="PlannerListBox" Height="300" Style="{StaticResource ListBoxStyle}" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="PlannerListBox_SelectionChanged">
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Copy" Click="MenuItem_Click_Copy"/>

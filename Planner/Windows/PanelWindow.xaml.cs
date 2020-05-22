@@ -65,7 +65,7 @@ namespace Planner
 
         private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.Equals(Mouse.LeftButton))
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
                 if (PlannerListBox.SelectedItem != null)
                 {
@@ -264,8 +264,6 @@ namespace Planner
             settingsWindow.ShowDialog();
         }
 
-        
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             foreach (Window item in Application.Current.Windows)
@@ -275,12 +273,6 @@ namespace Planner
                     item.Close();
                 }
             }
-        }
-
-        private void PlannerListBox_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            int x = 14;
-            string selecteditem = PlannerListBox.SelectedItem.ToString();
         }
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
