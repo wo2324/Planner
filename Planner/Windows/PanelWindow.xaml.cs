@@ -277,12 +277,29 @@ namespace Planner
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
-            CopyPlanner(GetPlannerCopyName());
+            CopyPlanner(GetPlannerCopyName(PlannerListBox.SelectedItem.ToString()));
         }
 
-        private string GetPlannerCopyName()
+        private string GetPlannerCopyName(string plannerName)
         {
-            return "";
+            string plannerCopyName = $"{plannerName} - copy";
+            int counter = 2;
+            do
+            {
+                if (DoesPlannerExist(plannerCopyName))
+                {
+                    plannerCopyName = $"{plannerName} - copy ({counter++})";
+                }
+                else
+                {
+                    return plannerCopyName;
+                }
+            } while (true);
+        }
+
+        private bool DoesPlannerExist(string plannerCopyName)
+        {
+            return true;
         }
 
         private void CopyPlanner(string plannerCopyName)
