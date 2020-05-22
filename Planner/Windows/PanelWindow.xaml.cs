@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Planner.Utils;
+using Planner.Windows;
 
 namespace Planner
 {
@@ -301,7 +302,15 @@ namespace Planner
 
         private void MenuItem_Click_Rename(object sender, RoutedEventArgs e)
         {
+            RenamePlannerWindow renamePlannerWindow = new RenamePlannerWindow();
+            renamePlannerWindow.Show();
+            MoveInFront(renamePlannerWindow);
+        }
 
+        private void MoveInFront(Window window)
+        {
+            window.Left = this.Left;
+            window.Top = this.Top;
         }
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)

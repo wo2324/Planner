@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Planner.Windows"
         mc:Ignorable="d"
         Title="RenamePlannerWindow" Height="450" Width="800"
-        AllowsTransparency="True" WindowStyle="None">
+        AllowsTransparency="True" 
+        WindowStyle="None">
     <Window.Background>
         <SolidColorBrush Opacity="0.5" Color="White"/>
     </Window.Background>
