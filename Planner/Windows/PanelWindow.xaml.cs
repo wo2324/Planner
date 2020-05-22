@@ -307,12 +307,8 @@ namespace Planner
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
-            DeletePlanner();
-        }
-
-        private void DeletePlanner()
-        {
-
+            DbAdapter.DeletePlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString());
+            AdjustPlannerListBox();
         }
     }
 }
