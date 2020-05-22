@@ -39,7 +39,7 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            List<string> PlannerList = ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId));
+            List<string> PlannerList = DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId));
             if (PlannerList.Count == 0)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
@@ -50,15 +50,7 @@ namespace Planner
             }
         }
 
-        private List<string> ExtractPlannersNamesList(DataTable dataTable)
-        {
-            List<string> PlannersNames = new List<string>();
-            foreach (DataRow dataRow in dataTable.Rows)
-            {
-                PlannersNames.Add(dataRow["Planner_Name"].ToString());
-            }
-            return PlannersNames;
-        }
+        
 
         private void AdjustParticipantLabel()
         {
@@ -289,7 +281,7 @@ namespace Planner
             int counter = 2;
             do
             {
-                if (ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId)).Contains(plannerCopyName))
+                if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId)).Contains(plannerCopyName))
                 {
                     plannerCopyName = $"{plannerName} - copy ({counter++})";
                 }
@@ -302,7 +294,7 @@ namespace Planner
 
         private void MenuItem_Click_Rename(object sender, RoutedEventArgs e)
         {
-            RenamePlannerWindow renamePlannerWindow = new RenamePlannerWindow();
+            RenamePlannerWindow renamePlannerWindow = new RenamePlannerWindow(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
             renamePlannerWindow.Show();
             MoveInFront(renamePlannerWindow);
         }

@@ -125,6 +125,16 @@ namespace Planner.Utils
             }
         }
 
+        public static List<string> ExtractPlannersNamesList(DataTable dataTable)
+        {
+            List<string> PlannersNames = new List<string>();
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                PlannersNames.Add(dataRow["Planner_Name"].ToString());
+            }
+            return PlannersNames;
+        }
+
         public static int GetPlannerId(int participantId, string plannerName)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
@@ -369,6 +379,25 @@ namespace Planner.Utils
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantId));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_NewPlannerName", plannerCopyName));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void RenamePlanner(int participantId, string plannerName, string plannerNewName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_PlannerRename";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_PlannerNewName", plannerNewName));
                     sqlCommand.ExecuteNonQuery();
                 }
             }
