@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -38,7 +38,7 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            List<string> PlannerList = GetPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId));
+            List<string> PlannerList = ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId));
             if (PlannerList.Count == 0)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
@@ -49,7 +49,7 @@ namespace Planner
             }
         }
 
-        private List<string> GetPlannersNamesList(DataTable dataTable)
+        private List<string> ExtractPlannersNamesList(DataTable dataTable)
         {
             List<string> PlannersNames = new List<string>();
             foreach (DataRow dataRow in dataTable.Rows)
@@ -169,7 +169,7 @@ namespace Planner
         {
             DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription, firstDay, startHour, stopHour, timeSpan);
             DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
-            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()), 
+            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()),
                 dataTable.Rows[0]["Planner_Name"].ToString(),
                 dataTable.Rows[0]["Planner_FirstDay"].ToString(),
                 dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
@@ -287,7 +287,7 @@ namespace Planner
             int counter = 2;
             do
             {
-                if (DoesPlannerExist(plannerCopyName))
+                if (ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId)).Contains(plannerCopyName))
                 {
                     plannerCopyName = $"{plannerName} - copy ({counter++})";
                 }
@@ -296,11 +296,6 @@ namespace Planner
                     return plannerCopyName;
                 }
             } while (true);
-        }
-
-        private bool DoesPlannerExist(string plannerCopyName)
-        {
-            return true;
         }
 
         private void CopyPlanner(string plannerCopyName)
