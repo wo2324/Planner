@@ -189,7 +189,38 @@ namespace Planner
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            //Walidacja wprowadzanych danych
+            if (NewPlannerNameTextBox.Text.Length == 0 || NewPlannerStartTimeTextBox.Text.Length == 0 || NewPlannerStopTimeTextBox.Text.Length == 0 || NewPlannerIntervalTextBox.Text.Length == 0)
+            {
+                if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id)).Contains(NewPlannerNameTextBox.Text))
+                {
+                    ClockTime clockStartTime, clockStopTime;
+                    if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text, out clockStartTime) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text, out clockStopTime))
+                    {
+                        if (true/*sprawdzanie czy godziny są dobre*/)
+                        {
+
+                        }
+                        else
+                        {
+                            //godziny są złe
+                        }
+                    }
+                    else
+                    {
+                        //format czasu ma być: hh:mm
+                    }
+                }
+                else
+                {
+                    //nazwa plannera nie jest unikatowa
+                }
+            }
+            else
+            {
+                //pola Planner name Start hour Stop hour Interval muszą być niepuste
+            }
+
+
             bool isInputCorrect;
             int startHour = Int32.Parse(NewPlannerStartTimeTextBox.Text.Substring(0, 2));
             int startMinute = Int32.Parse(NewPlannerStartTimeTextBox.Text.Substring(3, 2));
@@ -219,13 +250,6 @@ namespace Planner
                 isInputCorrect = false;
             }
 
-            //Algorym walidacji
-
-            //Koniec algorytmu walidacji
-            //Koniec walidacji danych
-
-            //sprawdzanie czy planner istnieje
-
             if (DoPlannerExists())
             {
                 MessageBox.Show($"Planner {NewPlannerNameTextBox.Text} already exists");
@@ -243,7 +267,34 @@ namespace Planner
             }
 
             NewPlannerNameTextBox.Clear();
-            //czyszczenie pól
+        }
+
+        private bool IsTimeFormatCorrect(string timeExpression, out ClockTime clockTime)
+        {
+            if (timeExpression.Length == 5)
+            {
+                if (timeExpression[2] == ':')
+                {   //walidacja na liczby w Substring(0, 2) i Substring(3, 2)?
+                    int hourExpression = Convert.ToInt32(timeExpression.Substring(0, 2));
+                    int minuteExpression = Convert.ToInt32(timeExpression.Substring(3, 2));
+                    if (hourExpression >= 0 && hourExpression <= 23 && minuteExpression >= 0 && minuteExpression <= 59)
+                    {
+                        clockTime = new ClockTime(hourExpression, minuteExpression);
+                        return true;
+                    }
+                }
+            }
+            clockTime = null;
+            return false;
+        }
+
+        private bool IsTimeOverlap(ClockTime clockStartTime, ClockTime clockStopTime, ClockTimeInterval interval)
+        {
+            ClockTimeInterval clockTimeInterval = ClockTimeInterval.GetInterval(clockStartTime, clockStopTime);
+            while (clockTimeInterval > 0)
+            {
+                clockTimeInterval.SubtractInterval(interval);
+            }
         }
 
         private bool DoPlannerExists()
@@ -334,6 +385,8 @@ namespace Planner
 
         #endregion
 
+        #region Sample
+
         private void LogOutButton_Click(object sender, RoutedEventArgs e)
         {
             LogInWindow logInWindow = new LogInWindow();
@@ -368,5 +421,7 @@ namespace Planner
                 }
             }
         }
+
+        #endregion
     }
 }
