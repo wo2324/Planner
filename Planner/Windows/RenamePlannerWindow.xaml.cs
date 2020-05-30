@@ -22,8 +22,7 @@ namespace Planner.Windows
     /// </summary>
     public partial class RenamePlannerWindow : Window
     {
-        int ParticipantId;
-        string PlannerName;
+        Participant Participant;
         private AdjustPlannerListBox AdjustPlannerListBox;
 
         public RenamePlannerWindow(int participantId, string plannerName, AdjustPlannerListBox adjustPlannerListBox)
@@ -38,19 +37,18 @@ namespace Planner.Windows
 
         private void AdjustControls(string plannerName)
         {
-            CurrentPlannerNameTextBox.Text = plannerName;
-            CurrentPlannerNameTextBox.IsEnabled = false;
+            PlannerNameTextBox.Text = plannerName;
         }
 
         private void RenamePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (NewPlannerNameTextBox.Text.Length != 0)
+            if (PlannerNewNameTextBox.Text.Length != 0)
             {
-                if (!DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.ParticipantId)).Contains(NewPlannerNameTextBox.Text))
+                if (!DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.ParticipantId)).Contains(PlannerNewNameTextBox.Text))
                 {
-                    DbAdapter.RenamePlanner(ParticipantId, PlannerName, NewPlannerNameTextBox.Text);
-                    AdjustControls(NewPlannerNameTextBox.Text);
-                    this.PlannerName = NewPlannerNameTextBox.Text;
+                    DbAdapter.RenamePlanner(ParticipantId, PlannerName, PlannerNewNameTextBox.Text);
+                    AdjustControls(PlannerNewNameTextBox.Text);
+                    this.PlannerName = PlannerNewNameTextBox.Text;
                     this.AdjustPlannerListBox();
                 }
                 else
@@ -62,11 +60,6 @@ namespace Planner.Windows
             {
                 //
             }
-        }
-
-        private void ReturnButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }
