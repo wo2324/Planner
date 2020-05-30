@@ -23,14 +23,14 @@ namespace Planner.Windows
     public partial class EditPlannerWindow : Window
     {
         Participant Participant;
-        private AdjustPlannerListBox AdjustPlannerListBox;
+        string PlannerName;
+        AdjustPlannerListBox AdjustPlannerListBox;
 
-        public EditPlannerWindow(int participantId, string plannerName, AdjustPlannerListBox adjustPlannerListBox)
+        public EditPlannerWindow(Participant participant, string plannerName, AdjustPlannerListBox adjustPlannerListBox)
         {
-            this.ParticipantId = participantId;
+            this.Participant = participant;
             this.PlannerName = plannerName;
             this.AdjustPlannerListBox = adjustPlannerListBox;
-
             InitializeComponent();
             AdjustControls(plannerName);
         }
@@ -42,23 +42,43 @@ namespace Planner.Windows
 
         private void RenamePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (PlannerNewNameTextBox.Text.Length != 0)
+            RenamePlanner(this.Participant.Id, this.PlannerName, PlannerNewNameTextBox.Text, out bool rename);
+            if (rename)
             {
-                if (!DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.ParticipantId)).Contains(PlannerNewNameTextBox.Text))
+                this.AdjustPlannerListBox();
+            }
+        }
+
+        private void RenamePlanner(int participantId, string plannerName, string plannerNewName, out bool rename)
+        {
+            rename = false;
+            if (plannerNewName.Length != 0)
+            {
+                if (plannerName != plannerNewName)
                 {
-                    DbAdapter.RenamePlanner(ParticipantId, PlannerName, PlannerNewNameTextBox.Text);
-                    AdjustControls(PlannerNewNameTextBox.Text);
-                    this.PlannerName = PlannerNewNameTextBox.Text;
-                    this.AdjustPlannerListBox();
+                    if (!DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(participantId)).Contains(plannerNewName))
+                    {
+                        DbAdapter.RenamePlanner(participantId, plannerName, plannerNewName);
+                        rename = true;
+                        AdjustControls(plannerNewName);
+                        PlannerNewNameTextBox.Clear();
+                        MessageBox.Show("Planner has been renamed");
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Planner {plannerNewName} already exists");
+                        PlannerNewNameTextBox.Clear();
+                    }
                 }
                 else
                 {
-                    //
+                    MessageBox.Show("The planner new name must be different from the current one");
+                    PlannerNewNameTextBox.Clear();
                 }
             }
             else
             {
-                //
+                MessageBox.Show("Planner new name field must be filled");
             }
         }
     }

@@ -37,8 +37,7 @@ namespace Planner
                     }
                     catch (SqlException sqlException) when (sqlException.Number == 2627)
                     {
-                        string messageTextBox = $"Account {login} already exists";
-                        MessageBox.Show(messageTextBox);
+                        MessageBox.Show($"Account {login} already exists");
                         LoginTextBox.Clear();
                         ClearPasswordBoxes();
                     }

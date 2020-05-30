@@ -294,7 +294,7 @@ namespace Planner
 
         private void MenuItem_Click_Rename(object sender, RoutedEventArgs e)
         {
-            EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant.Id, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
+            EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
             editPlannerWindow.Show();
             MoveInFront(editPlannerWindow);
         }
