@@ -39,6 +39,7 @@ namespace Planner
                     {
                         string messageTextBox = $"Account {login} already exists";
                         MessageBox.Show(messageTextBox);
+                        LoginTextBox.Clear();
                         ClearPasswordBoxes();
                     }
                     catch (Exception exception)

@@ -39,7 +39,7 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            List<string> PlannerList = DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId));
+            List<string> PlannerList = DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id));
             if (PlannerList.Count == 0)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
@@ -54,7 +54,7 @@ namespace Planner
 
         private void AdjustParticipantLabel()
         {
-            ParticipantLabel.Content = this.Participant.ParticipantName;
+            ParticipantLabel.Content = this.Participant.Name;
         }
 
         private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -63,7 +63,7 @@ namespace Planner
             {
                 if (PlannerListBox.SelectedItem != null)
                 {
-                    PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString()));
+                    PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString()));
                     plannerWindow.Show();
                     plannerWindow.ColorPlanner();
 
@@ -128,8 +128,8 @@ namespace Planner
             }
             else if (isInputCorrect)
             {
-                CreatePlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, days, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
-                PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.ParticipantId, NewPlannerNameTextBox.Text));
+                CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, days, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
+                PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
                 plannerWindow.Show();
                 AdjustPlannerListBox();
             }
@@ -144,7 +144,7 @@ namespace Planner
 
         private bool DoPlannerExists()
         {
-            DataTable dataTable = DbAdapter.GetPlannersNames(this.Participant.ParticipantId);
+            DataTable dataTable = DbAdapter.GetPlannersNames(this.Participant.Id);
             List<string> PlannersNames = dataTable.AsEnumerable()
                            .Select(r => r.Field<string>("Planner_Name"))
                            .ToList();
@@ -271,7 +271,7 @@ namespace Planner
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
-            DbAdapter.CopyPlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString(), GetPlannerCopyName(PlannerListBox.SelectedItem.ToString()));
+            DbAdapter.CopyPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString(), GetPlannerCopyName(PlannerListBox.SelectedItem.ToString()));
             AdjustPlannerListBox();
         }
 
@@ -281,7 +281,7 @@ namespace Planner
             int counter = 2;
             do
             {
-                if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.ParticipantId)).Contains(plannerCopyName))
+                if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id)).Contains(plannerCopyName))
                 {
                     plannerCopyName = $"{plannerName} - copy ({counter++})";
                 }
@@ -294,7 +294,7 @@ namespace Planner
 
         private void MenuItem_Click_Rename(object sender, RoutedEventArgs e)
         {
-            RenamePlannerWindow renamePlannerWindow = new RenamePlannerWindow(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
+            RenamePlannerWindow renamePlannerWindow = new RenamePlannerWindow(this.Participant.Id, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
             renamePlannerWindow.Show();
             MoveInFront(renamePlannerWindow);
         }
@@ -307,7 +307,7 @@ namespace Planner
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
-            DbAdapter.DeletePlanner(this.Participant.ParticipantId, PlannerListBox.SelectedItem.ToString());
+            DbAdapter.DeletePlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString());
             AdjustPlannerListBox();
         }
     }

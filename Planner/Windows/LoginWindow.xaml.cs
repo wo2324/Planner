@@ -29,7 +29,9 @@ namespace Planner
                     int participantId = DbAdapter.ParticipantGet(login, password);
                     if (participantId != 0)
                     {
-                        PanelWindow panelWindow = new PanelWindow(new Participant(participantId, login));
+                        Participant participant = new Participant(participantId, login);
+                        participant.Password = password;
+                        PanelWindow panelWindow = new PanelWindow(participant);
                         panelWindow.Show();
                         this.Close();
                     }

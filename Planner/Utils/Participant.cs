@@ -8,19 +8,14 @@ namespace Planner.Utils
 {
     public class Participant
     {
-        public int ParticipantId { get; }
-        public string ParticipantName { get; }
-        public string ParticipantPassword { get { return GetParticipantPassword(); } }
+        public int Id { get; }
+        public string Name { get; }
+        public string Password { get; set; }
 
         public Participant(int ParticipantId, string ParticipantName)
         {
-            this.ParticipantId = ParticipantId;
-            this.ParticipantName = ParticipantName;
-        }
-
-        private string GetParticipantPassword()
-        {
-            return DbAdapter.ParticipantPasswordGet(this.ParticipantId);
+            this.Id = ParticipantId;
+            this.Name = ParticipantName;
         }
     }
 }

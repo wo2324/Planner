@@ -20,7 +20,7 @@ namespace Planner
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        public Participant Participant { get; set; }
+        public Participant Participant;
 
         public SettingsWindow(Participant Participant)
         {
@@ -37,7 +37,7 @@ namespace Planner
         {
             if (password.Length != 0 && newPassword.Length != 0 && newPasswordRetype.Length != 0)
             {
-                if (this.Participant.ParticipantPassword == password)
+                if (this.Participant.Password == password)
                 {
                     if (newPassword == newPasswordRetype)
                     {
@@ -48,9 +48,10 @@ namespace Planner
                                 MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Change password confirmation", System.Windows.MessageBoxButton.YesNo);
                                 if (messageBoxResult == MessageBoxResult.Yes)
                                 {
-                                    DbAdapter.EditPassword(this.Participant.ParticipantId, newPassword);
+                                    DbAdapter.EditPassword(this.Participant.Id, newPassword);
+                                    this.Participant.Password = newPassword;
                                     MessageBox.Show("Password has been edit");
-                                    this.Close();
+                                    ClearPasswordBoxes();
                                 }
                                 else
                                 {
@@ -104,18 +105,18 @@ namespace Planner
         {
             if (password.Length != 0)
             {
-                if (this.Participant.ParticipantPassword == password)
+                if (this.Participant.Password == password)
                 {
                     try
                     {
                         MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete confirmation", System.Windows.MessageBoxButton.YesNo);
                         if (messageBoxResult == MessageBoxResult.Yes)
                         {
-                            DbAdapter.DeleteAccount(this.Participant.ParticipantId);
+                            DbAdapter.DeleteAccount(this.Participant.Id);
                             LogInWindow logInWindow = new LogInWindow();
                             logInWindow.Show();
                             CloseWindows();
-                            MessageBox.Show($"Account {this.Participant.ParticipantName} has been deleted");
+                            MessageBox.Show($"Account {this.Participant.Name} has been deleted");
                         }
                         else if (messageBoxResult == MessageBoxResult.No)
                         {
