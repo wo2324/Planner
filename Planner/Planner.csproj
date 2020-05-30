@@ -62,6 +62,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utils\ClockTime.cs" />
     <Compile Include="Utils\DbAdapter.cs" />
     <Compile Include="Utils\TaskConverter.cs" />
     <Compile Include="Utils\MyDayOfWeek.cs" />

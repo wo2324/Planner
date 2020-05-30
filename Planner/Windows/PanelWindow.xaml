@@ -10,7 +10,7 @@
         Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" x:Name="GridColumn"/>
+            <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="3*"/>
@@ -40,46 +40,19 @@
                     <ScrollViewer Height="230" ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <Label Style="{StaticResource Label3Style}" Content="First day in week"/>
-                            <ComboBox x:Name="FirstNameComboBox">
-                                <ComboBoxItem Content="Monday" IsSelected="True"/>
-                                <ComboBoxItem Content="Tuesday"/>
-                                <ComboBoxItem Content="Wednesday"/>
-                                <ComboBoxItem Content="Thurday"/>
-                                <ComboBoxItem Content="Fridaty"/>
-                                <ComboBoxItem Content="SaturDay"/>
-                                <ComboBoxItem Content="SunDay"/>
-                            </ComboBox>
+                            <ComboBox x:Name="FirstDayComboBox"/>
                             <Label Style="{StaticResource Label3Style}" Content="Included days"/>
-                            <ListBox x:Name="IncludedDaysListBox" SelectionMode="Extended">
-                                <ListBoxItem IsSelected="True">Monday</ListBoxItem>
-                                <ListBoxItem IsSelected="True">Tuesday</ListBoxItem>
-                                <ListBoxItem IsSelected="True">Wednesday</ListBoxItem>
-                                <ListBoxItem IsSelected="True">Thurday</ListBoxItem>
-                                <ListBoxItem IsSelected="True">Fridaty</ListBoxItem>
-                                <ListBoxItem IsSelected="True">SaturDay</ListBoxItem>
-                                <ListBoxItem IsSelected="True">SunDay</ListBoxItem>
-                            </ListBox>
+                            <ListBox x:Name="IncludedDaysListBox" SelectionMode="Extended"/>
                             <Label Style="{StaticResource Label3Style}" Content="Start hour"/>
-                            <TextBox x:Name="NewPlannerStartHourTextBox" Style="{StaticResource TextBoxStyle}">
-                                05:00
-                            </TextBox>
-
+                            <TextBox x:Name="NewPlannerStartTimeTextBox" Style="{StaticResource TextBoxStyle}"/>
                             <Label Style="{StaticResource Label3Style}" Content="Stop hour"/>
-                            <TextBox x:Name="NewPlannerStopHourTextBox" Style="{StaticResource TextBoxStyle}">
-                                00:00
-                            </TextBox>
-
+                            <TextBox x:Name="NewPlannerStopTimeTextBox" Style="{StaticResource TextBoxStyle}"/>
                             <Label Style="{StaticResource Label3Style}" Content="Time span"/>
-                            <TextBox x:Name="NewPlannerTimeSpanTextBox" Style="{StaticResource TextBoxStyle}">
-                                00:30
-                            </TextBox>
-
+                            <TextBox x:Name="NewPlannerIntervalTextBox" Style="{StaticResource TextBoxStyle}"/>
                         </StackPanel>
                     </ScrollViewer>
-                    
                 </Expander>
                 <Button x:Name="CreatePlannerButton" Style="{StaticResource ButtonStyle}" Content="Create planner" HorizontalAlignment="Left" Click="CreatePlannerButton_Click"/>
-
             </StackPanel>
         </Border>
         <Border Grid.Column="3" Style="{StaticResource BorderStyle}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="10">
@@ -87,24 +60,11 @@
                 <Label Style="{StaticResource Label1Style}" Content="Account"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label x:Name="ParticipantLabel" Style="{StaticResource Label2Style}" HorizontalAlignment="Right"/>
-
-                <Button x:Name="LogOutButton" Padding="2, 1, 2, 2" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" HorizontalAlignment="Right"  Foreground="#D4D4D4" Click="LogOutButton_Click">
+                <Button x:Name="LogOutButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" HorizontalAlignment="Right" Padding="2, 1, 2, 2" Foreground="#D4D4D4" Click="LogOutButton_Click">
                     <TextBlock TextDecorations="Underline">Log out</TextBlock>
                 </Button>
-
                 <Button x:Name="SettingsButton" Style="{StaticResource ButtonStyle}" Content="Settings" HorizontalAlignment="Left" Click="SettingsButton_Click"/>
-
             </StackPanel>
         </Border>
-        <StackPanel Grid.Column="3" HorizontalAlignment="Left" Margin="15,240,0,0">
-            <Label>ToDo:</Label>
-            <Label>Wybieranie dni dla plannera</Label>
-            <Label>Wyświetlanie statystyk</Label>
-            <Label>Usuwanie/Edycja Plannerów</Label>
-            <Label>Usuwanie/Edycja Zadań</Label>
-            <Label>Drukowanie planera (wybór elementów do drukowania)</Label>
-
-
-        </StackPanel>
     </Grid>
 </Window>

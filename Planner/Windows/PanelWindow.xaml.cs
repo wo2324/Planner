@@ -31,9 +31,12 @@ namespace Planner
             AdjustControls();
         }
 
+        #region Controls adjustment
+
         private void AdjustControls()
         {
             AdjustPlannerListBox();
+            AdjustNewPlannerCustomizationControls();
             AdjustParticipantLabel();
         }
 
@@ -50,12 +53,58 @@ namespace Planner
             }
         }
 
-        
+        private void AdjustNewPlannerCustomizationControls()
+        {
+            AdjustFirstDayComboBox();
+            AdjustIncludedDaysListBox();
+            AdjustNewPlannerStartHourTextBox();
+            AdjustNewPlannerStopHourTextBox();
+            AdjustNewPlannerTimeSpanTextBox();
+        }
+
+        private void AdjustFirstDayComboBox()
+        {
+            List<DayOfWeek> WeekDays = Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToList();
+            ChangeWeekDaysOrder(WeekDays);
+            FirstDayComboBox.ItemsSource = WeekDays;
+            FirstDayComboBox.SelectedIndex = 0;
+        }
+
+        private void ChangeWeekDaysOrder(List<DayOfWeek> WeekDays)
+        {
+            WeekDays.Add(WeekDays[0]);
+            WeekDays.RemoveAt(0);
+        }
+
+        private void AdjustIncludedDaysListBox()
+        {
+            List<DayOfWeek> WeekDays = Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToList();
+            ChangeWeekDaysOrder(WeekDays);
+            IncludedDaysListBox.ItemsSource = WeekDays;
+            IncludedDaysListBox.SelectAll();
+        }
+        private void AdjustNewPlannerStartHourTextBox()
+        {
+            ClockTime clockTime = new ClockTime(5,0);
+            NewPlannerStartTimeTextBox.Text = clockTime.ToString();
+        }
+        private void AdjustNewPlannerStopHourTextBox()
+        {
+            ClockTime clockTime = new ClockTime(0, 0);
+            NewPlannerStopTimeTextBox.Text = clockTime.ToString();
+        }
+        private void AdjustNewPlannerTimeSpanTextBox()
+        {
+            ClockTime clockTime = new ClockTime(0, 15);
+            NewPlannerIntervalTextBox.Text = clockTime.ToString();
+        }
 
         private void AdjustParticipantLabel()
         {
             ParticipantLabel.Content = this.Participant.Name;
         }
+
+        #endregion
 
         private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -87,12 +136,12 @@ namespace Planner
         {
             //Walidacja wprowadzanych danych
             bool isInputCorrect;
-            int startHour = Int32.Parse(NewPlannerStartHourTextBox.Text.Substring(0, 2));
-            int startMinute = Int32.Parse(NewPlannerStartHourTextBox.Text.Substring(3, 2));
-            int stopHour = Int32.Parse(NewPlannerStopHourTextBox.Text.Substring(0, 2));
-            int stopMinute = Int32.Parse(NewPlannerStopHourTextBox.Text.Substring(3, 2));
+            int startHour = Int32.Parse(NewPlannerStartTimeTextBox.Text.Substring(0, 2));
+            int startMinute = Int32.Parse(NewPlannerStartTimeTextBox.Text.Substring(3, 2));
+            int stopHour = Int32.Parse(NewPlannerStopTimeTextBox.Text.Substring(0, 2));
+            int stopMinute = Int32.Parse(NewPlannerStopTimeTextBox.Text.Substring(3, 2));
 
-            int timeSpan = Int32.Parse(NewPlannerTimeSpanTextBox.Text.Substring(3, 2));
+            int timeSpan = Int32.Parse(NewPlannerIntervalTextBox.Text.Substring(3, 2));
 
             List<MyDayOfWeek> MyDayOfWeekList = new List<MyDayOfWeek>();
             var selectedCells = this.IncludedDaysListBox.SelectedItems;
@@ -128,7 +177,7 @@ namespace Planner
             }
             else if (isInputCorrect)
             {
-                CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, null, FirstNameComboBox.Text, days, NewPlannerStartHourTextBox.Text, NewPlannerStopHourTextBox.Text, NewPlannerTimeSpanTextBox.Text);
+                CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, null, FirstDayComboBox.Text, days, NewPlannerStartTimeTextBox.Text, NewPlannerStopTimeTextBox.Text, NewPlannerIntervalTextBox.Text);
                 PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
                 plannerWindow.Show();
                 AdjustPlannerListBox();
