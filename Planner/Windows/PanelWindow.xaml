@@ -23,7 +23,7 @@
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Copy" Click="MenuItem_Click_Copy"/>
-                            <MenuItem Header="Rename" Click="MenuItem_Click_Rename"/>
+                            <MenuItem Header="Rename" Click="MenuItem_Click_Edit"/>
                             <MenuItem Header="Delete" Click="MenuItem_Click_Delete"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>

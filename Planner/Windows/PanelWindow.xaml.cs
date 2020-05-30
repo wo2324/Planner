@@ -106,6 +106,57 @@ namespace Planner
 
         #endregion
 
+        #region PlannerListBox ContextMenu handle
+
+        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        {
+            string plannerCopyName = GetPlannerCopyName(PlannerListBox.SelectedItem.ToString());
+            CopyPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
+            AdjustPlannerListBox();
+        }
+
+        private string GetPlannerCopyName(string plannerName)
+        {
+            string plannerCopyName = $"{plannerName} - copy";
+            int counter = 1;
+            do
+            {
+                if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id)).Contains(plannerCopyName))
+                {
+                    plannerCopyName = $"{plannerName} - copy ({++counter})";
+                }
+                else
+                {
+                    return plannerCopyName;
+                }
+            } while (true);
+        }
+
+        private void CopyPlanner(int participantId, string plannerName, string plannerCopyName)
+        {
+            DbAdapter.CopyPlanner(participantId, plannerName, plannerCopyName);
+        }
+
+        private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
+        {
+            EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
+            editPlannerWindow.Show();
+        }
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            DeletePlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString());
+            AdjustPlannerListBox();
+        }
+
+        private void DeletePlanner(int participantId, string plannerName)
+        {
+            DbAdapter.DeletePlanner(participantId, plannerName);
+        }
+
+        #endregion
+
+        #region MyRegion
         private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
@@ -317,47 +368,8 @@ namespace Planner
                 }
             }
         }
+        #endregion
 
-        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
-        {
-            DbAdapter.CopyPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString(), GetPlannerCopyName(PlannerListBox.SelectedItem.ToString()));
-            AdjustPlannerListBox();
-        }
 
-        private string GetPlannerCopyName(string plannerName)
-        {
-            string plannerCopyName = $"{plannerName} - copy";
-            int counter = 2;
-            do
-            {
-                if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id)).Contains(plannerCopyName))
-                {
-                    plannerCopyName = $"{plannerName} - copy ({counter++})";
-                }
-                else
-                {
-                    return plannerCopyName;
-                }
-            } while (true);
-        }
-
-        private void MenuItem_Click_Rename(object sender, RoutedEventArgs e)
-        {
-            EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
-            editPlannerWindow.Show();
-            MoveInFront(editPlannerWindow);
-        }
-
-        private void MoveInFront(Window window)
-        {
-            window.Left = this.Left;
-            window.Top = this.Top;
-        }
-
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
-        {
-            DbAdapter.DeletePlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString());
-            AdjustPlannerListBox();
-        }
     }
 }
