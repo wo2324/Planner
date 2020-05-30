@@ -106,6 +106,35 @@ namespace Planner
 
         #endregion
 
+        #region Open Planner
+
+        private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                if (PlannerListBox.SelectedItem != null)
+                {
+                    PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString()));
+                    plannerWindow.Show();
+                    plannerWindow.ColorPlanner();
+
+                    PlannerListBox.SelectedItem = null;
+                }
+            }
+        }
+
+        private Utils.Planner GetPlanner(int participantId, string plannerName)
+        {
+            DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
+            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()), dataTable.Rows[0]["Planner_Name"].ToString(),
+                dataTable.Rows[0]["Planner_FirstDay"].ToString(),
+                dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
+                dataTable.Rows[0]["Planner_TimeSpan"].ToString());
+            return planner;
+        }
+
+        #endregion
+
         #region PlannerListBox ContextMenu handle
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
@@ -140,7 +169,7 @@ namespace Planner
         private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
         {
             EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
-            editPlannerWindow.Show();
+            editPlannerWindow.ShowDialog();
         }
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
@@ -156,33 +185,8 @@ namespace Planner
 
         #endregion
 
-        #region MyRegion
-        private void PlannerListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (Mouse.LeftButton == MouseButtonState.Pressed)
-            {
-                if (PlannerListBox.SelectedItem != null)
-                {
-                    PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString()));
-                    plannerWindow.Show();
-                    plannerWindow.ColorPlanner();
+        #region Create Planner
 
-                    PlannerListBox.SelectedItem = null;
-                }
-            }
-        }
-
-        private Utils.Planner GetPlanner(int participantId, string plannerName)
-        {
-            DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
-            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()), dataTable.Rows[0]["Planner_Name"].ToString(),
-                dataTable.Rows[0]["Planner_FirstDay"].ToString(),
-                dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
-                dataTable.Rows[0]["Planner_TimeSpan"].ToString());
-            return planner;
-        }
-
-        //Tworzenie plannera
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
             //Walidacja wprowadzanych danych
@@ -270,12 +274,6 @@ namespace Planner
             InitializeTask(planner, days);
         }
 
-        private void ToPlanner()
-        {
-
-        }
-
-        //Liczenie czasu
         private void InitializeTask(Utils.Planner planner, List<string> days)
         {
             DataTable task = new DataTable("EmptyPlanner");
@@ -334,6 +332,8 @@ namespace Planner
             DbAdapter.TaskAdd(planner.PlannerId, task);
         }
 
+        #endregion
+
         private void LogOutButton_Click(object sender, RoutedEventArgs e)
         {
             LogInWindow logInWindow = new LogInWindow();
@@ -368,8 +368,5 @@ namespace Planner
                 }
             }
         }
-        #endregion
-
-
     }
 }
