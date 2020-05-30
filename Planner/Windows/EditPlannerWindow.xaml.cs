@@ -18,14 +18,14 @@ namespace Planner.Windows
     public delegate void AdjustPlannerListBox();
 
     /// <summary>
-    /// Interaction logic for RenamePlannerWindow.xaml
+    /// Interaction logic for EditPlannerWindow.xaml
     /// </summary>
-    public partial class RenamePlannerWindow : Window
+    public partial class EditPlannerWindow : Window
     {
         Participant Participant;
         private AdjustPlannerListBox AdjustPlannerListBox;
 
-        public RenamePlannerWindow(int participantId, string plannerName, AdjustPlannerListBox adjustPlannerListBox)
+        public EditPlannerWindow(int participantId, string plannerName, AdjustPlannerListBox adjustPlannerListBox)
         {
             this.ParticipantId = participantId;
             this.PlannerName = plannerName;

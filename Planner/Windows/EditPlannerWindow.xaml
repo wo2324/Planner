@@ -1,0 +1,23 @@
+﻿<Window x:Class="Planner.Windows.EditPlannerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Planner.Windows"
+        mc:Ignorable="d"
+        Title="EditPlannerWindow" Height="450" Width="800"
+        Style="{StaticResource WindowStyle}">
+    <Grid>
+        <Border Style="{StaticResource BorderStyle}" Height="360" Width="230">
+            <StackPanel Style="{StaticResource StackPanelStyle}">
+                <Label Style="{StaticResource Label1Style}" Content="Rename planner"/>
+                <Separator Style="{StaticResource SeparatorStyle}"/>
+                <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
+                <TextBox x:Name="PlannerNameTextBox" Style="{StaticResource TextBoxStyle}" IsEnabled="False"/>
+                <Label Style="{StaticResource Label2Style}" Content="Planner new name"/>
+                <TextBox x:Name="PlannerNewNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+                <Button x:Name="RenamePlannerButton"  Style="{StaticResource ButtonStyle}" Content="Rename" HorizontalAlignment="Right" Click="RenamePlannerButton_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

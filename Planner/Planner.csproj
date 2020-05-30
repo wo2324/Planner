@@ -73,8 +73,8 @@
     <Compile Include="Windows\PlannerWindow.xaml.cs">
       <DependentUpon>PlannerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\RenamePlannerWindow.xaml.cs">
-      <DependentUpon>RenamePlannerWindow.xaml</DependentUpon>
+    <Compile Include="Windows\EditPlannerWindow.xaml.cs">
+      <DependentUpon>EditPlannerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -125,7 +125,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\RenamePlannerWindow.xaml">
+    <Page Include="Windows\EditPlannerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
