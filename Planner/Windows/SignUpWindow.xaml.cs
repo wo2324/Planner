@@ -18,14 +18,14 @@ namespace Planner
 
         private void SignUpButton_Click(object sender, RoutedEventArgs e)
         {
-            SignUp(LoginTextBox.Text, PasswordBox.Password, PasswordBox_1.Password);
+            SignUp(LoginTextBox.Text, PasswordBox.Password, PasswordBox_Retype.Password);
         }
 
-        private void SignUp(string login, string password, string passwordSample)
+        private void SignUp(string login, string password, string passwordRetype)
         {
-            if (login.Length != 0 && password.Length != 0 && passwordSample.Length != 0)
+            if (login.Length != 0 && password.Length != 0 && passwordRetype.Length != 0)
             {
-                if (password == passwordSample)
+                if (password == passwordRetype)
                 {
                     try
                     {
@@ -39,31 +39,31 @@ namespace Planner
                     {
                         string messageTextBox = $"Account {login} already exists";
                         MessageBox.Show(messageTextBox);
-                        PasswordBoxClear();
+                        ClearPasswordBoxes();
                     }
                     catch (Exception exception)
                     {
                         MessageBox.Show(exception.Message);
-                        PasswordBoxClear();
+                        ClearPasswordBoxes();
                     }
                 }
                 else
                 {
                     MessageBox.Show("Given passwords are non-identical");
-                    PasswordBoxClear();
+                    ClearPasswordBoxes();
                 }
             }
             else
             {
                 MessageBox.Show("All fields must be filled");
-                PasswordBoxClear();
+                ClearPasswordBoxes();
             }
         }
 
-        private void PasswordBoxClear()
+        private void ClearPasswordBoxes()
         {
             PasswordBox.Clear();
-            PasswordBox_1.Clear();
+            PasswordBox_Retype.Clear();
         }
 
         private void LogInButton_Click(object sender, RoutedEventArgs e)

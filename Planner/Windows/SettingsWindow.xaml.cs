@@ -30,61 +30,69 @@ namespace Planner
 
         private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangePassword(OldPasswordBox.Password, NewPasswordBox.Password, NewPasswordBox_1.Password);
+            ChangePassword(OldPasswordBox.Password, NewPasswordBox.Password, NewPasswordBox_Retype.Password);
         }
 
-        private void ChangePassword(string password, string newPassword, string newPasswordSample)
+        private void ChangePassword(string password, string newPassword, string newPasswordRetype)
         {
-            if (password.Length != 0 && newPassword.Length != 0 && newPasswordSample.Length != 0)
+            if (password.Length != 0 && newPassword.Length != 0 && newPasswordRetype.Length != 0)
             {
                 if (this.Participant.ParticipantPassword == password)
                 {
-                    if (newPassword == newPasswordSample)
+                    if (newPassword == newPasswordRetype)
                     {
                         if (password != newPassword)
                         {
                             try
                             {
-                                DbAdapter.EditPassword(this.Participant.ParticipantId, newPassword);
-                                MessageBox.Show("Password has been edit");
-                                this.Close();
+                                MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Change password confirmation", System.Windows.MessageBoxButton.YesNo);
+                                if (messageBoxResult == MessageBoxResult.Yes)
+                                {
+                                    DbAdapter.EditPassword(this.Participant.ParticipantId, newPassword);
+                                    MessageBox.Show("Password has been edit");
+                                    this.Close();
+                                }
+                                else
+                                {
+                                    ClearPasswordBoxes();
+                                }
                             }
                             catch (Exception exception)
                             {
                                 MessageBox.Show(exception.Message);
-                                PasswordBoxClear();
+                                ClearPasswordBoxes();
                             }
                         }
                         else
                         {
                             MessageBox.Show("The new password must be different from the current one");
-                            PasswordBoxClear();
+                            ClearPasswordBoxes();
                         }
                     }
                     else
                     {
                         MessageBox.Show("Given new passwords are non-identical");
-                        PasswordBoxClear();
+                        ClearPasswordBoxes();
                     }
                 }
                 else
                 {
                     MessageBox.Show("Bad password");
-                    PasswordBoxClear();
+                    ClearPasswordBoxes();
                 }
             }
             else
             {
                 MessageBox.Show("All fields must be filled");
-                PasswordBoxClear();
+                ClearPasswordBoxes();
             }
         }
 
-        private void PasswordBoxClear()
+        private void ClearPasswordBoxes()
         {
             OldPasswordBox.Clear();
             NewPasswordBox.Clear();
-            NewPasswordBox_1.Clear();
+            NewPasswordBox_Retype.Clear();
         }
 
         private void DeleteAccountButton_Click(object sender, RoutedEventArgs e)
@@ -100,7 +108,7 @@ namespace Planner
                 {
                     try
                     {
-                        MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete Confirmation", System.Windows.MessageBoxButton.YesNo);
+                        MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete confirmation", System.Windows.MessageBoxButton.YesNo);
                         if (messageBoxResult == MessageBoxResult.Yes)
                         {
                             DbAdapter.DeleteAccount(this.Participant.ParticipantId);
