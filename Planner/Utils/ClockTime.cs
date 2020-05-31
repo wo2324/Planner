@@ -22,58 +22,6 @@ namespace Planner.Utils
             return $"{this.Hour.ToString("D2")}:{this.Minute.ToString("D2")}";
         }
 
-        #region Operators overloading
-
-        public static bool operator !=(ClockTime clockTimeModel, ClockTime clockTimeSample)
-        {
-            if (clockTimeModel.Hour != clockTimeSample.Hour || clockTimeModel.Minute != clockTimeSample.Minute)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static bool operator ==(ClockTime clockTimeModel, ClockTime clockTimeSample)
-        {
-            if (clockTimeModel.Hour == clockTimeSample.Hour && clockTimeModel.Minute == clockTimeSample.Minute)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static bool operator <(ClockTime clockTimeModel, ClockTime clockTimeSample)
-        {
-            if (clockTimeModel.Hour < clockTimeSample.Hour || clockTimeModel.Hour == clockTimeSample.Hour && clockTimeModel.Minute < clockTimeSample.Minute)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static bool operator >(ClockTime clockTimeModel, ClockTime clockTimeSample)
-        {
-            if (clockTimeModel.Hour > clockTimeSample.Hour || clockTimeModel.Hour == clockTimeSample.Hour && clockTimeModel.Minute > clockTimeSample.Minute)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        #endregion
-
         public void AddInterval(ClockTimeInterval interval)
         {
             this.Hour = (this.Hour + interval.Hour) % 24;
@@ -86,14 +34,23 @@ namespace Planner.Utils
 
         public void SubtractInterval(ClockTimeInterval interval)
         {
-
+            if (this.Hour < interval.Hour || this.Hour == interval.Hour && this.Minute < interval.Minute)
+            {
+                throw new NegativeIntervalException();
+            }
             this.Hour = this.Hour - interval.Hour;
             if (this.Minute - interval.Minute < 0)
             {
                 this.Minute = (this.Minute - interval.Minute) + 60;
                 this.Hour--;
             }
-            this.Minute = (this.Minute + interval.Minute) % 60;
+        }
+    }
+
+    class NegativeIntervalException : ApplicationException
+    {
+        public NegativeIntervalException()
+        {
         }
     }
 
@@ -101,7 +58,6 @@ namespace Planner.Utils
     {
         public ClockTimeInterval(int hour, int minute) : base(hour, minute)
         {
-
         }
 
         public static ClockTimeInterval GetInterval(ClockTime clockStartTime, ClockTime clockStopTime)
