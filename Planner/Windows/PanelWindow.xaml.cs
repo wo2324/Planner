@@ -133,6 +133,12 @@ namespace Planner
             return planner;
         }
 
+        private void OpenPlanner(int participantId, string plannerName)
+        {
+            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
+            plannerWindow.Show();
+        }
+
         #endregion
 
         #region PlannerListBox ContextMenu handle
@@ -199,7 +205,7 @@ namespace Planner
                     {
                         if (IsTimeOverlap(clockStartTime, clockStopTime, interval))
                         {
-                            CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, FirstDayComboBox.Text, IncludedDaysListBox.SelectedItems, clockStartTime, clockStopTime, interval);
+                            CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, FirstDayComboBox.Text, GetListBoxSelectedItems(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
                             AdjustPlannerListBox();
                             OpenPlanner(this.Participant.Id, NewPlannerNameTextBox.Text);
                         }
@@ -285,9 +291,19 @@ namespace Planner
             }
         }
 
-        private void CreatePlanner(int participantId, string plannerName, string firstDay, List<string> IncludedDays, string startHour, string stopHour, string timeSpan)
+        private List<string> GetListBoxSelectedItems(ListBox listBox)
         {
-            DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription, firstDay, startHour, stopHour, timeSpan);
+            List<string> ListBoxSelectedItems = new List<string>();
+            foreach (string item in listBox.SelectedItems)
+            {
+                ListBoxSelectedItems.Add(item);
+            }
+            return ListBoxSelectedItems;
+        }
+
+        private void CreatePlanner(int participantId, string plannerName, string firstDay, List<string> IncludedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
+        {
+            DbAdapter.PlannerAdd(participantId, plannerName, null, firstDay, startHour, stopHour, timeSpan);
             DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
             Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()),
                 dataTable.Rows[0]["Planner_Name"].ToString(),
@@ -297,9 +313,7 @@ namespace Planner
             InitializeTask(planner, IncludedDays);
         }
 
-        OpenPlanner(this.Participant.Id, NewPlannerNameTextBox.Text);
-        PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
-        plannerWindow.Show();
+
 
         private void InitializeTask(Utils.Planner planner, List<string> days)
         {
