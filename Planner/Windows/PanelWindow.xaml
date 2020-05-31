@@ -43,11 +43,11 @@
                             <ComboBox x:Name="FirstDayComboBox"/>
                             <Label Style="{StaticResource Label3Style}" Content="Included days"/>
                             <ListBox x:Name="IncludedDaysListBox" SelectionMode="Extended"/>
-                            <Label Style="{StaticResource Label3Style}" Content="Start hour"/>
+                            <Label Style="{StaticResource Label3Style}" Content="Start time"/>
                             <TextBox x:Name="NewPlannerStartTimeTextBox" Style="{StaticResource TextBoxStyle}"/>
-                            <Label Style="{StaticResource Label3Style}" Content="Stop hour"/>
+                            <Label Style="{StaticResource Label3Style}" Content="Stop time"/>
                             <TextBox x:Name="NewPlannerStopTimeTextBox" Style="{StaticResource TextBoxStyle}"/>
-                            <Label Style="{StaticResource Label3Style}" Content="Time span"/>
+                            <Label Style="{StaticResource Label3Style}" Content="Time interval"/>
                             <TextBox x:Name="NewPlannerIntervalTextBox" Style="{StaticResource TextBoxStyle}"/>
                         </StackPanel>
                     </ScrollViewer>

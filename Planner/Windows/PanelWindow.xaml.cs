@@ -85,7 +85,7 @@ namespace Planner
         }
         private void AdjustNewPlannerStartHourTextBox()
         {
-            ClockTime clockTime = new ClockTime(5,0);
+            ClockTime clockTime = new ClockTime(5, 0);
             NewPlannerStartTimeTextBox.Text = clockTime.ToString();
         }
         private void AdjustNewPlannerStopHourTextBox()
@@ -194,79 +194,38 @@ namespace Planner
                 if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id)).Contains(NewPlannerNameTextBox.Text))
                 {
                     ClockTime clockStartTime, clockStopTime;
-                    if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text, out clockStartTime) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text, out clockStopTime))
+                    ClockTimeInterval interval;
+                    if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text, out clockStartTime) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text, out clockStopTime) && IsTimeFormatCorrect(NewPlannerIntervalTextBox.Text, out interval))
                     {
-                        if (true/*sprawdzanie czy godziny są dobre*/)
+                        if (IsTimeOverlap(clockStartTime, clockStopTime, interval))
                         {
-
+                            CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, null, FirstDayComboBox.Text, days, NewPlannerStartTimeTextBox.Text, NewPlannerStopTimeTextBox.Text, NewPlannerIntervalTextBox.Text);
+                            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
+                            plannerWindow.Show();
+                            AdjustPlannerListBox();
                         }
                         else
                         {
-                            //godziny są złe
+                            MessageBox.Show($"Cannot create planner of given time values");
                         }
                     }
                     else
                     {
-                        //format czasu ma być: hh:mm
+                        MessageBox.Show("Time values must be expressed as hh:mm");
                     }
                 }
                 else
                 {
-                    //nazwa plannera nie jest unikatowa
+                    MessageBox.Show($"Planner {NewPlannerNameTextBox.Text} already exists");
                 }
             }
             else
             {
-                //pola Planner name Start hour Stop hour Interval muszą być niepuste
-            }
-
-
-            bool isInputCorrect;
-            int startHour = Int32.Parse(NewPlannerStartTimeTextBox.Text.Substring(0, 2));
-            int startMinute = Int32.Parse(NewPlannerStartTimeTextBox.Text.Substring(3, 2));
-            int stopHour = Int32.Parse(NewPlannerStopTimeTextBox.Text.Substring(0, 2));
-            int stopMinute = Int32.Parse(NewPlannerStopTimeTextBox.Text.Substring(3, 2));
-
-            int timeSpan = Int32.Parse(NewPlannerIntervalTextBox.Text.Substring(3, 2));
-
-            List<MyDayOfWeek> MyDayOfWeekList = new List<MyDayOfWeek>();
-            var selectedCells = this.IncludedDaysListBox.SelectedItems;
-            List<string> days = new List<string>();
-
-            foreach (var item in selectedCells)
-            {
-                days.Add(item.ToString().Substring(36, item.ToString().Length - 36));
-            }
-
-            int x = Math.Abs(stopHour - startHour) * 60;
-            int y = Math.Abs(stopMinute - startMinute);
-            int z = (x + y) % timeSpan;
-            if (z == 0)
-            {
-                isInputCorrect = true;
-            }
-            else
-            {
-                isInputCorrect = false;
-            }
-
-            if (DoPlannerExists())
-            {
-                MessageBox.Show($"Planner {NewPlannerNameTextBox.Text} already exists");
-            }
-            else if (isInputCorrect)
-            {
-                CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, null, FirstDayComboBox.Text, days, NewPlannerStartTimeTextBox.Text, NewPlannerStopTimeTextBox.Text, NewPlannerIntervalTextBox.Text);
-                PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
-                plannerWindow.Show();
-                AdjustPlannerListBox();
-            }
-            else
-            {
-                MessageBox.Show("Wrong input"); //opis problemu
+                MessageBox.Show("All fields must be non-empty");
             }
 
             NewPlannerNameTextBox.Clear();
+            AdjustNewPlannerCustomizationControls();
         }
 
         private bool IsTimeFormatCorrect(string timeExpression, out ClockTime clockTime)
@@ -288,12 +247,42 @@ namespace Planner
             return false;
         }
 
+        private bool IsTimeFormatCorrect(string intervalExpression, out ClockTimeInterval interval)
+        {
+            if (intervalExpression.Length == 5)
+            {
+                if (intervalExpression[2] == ':')
+                {   //walidacja na liczby w Substring(0, 2) i Substring(3, 2)?
+                    int hourExpression = Convert.ToInt32(intervalExpression.Substring(0, 2));
+                    int minuteExpression = Convert.ToInt32(intervalExpression.Substring(3, 2));
+                    if (hourExpression >= 0 && minuteExpression >= 0 && minuteExpression <= 59)
+                    {
+                        interval = new ClockTimeInterval(hourExpression, minuteExpression);
+                        return true;
+                    }
+                }
+            }
+            interval = null;
+            return false;
+        }
+
         private bool IsTimeOverlap(ClockTime clockStartTime, ClockTime clockStopTime, ClockTimeInterval interval)
         {
-            ClockTimeInterval clockTimeInterval = ClockTimeInterval.GetInterval(clockStartTime, clockStopTime);
-            while (clockTimeInterval > 0)
+            ClockTimeInterval differentialInterval = ClockTimeInterval.GetInterval(clockStartTime, clockStopTime);
+            while (true)
             {
-                clockTimeInterval.SubtractInterval(interval);
+                if (differentialInterval.Hour == 0 && differentialInterval.Minute == 0)
+                {
+                    return true;
+                }
+                try
+                {
+                    differentialInterval.SubtractInterval(interval);
+                }
+                catch (NegativeIntervalException negativeIntervalException)
+                {
+                    return false;
+                }
             }
         }
 
