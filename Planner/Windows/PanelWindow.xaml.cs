@@ -199,10 +199,9 @@ namespace Planner
                     {
                         if (IsTimeOverlap(clockStartTime, clockStopTime, interval))
                         {
-                            CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, null, FirstDayComboBox.Text, days, NewPlannerStartTimeTextBox.Text, NewPlannerStopTimeTextBox.Text, NewPlannerIntervalTextBox.Text);
-                            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
-                            plannerWindow.Show();
+                            CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, FirstDayComboBox.Text, IncludedDaysListBox.SelectedItems, clockStartTime, clockStopTime, interval);
                             AdjustPlannerListBox();
+                            OpenPlanner(this.Participant.Id, NewPlannerNameTextBox.Text);
                         }
                         else
                         {
@@ -286,23 +285,7 @@ namespace Planner
             }
         }
 
-        private bool DoPlannerExists()
-        {
-            DataTable dataTable = DbAdapter.GetPlannersNames(this.Participant.Id);
-            List<string> PlannersNames = dataTable.AsEnumerable()
-                           .Select(r => r.Field<string>("Planner_Name"))
-                           .ToList();
-            if (PlannersNames.Contains(NewPlannerNameTextBox.Text))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private void CreatePlanner(int participantId, string plannerName, string plannerDescription, string firstDay, List<string> days, string startHour, string stopHour, string timeSpan)
+        private void CreatePlanner(int participantId, string plannerName, string firstDay, List<string> IncludedDays, string startHour, string stopHour, string timeSpan)
         {
             DbAdapter.PlannerAdd(participantId, plannerName, plannerDescription, firstDay, startHour, stopHour, timeSpan);
             DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
@@ -311,8 +294,12 @@ namespace Planner
                 dataTable.Rows[0]["Planner_FirstDay"].ToString(),
                 dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
                 dataTable.Rows[0]["Planner_TimeSpan"].ToString());
-            InitializeTask(planner, days);
+            InitializeTask(planner, IncludedDays);
         }
+
+        OpenPlanner(this.Participant.Id, NewPlannerNameTextBox.Text);
+        PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
+        plannerWindow.Show();
 
         private void InitializeTask(Utils.Planner planner, List<string> days)
         {
