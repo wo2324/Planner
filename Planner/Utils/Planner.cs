@@ -27,6 +27,15 @@ namespace Planner.Utils
             this.TimeSpan = TimeSpan;
         }
 
+        public Planner(string PlannerName, string FirstDay, string StartHour, string StopHour, string TimeSpan)
+        {
+            this.PlannerName = PlannerName;
+            this.FirstDay = FirstDay;
+            this.StartHour = StartHour;
+            this.StopHour = StopHour;
+            this.TimeSpan = TimeSpan;
+        }
+
         //pozyskanie Task
         public void AssignTask()
         {
