@@ -14,7 +14,7 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
-                <DataGrid x:Name="PlannerDataGrid"
+            <DataGrid x:Name="PlannerDataGrid"
                           AutoGenerateColumns="True"
                           HeadersVisibility="All"
                           ColumnWidth="*"
@@ -26,8 +26,8 @@
                           SelectionUnit="Cell"
                           SelectionMode="Extended"
                           LoadingRow="PlannerDataGrid_LoadingRow"/>
-            </ScrollViewer>
-            <StackPanel Grid.Column="1" Background="#50514F">
+        </ScrollViewer>
+        <StackPanel Grid.Column="1">
             <Button x:Name="ConfirmButton" Style="{StaticResource ButtonStyle}" Content="Confirm" Click="ConfirmButton_Click"/>
             <Expander Style="{StaticResource ExpanderStyle}" Header="Create task">
                 <StackPanel>
