@@ -110,7 +110,7 @@ namespace Planner
             return task;
         }
 
-        public void ColorPlanner()
+        public void PaintPlannerTasks()
         {
             DataTable dataTable = DbAdapter.GetTaskType(this.Planner.PlannerId);
 
@@ -252,7 +252,7 @@ namespace Planner
                 DbAdapter.EditTask(this.Planner.PlannerId, result);
 
                 //GetDataGridRows();
-                ColorPlanner();
+                PaintPlannerTasks();
 
             }
             catch (Exception exception)
@@ -315,7 +315,7 @@ namespace Planner
                 Planner.AssignTask();
                 PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
 
-                ColorPlanner();
+                PaintPlannerTasks();
 
                 AssignedTasksListBox.SelectedItem = null;
             }

@@ -107,29 +107,42 @@ namespace Planner
             {
                 if (PlannerListBox.SelectedItem != null)
                 {
-                    PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString()));
-                    plannerWindow.Show();
-                    plannerWindow.ColorPlanner();
-
+                    OpenPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString());
                     PlannerListBox.SelectedItem = null;
                 }
             }
         }
 
+        private void OpenPlanner(int participantId, string plannerName)
+        {
+            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(participantId, plannerName));
+            plannerWindow.Show();
+            plannerWindow.PaintPlannerTasks();
+        }
+
         private Utils.Planner GetPlanner(int participantId, string plannerName)
         {
-            DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
-            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()), dataTable.Rows[0]["Planner_Name"].ToString(),
-                dataTable.Rows[0]["Planner_FirstDay"].ToString(),
-                dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
-                dataTable.Rows[0]["Planner_TimeSpan"].ToString());
+            DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName);
+            DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dataTable.Rows[0]["Planner_FirstDay"].ToString());
+            ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartHour"].ToString());
+            ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopHour"].ToString());
+            ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_TimeSpan"].ToString());
+            Utils.Planner planner = new Utils.Planner(plannerName, firstDay, startTime, stopTime, interval);
             return planner;
         }
 
-        private void OpenPlanner(int participantId, string plannerName)
+        private ClockTime ExtractClockTime(string timeExpression)
         {
-            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(this.Participant.Id, NewPlannerNameTextBox.Text));
-            plannerWindow.Show();
+            int hourExpression = Convert.ToInt32(timeExpression.Substring(0, 2));
+            int minuteExpression = Convert.ToInt32(timeExpression.Substring(3, 2));
+            return new ClockTime(hourExpression, minuteExpression);
+        }
+
+        private ClockTimeInterval ExtractClockTimeInterval(string timeExpression)
+        {
+            int hourExpression = Convert.ToInt32(timeExpression.Substring(0, 2));
+            int minuteExpression = Convert.ToInt32(timeExpression.Substring(3, 2));
+            return new ClockTimeInterval(hourExpression, minuteExpression);
         }
 
         #endregion
@@ -192,10 +205,11 @@ namespace Planner
             {
                 if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id)).Contains(NewPlannerNameTextBox.Text))
                 {
-                    ClockTime clockStartTime, clockStopTime;
-                    ClockTimeInterval interval;
-                    if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text, out clockStartTime) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text, out clockStopTime) && IsTimeFormatCorrect(NewPlannerIntervalTextBox.Text, out interval))
+                    if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerIntervalTextBox.Text))
                     {
+                        ClockTime clockStartTime = ExtractClockTime(NewPlannerStartTimeTextBox.Text);
+                        ClockTime clockStopTime = ExtractClockTime(NewPlannerStopTimeTextBox.Text);
+                        ClockTimeInterval interval = ExtractClockTimeInterval(NewPlannerStopTimeTextBox.Text);
                         if (IsTimeOverlap(clockStartTime, clockStopTime, interval))
                         {
                             try
@@ -233,41 +247,20 @@ namespace Planner
             AdjustNewPlannerCustomizationControls();
         }
 
-        private bool IsTimeFormatCorrect(string timeExpression, out ClockTime clockTime)
+        private bool IsTimeFormatCorrect(string timeExpression)
         {
             if (timeExpression.Length == 5)
             {
                 if (timeExpression[2] == ':')
-                {   //walidacja na liczby w Substring(0, 2) i Substring(3, 2)?
+                {
                     int hourExpression = Convert.ToInt32(timeExpression.Substring(0, 2));
                     int minuteExpression = Convert.ToInt32(timeExpression.Substring(3, 2));
                     if (hourExpression >= 0 && hourExpression <= 23 && minuteExpression >= 0 && minuteExpression <= 59)
                     {
-                        clockTime = new ClockTime(hourExpression, minuteExpression);
                         return true;
                     }
                 }
             }
-            clockTime = null;
-            return false;
-        }
-
-        private bool IsTimeFormatCorrect(string intervalExpression, out ClockTimeInterval interval)
-        {
-            if (intervalExpression.Length == 5)
-            {
-                if (intervalExpression[2] == ':')
-                {   //walidacja na liczby w Substring(0, 2) i Substring(3, 2)?
-                    int hourExpression = Convert.ToInt32(intervalExpression.Substring(0, 2));
-                    int minuteExpression = Convert.ToInt32(intervalExpression.Substring(3, 2));
-                    if (hourExpression >= 0 && minuteExpression >= 0 && minuteExpression <= 59)
-                    {
-                        interval = new ClockTimeInterval(hourExpression, minuteExpression);
-                        return true;
-                    }
-                }
-            }
-            interval = null;
             return false;
         }
 
@@ -330,8 +323,6 @@ namespace Planner
 
         #endregion
 
-        #region Sample
-
         private void LogOutButton_Click(object sender, RoutedEventArgs e)
         {
             LogInWindow logInWindow = new LogInWindow();
@@ -366,7 +357,5 @@ namespace Planner
                 }
             }
         }
-
-        #endregion
     }
 }
