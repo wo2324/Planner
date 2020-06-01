@@ -205,9 +205,16 @@ namespace Planner
                     {
                         if (IsTimeOverlap(clockStartTime, clockStopTime, interval))
                         {
-                            CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, FirstDayComboBox.Text, GetListBoxSelectedItems(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
-                            AdjustPlannerListBox();
-                            OpenPlanner(this.Participant.Id, NewPlannerNameTextBox.Text);
+                            try
+                            {
+                                CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), GetListBoxSelectedItems(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
+                                AdjustPlannerListBox();
+                                OpenPlanner(this.Participant.Id, NewPlannerNameTextBox.Text);
+                            }
+                            catch (Exception exception)
+                            {
+                                MessageBox.Show(exception.Message);
+                            }
                         }
                         else
                         {
@@ -291,86 +298,41 @@ namespace Planner
             }
         }
 
-        private List<string> GetListBoxSelectedItems(ListBox listBox)
+        private List<DayOfWeek> GetListBoxSelectedItems(ListBox listBox)
         {
-            List<string> ListBoxSelectedItems = new List<string>();
-            foreach (string item in listBox.SelectedItems)
+            List<DayOfWeek> ListBoxSelectedItems = new List<DayOfWeek>();
+            foreach (var item in listBox.SelectedItems)
             {
-                ListBoxSelectedItems.Add(item);
+                ListBoxSelectedItems.Add((DayOfWeek)item);
             }
             return ListBoxSelectedItems;
         }
 
-        private void CreatePlanner(int participantId, string plannerName, string firstDay, List<string> IncludedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
+        private void CreatePlanner(int participantId, string plannerName, DayOfWeek firstDay, List<DayOfWeek> includedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
         {
-            DbAdapter.PlannerAdd(participantId, plannerName, null, firstDay, startHour, stopHour, timeSpan);
-            DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName); //Uzyskanie plannera
-            Utils.Planner planner = new Utils.Planner(Int32.Parse(dataTable.Rows[0]["Planner_Id"].ToString()),
-                dataTable.Rows[0]["Planner_Name"].ToString(),
-                dataTable.Rows[0]["Planner_FirstDay"].ToString(),
-                dataTable.Rows[0]["Planner_StartHour"].ToString(), dataTable.Rows[0]["Planner_StopHour"].ToString(),
-                dataTable.Rows[0]["Planner_TimeSpan"].ToString());
-            InitializeTask(planner, IncludedDays);
+            Utils.Planner planner = new Utils.Planner(plannerName, firstDay, startHour, stopHour, timeSpan);
+            DataTable plannerTasks = GeneratePlannerTasks(planner, includedDays);
+            CreatePlanner(participantId, planner, plannerTasks);
         }
 
-
-
-        private void InitializeTask(Utils.Planner planner, List<string> days)
+        private DataTable GeneratePlannerTasks(Utils.Planner planner, List<DayOfWeek> includedDays)
         {
-            DataTable task = new DataTable("EmptyPlanner");
-            task.Columns.Add("tvp_Task_Name", typeof(string));
-            task.Columns.Add("tvp_Task_Description", typeof(string));
-            task.Columns.Add("tvp_Task_Day", typeof(string));
-            task.Columns.Add("tvp_Task_Time", typeof(string));
-            task.Columns.Add("tvp_Task_Color", typeof(string));
-
-            DayOfWeek MyDayOfWeek = (DayOfWeek)0; //TUTAJ
-            string time;
-            int hour;
-            int minute;
-
-            int startHour = Int32.Parse(planner.StartHour.Substring(0, 2));
-            int startMinute = Int32.Parse(planner.StartHour.Substring(3, 2));
-
-            int stopHour = Int32.Parse(planner.StopHour.Substring(0, 2));
-            int stopMinute = Int32.Parse(planner.StopHour.Substring(3, 2));
-
-            int timeSpan = Int32.Parse(planner.TimeSpan.Substring(3, 2));
-
-            hour = startHour;
-            minute = startMinute;
-
-            //while ((int)MyDayOfWeek < 7)
-            int counter = 0;
-            while (days.Count > counter)
+            DataTable plannerTasks = DbAdapter.GetPlannerTasksDataTable();
+            ClockTime clockTime = planner.StopTime;
+            foreach (var day in includedDays)
             {
-                while (!(hour == stopHour && minute == stopMinute))
+                while (clockTime != planner.StartTime)
                 {
-                    time = $"{hour.ToString("D2")}:{minute.ToString("D2")}";
-                    task.Rows.Add(null, null, days[counter], time, null);
-                    if (minute < 60 - timeSpan)
-                    {
-                        minute += timeSpan;
-                    }
-                    else
-                    {
-                        if (hour != 23)
-                        {
-                            hour++;
-                        }
-                        else
-                        {
-                            hour = 0;
-                        }
-                        minute = 0;
-                    }
+                    plannerTasks.Rows.Add(null, null, day, clockTime.ToString(), null);
+                    clockTime.AddInterval(planner.Interval);
                 }
-                hour = startHour;
-                minute = startMinute;
-                counter++;
             }
+            return plannerTasks;
+        }
 
-            DbAdapter.TaskAdd(planner.PlannerId, task);
+        private void CreatePlanner(int participantId, Utils.Planner planner, DataTable plannerTasks)
+        {
+            DbAdapter.CreatePlanner(participantId, planner.PlannerName, planner.FirstDayX, planner.StartTime, planner.StopTime, planner.Interval, plannerTasks);
         }
 
         #endregion

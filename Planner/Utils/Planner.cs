@@ -17,6 +17,11 @@ namespace Planner.Utils
         public string StopHour { get; set; }
         public string TimeSpan { get; set; }
 
+        public DayOfWeek FirstDayX { get; set; }
+        public ClockTime StartTime { get; }
+        public ClockTime StopTime { get; }
+        public ClockTimeInterval Interval { get; }
+
         public Planner(int PlannerId, string PlannerName, string FirstDay, string StartHour, string StopHour, string TimeSpan)
         {
             this.PlannerId = PlannerId;
@@ -27,13 +32,13 @@ namespace Planner.Utils
             this.TimeSpan = TimeSpan;
         }
 
-        public Planner(string PlannerName, string FirstDay, string StartHour, string StopHour, string TimeSpan)
+        public Planner(string PlannerName, DayOfWeek FirstDay, ClockTime StartHour, ClockTime StopHour, ClockTimeInterval TimeSpan)
         {
             this.PlannerName = PlannerName;
-            this.FirstDay = FirstDay;
-            this.StartHour = StartHour;
-            this.StopHour = StopHour;
-            this.TimeSpan = TimeSpan;
+            this.FirstDayX = FirstDay;
+            this.StartTime = StartHour;
+            this.StopTime = StopHour;
+            this.Interval = TimeSpan;
         }
 
         //pozyskanie Task

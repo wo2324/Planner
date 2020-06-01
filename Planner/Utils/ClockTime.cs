@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Planner.Utils
 {
-    class ClockTime
+    public class ClockTime
     {
         public int Hour { get; set; }
         public int Minute { get; set; }
@@ -47,14 +47,14 @@ namespace Planner.Utils
         }
     }
 
-    class NegativeIntervalException : ApplicationException
+    public class NegativeIntervalException : ApplicationException
     {
         public NegativeIntervalException()
         {
         }
     }
 
-    class ClockTimeInterval : ClockTime
+    public class ClockTimeInterval : ClockTime
     {
         public ClockTimeInterval(int hour, int minute) : base(hour, minute)
         {
