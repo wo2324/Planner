@@ -247,7 +247,7 @@ namespace Planner.Utils
             }
         }
 
-        public static void PlannerAdd(int participantId, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan) //Do poprawy!
+        public static void CreatePlanner(int participantId, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan) //Do poprawy!
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
