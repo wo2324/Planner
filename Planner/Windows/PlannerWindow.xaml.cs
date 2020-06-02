@@ -23,9 +23,15 @@ namespace Planner
         {
             this.Planner = Planner;
             InitializeComponent();
+            AdjustControls();
+        }
+
+        private void AdjustControls()
+        {
             Planner.AssignTask();
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-            AdjustControls();
+            AdjustAssignedTasksListBox();
+            //AdjustPlannerDetailsListBox();
         }
 
         private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)  //Do poprawy!
@@ -71,12 +77,6 @@ namespace Planner
                     minute = 0;
                 }
             }
-        }
-
-        private void AdjustControls()
-        {
-            AdjustAssignedTasksListBox();
-            //AdjustPlannerDetailsListBox();
         }
 
         private void AdjustAssignedTasksListBox()
