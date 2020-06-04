@@ -2,14 +2,13 @@
 {
     public class Participant
     {
-        public int Id { get; }
         public string Name { get; }
         public string Password { get; set; }
 
-        public Participant(int ParticipantId, string ParticipantName)
+        public Participant(string participantName, string participantPassword)
         {
-            this.Id = ParticipantId;
-            this.Name = ParticipantName;
+            this.Name = participantName;
+            this.Password = participantPassword;
         }
     }
 }

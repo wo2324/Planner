@@ -26,11 +26,10 @@ namespace Planner
             {
                 try
                 {
-                    int participantId = DbAdapter.ParticipantGet(login, password);
-                    if (participantId != 0)
+                    bool checkSentence = DbAdapter.ParticipantCheck(login, password);
+                    if (checkSentence)
                     {
-                        Participant participant = new Participant(participantId, login);
-                        participant.Password = password;
+                        Participant participant = new Participant(login, password);
                         PanelWindow panelWindow = new PanelWindow(participant);
                         panelWindow.Show();
                         this.Close();

@@ -11,7 +11,7 @@ namespace Planner.Utils
 {
     public static class DbAdapter
     {
-        public static int ParticipantGet(string login, string password)
+        public static bool ParticipantCheck(string login, string password)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -21,7 +21,7 @@ namespace Planner.Utils
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_ParticipantGet";
+                    sqlCommand.CommandText = "mc.usp_ParticipantCheck";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", login));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Password", password));
                     SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
@@ -34,15 +34,15 @@ namespace Planner.Utils
                     DataSet dataSet = new DataSet();
                     sqlDataAdapter.Fill(dataSet);
 
-                    if (dataSet.Tables[0].Rows.Count != 0)
+                    return Convert.ToBoolean(dataSet.Tables[0].Rows[0]["CheckSentence"]);
                     {
                         return Convert.ToInt32(dataSet.Tables[0].Rows[0]["Participant_Id"]);
-                    }
+                }
                     else
                     {
                         return 0;
-                    }
-                }
+            }
+        }
             }
         }
 
