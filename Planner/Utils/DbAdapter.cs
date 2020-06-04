@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -98,7 +98,7 @@ namespace Planner.Utils
             }
         }
 
-        public static DataTable GetPlannersNames(int participantId)
+        public static DataTable GetPlanners(int participantId)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -125,14 +125,24 @@ namespace Planner.Utils
             }
         }
 
-        public static List<string> ExtractPlannersNamesList(DataTable dataTable)
+        public static List<string> ExtractPlannersList(DataTable dataTable)
         {
-            List<string> PlannersNames = new List<string>();
+            List<string> Planners = new List<string>();
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                PlannersNames.Add(dataRow["Planner_Name"].ToString());
+                Planners.Add(dataRow["Planner_Name"].ToString());
             }
-            return PlannersNames;
+            return Planners;
+        }
+
+        public static List<string> ExtractTasksTypesList(DataTable dataTable)
+        {
+            List<string> TasksTypes = new List<string>();
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                TasksTypes.Add(dataRow["TaskType_Name"].ToString());
+            }
+            return TasksTypes;
         }
 
         public static int GetPlannerId(int participantId, string plannerName)
@@ -219,7 +229,7 @@ namespace Planner.Utils
             }
         }
 
-        public static DataTable GetTaskType(int plannerId)
+        public static DataTable GetTasksTypes(int plannerId)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))

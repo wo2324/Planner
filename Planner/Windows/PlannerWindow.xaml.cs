@@ -26,14 +26,40 @@ namespace Planner
             AdjustControls();
         }
 
+        #region Controls adjustment
+
         private void AdjustControls()
+        {
+            AdjustPlannerDataGrid();
+            AdjustAssignedTasksListBox();
+            AdjustPlannerDetailsListBox();
+        }
+
+        private void AdjustPlannerDataGrid()
         {
             Planner.AssignTask();
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-            AdjustAssignedTasksListBox();
-            //AdjustPlannerDetailsListBox();
         }
 
+        private void AdjustAssignedTasksListBox()
+        {
+            List<string> TasksTypes = DbAdapter.ExtractTasksTypesList(DbAdapter.GetTasksTypes(this.Planner.PlannerId));
+            if (TasksTypes.Count == 0)
+            {
+                AssignedTasksListBox.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                AssignedTasksListBox.ItemsSource = TasksTypes;
+            }
+        }
+
+        private void AdjustPlannerDetailsListBox()
+        {
+
+        }
+
+        //jaka kolejność?
         private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)  //Do poprawy!
         {
             e.Row.Header = (e.Row.GetIndex()).ToString() + "Test";
@@ -53,7 +79,7 @@ namespace Planner
 
             while (!(hour == stopHour && minute == stopMinute))
             {
-                rowName = $"{hour}:{minute}";   
+                rowName = $"{hour}:{minute}";
                 //e.Row.Header = $"{e.Row.GetIndex() + startHour == 24 ? 0 : 1}:{e.Row.GetIndex() * startMinute}";
                 e.Row.Header = ((e.Row.GetIndex() / (60 / timeSpan)) + startHour >= 24 ? (e.Row.GetIndex() / (60 / timeSpan)) + startHour - 24 : (e.Row.GetIndex() / (60 / timeSpan)) + startHour).ToString("D2") +
                     ":" +
@@ -79,31 +105,32 @@ namespace Planner
             }
         }
 
-        private void AdjustAssignedTasksListBox()
-        {
-            AssignedTasksListBox.ItemsSource = GetTaskList(DbAdapter.GetTaskType(this.Planner.PlannerId));
-        }
+        #endregion
 
-        private List<string> GetTaskList(DataTable dataTable)
+        private void Stats()
         {
-            List<string> task = new List<string>();
-            if (dataTable == null)
-            {
-                AssignedTasksListBox.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                foreach (DataRow dataRow in dataTable.Rows)
-                {
-                    task.Add(dataRow["TaskType_Name"].ToString());
-                }
-            }
-            return task;
+
+            ////pozyskanie wszystkich zadań
+            //List<string> tasksType = ExtractTasksTypesList(DbAdapter.GetTasksTypes(this.Planner.PlannerId));
+
+            ////przeszukanie tabeli w poszukiwaniu komórek z rozpatrywanym zadaniem
+            //foreach (var item in tasksType)
+            //{
+            //    //foreach (var row in this.Planner.Task.Rows)
+            //    //{
+            //    //    string s = row;
+            //    //}
+            //    // this.PlannerDataGrid
+            //    //przeliczenie ilości komórek na czas
+            //    //dodanie elementu do listy
+            //}
+
+
         }
 
         public void PaintPlannerTasks()
         {
-            DataTable dataTable = DbAdapter.GetTaskType(this.Planner.PlannerId);
+            DataTable dataTable = DbAdapter.GetTasksTypes(this.Planner.PlannerId);
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
@@ -183,7 +210,8 @@ namespace Planner
             return child;
         }
 
-        //Liczenie czasu
+        #region Buttons
+
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
         {
             try
@@ -315,25 +343,7 @@ namespace Planner
             Stats();
         }
 
-        private void Stats()
-        {
+        #endregion
 
-            //pozyskanie wszystkich zadań
-            List<string> tasksType = GetTaskList(DbAdapter.GetTaskType(this.Planner.PlannerId));
-
-            //przeszukanie tabeli w poszukiwaniu komórek z rozpatrywanym zadaniem
-            foreach (var item in tasksType)
-            {
-                //foreach (var row in this.Planner.Task.Rows)
-                //{
-                //    string s = row;
-                //}
-                // this.PlannerDataGrid
-                //przeliczenie ilości komórek na czas
-                //dodanie elementu do listy
-            }
-
-
-        }
     }
 }

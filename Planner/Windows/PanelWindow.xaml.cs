@@ -35,14 +35,14 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            List<string> PlannerList = DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id));
-            if (PlannerList.Count == 0)
+            List<string> Planners = DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Id));
+            if (Planners.Count == 0)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
             }
             else
             {
-                PlannerListBox.ItemsSource = PlannerList;
+                PlannerListBox.ItemsSource = Planners;
             }
         }
 
@@ -162,7 +162,7 @@ namespace Planner
             int counter = 1;
             do
             {
-                if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id)).Contains(plannerCopyName))
+                if (DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Id)).Contains(plannerCopyName))
                 {
                     plannerCopyName = $"{plannerName} - copy ({++counter})";
                 }
@@ -203,7 +203,7 @@ namespace Planner
         {
             if (NewPlannerNameTextBox.Text.Length == 0 || NewPlannerStartTimeTextBox.Text.Length == 0 || NewPlannerStopTimeTextBox.Text.Length == 0 || NewPlannerIntervalTextBox.Text.Length == 0)
             {
-                if (DbAdapter.ExtractPlannersNamesList(DbAdapter.GetPlannersNames(this.Participant.Id)).Contains(NewPlannerNameTextBox.Text))
+                if (DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Id)).Contains(NewPlannerNameTextBox.Text))
                 {
                     if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerIntervalTextBox.Text))
                     {
@@ -297,13 +297,13 @@ namespace Planner
         private void CreatePlanner(int participantId, string plannerName, DayOfWeek firstDay, List<DayOfWeek> includedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
         {
             Utils.Planner planner = new Utils.Planner(plannerName, firstDay, startHour, stopHour, timeSpan);
-            DataTable plannerTasks = GeneratePlannerTasks(planner, includedDays);
-            CreatePlanner(participantId, planner, plannerTasks);
+            DataTable Tasks = GenerateTasks(planner, includedDays);
+            CreatePlanner(participantId, planner, Tasks);
         }
 
-        private DataTable GeneratePlannerTasks(Utils.Planner planner, List<DayOfWeek> includedDays)
+        private DataTable GenerateTasks(Utils.Planner planner, List<DayOfWeek> includedDays)
         {
-            DataTable plannerTasks = DbAdapter.GetPlannerTasksDataTable();
+            DataTable plannerTasks = DbAdapter.GetTasksDataTable();
             ClockTime clockTime = planner.StopTime;
             foreach (var day in includedDays)
             {
