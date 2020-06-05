@@ -11,11 +11,44 @@ namespace Planner.Utils
         public int Hour { get; set; }
         public int Minute { get; set; }
 
+        public ClockTime()
+        {
+
+        }
+
         public ClockTime(int hour, int minute)
         {
             this.Hour = hour;
             this.Minute = minute;
         }
+
+        #region Operators overloading 
+
+        public static bool operator ==(ClockTime clockTimeModel, ClockTime clockTimeSample)
+        {
+            if (clockTimeModel.Hour == clockTimeSample.Hour && clockTimeModel.Minute == clockTimeSample.Minute)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool operator !=(ClockTime clockTimeModel, ClockTime clockTimeSample)
+        {
+            if (clockTimeModel.Hour != clockTimeSample.Hour || clockTimeModel.Minute != clockTimeSample.Minute)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        #endregion 
 
         public override string ToString()
         {
@@ -30,6 +63,10 @@ namespace Planner.Utils
                 this.Hour++;
             }
             this.Minute = (this.Minute + interval.Minute) % 60;
+            if (this.Hour == 24)
+            {
+                this.Hour = 0;
+            }
         }
 
         public void SubtractInterval(ClockTimeInterval interval)
@@ -39,7 +76,11 @@ namespace Planner.Utils
                 throw new NegativeIntervalException();
             }
             this.Hour = this.Hour - interval.Hour;
-            if (this.Minute - interval.Minute < 0)
+            if (this.Minute - interval.Minute >= 0)
+            {
+                this.Minute = this.Minute - interval.Minute;
+            }
+            else
             {
                 this.Minute = (this.Minute - interval.Minute) + 60;
                 this.Hour--;
@@ -63,7 +104,7 @@ namespace Planner.Utils
         public static ClockTimeInterval GetInterval(ClockTime clockStartTime, ClockTime clockStopTime)
         {
             int hour;
-            if (clockStopTime.Hour - clockStartTime.Hour > 0)
+            if (clockStopTime.Hour - clockStartTime.Hour >= 0)
             {
                 hour = clockStopTime.Hour - clockStartTime.Hour;
             }
@@ -73,7 +114,7 @@ namespace Planner.Utils
             }
 
             int minute;
-            if (clockStopTime.Minute - clockStartTime.Minute > 0)
+            if (clockStopTime.Minute - clockStartTime.Minute >= 0)
             {
                 minute = clockStopTime.Minute - clockStartTime.Minute;
             }

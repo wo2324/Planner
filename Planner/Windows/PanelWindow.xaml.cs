@@ -201,15 +201,15 @@ namespace Planner
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (NewPlannerNameTextBox.Text.Length == 0 || NewPlannerStartTimeTextBox.Text.Length == 0 || NewPlannerStopTimeTextBox.Text.Length == 0 || NewPlannerIntervalTextBox.Text.Length == 0)
+            if (NewPlannerNameTextBox.Text.Length != 0 && NewPlannerStartTimeTextBox.Text.Length != 0 && NewPlannerStopTimeTextBox.Text.Length != 0 && NewPlannerIntervalTextBox.Text.Length != 0)
             {
-                if (DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Name)).Contains(NewPlannerNameTextBox.Text))
+                if (!DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Name)).Contains(NewPlannerNameTextBox.Text))
                 {
                     if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerIntervalTextBox.Text))
                     {
                         ClockTime clockStartTime = ExtractClockTime(NewPlannerStartTimeTextBox.Text);
                         ClockTime clockStopTime = ExtractClockTime(NewPlannerStopTimeTextBox.Text);
-                        ClockTimeInterval interval = ExtractClockTimeInterval(NewPlannerStopTimeTextBox.Text);
+                        ClockTimeInterval interval = ExtractClockTimeInterval(NewPlannerIntervalTextBox.Text);
                         if (IsTimeOverlap(clockStartTime, clockStopTime, interval))
                         {
                             try
@@ -304,12 +304,14 @@ namespace Planner
         private DataTable GenerateTasks(Utils.Planner planner, List<DayOfWeek> includedDays)
         {
             DataTable plannerTasks = DbAdapter.GetTasksDataTable();
-            ClockTime clockTime = planner.StopTime;
+            ClockTime clockTime = new ClockTime();
             foreach (var day in includedDays)
             {
-                while (clockTime != planner.StartTime)
+                clockTime.Hour = planner.StartTime.Hour;
+                clockTime.Minute = planner.StartTime.Minute;
+                while (clockTime != planner.StopTime)
                 {
-                    plannerTasks.Rows.Add(null, null, day, clockTime.ToString(), null);
+                    plannerTasks.Rows.Add(day, clockTime.ToString(), null);
                     clockTime.AddInterval(planner.Interval);
                 }
             }
