@@ -35,7 +35,7 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            List<string> Planners = DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Id));
+            List<string> Planners = DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Name));
             if (Planners.Count == 0)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
@@ -107,22 +107,22 @@ namespace Planner
             {
                 if (PlannerListBox.SelectedItem != null)
                 {
-                    OpenPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString());
+                    OpenPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
                     PlannerListBox.SelectedItem = null;
                 }
             }
         }
 
-        private void OpenPlanner(int participantId, string plannerName)
+        private void OpenPlanner(string participantName, string plannerName)
         {
-            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(participantId, plannerName));
+            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(participantName, plannerName));
             plannerWindow.Show();
             plannerWindow.PaintPlannerTasks();
         }
 
-        private Utils.Planner GetPlanner(int participantId, string plannerName)
+        private Utils.Planner GetPlanner(string participantName, string plannerName)
         {
-            DataTable dataTable = DbAdapter.GetPlanner(participantId, plannerName);
+            DataTable dataTable = DbAdapter.GetPlanner(participantName, plannerName);
             DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dataTable.Rows[0]["Planner_FirstDay"].ToString());
             ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartHour"].ToString());
             ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopHour"].ToString());
@@ -152,7 +152,7 @@ namespace Planner
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
             string plannerCopyName = GetPlannerCopyName(PlannerListBox.SelectedItem.ToString());
-            CopyPlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
+            CopyPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
             AdjustPlannerListBox();
         }
 
@@ -162,7 +162,7 @@ namespace Planner
             int counter = 1;
             do
             {
-                if (DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Id)).Contains(plannerCopyName))
+                if (DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerCopyName))
                 {
                     plannerCopyName = $"{plannerName} - copy ({++counter})";
                 }
@@ -173,9 +173,9 @@ namespace Planner
             } while (true);
         }
 
-        private void CopyPlanner(int participantId, string plannerName, string plannerCopyName)
+        private void CopyPlanner(string participantName, string plannerName, string plannerCopyName)
         {
-            DbAdapter.CopyPlanner(participantId, plannerName, plannerCopyName);
+            DbAdapter.CopyPlanner(participantName, plannerName, plannerCopyName);
         }
 
         private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
@@ -186,13 +186,13 @@ namespace Planner
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
-            DeletePlanner(this.Participant.Id, PlannerListBox.SelectedItem.ToString());
+            DeletePlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
             AdjustPlannerListBox();
         }
 
-        private void DeletePlanner(int participantId, string plannerName)
+        private void DeletePlanner(string participantName, string plannerName)
         {
-            DbAdapter.DeletePlanner(participantId, plannerName);
+            DbAdapter.DeletePlanner(participantName, plannerName);
         }
 
         #endregion
@@ -203,7 +203,7 @@ namespace Planner
         {
             if (NewPlannerNameTextBox.Text.Length == 0 || NewPlannerStartTimeTextBox.Text.Length == 0 || NewPlannerStopTimeTextBox.Text.Length == 0 || NewPlannerIntervalTextBox.Text.Length == 0)
             {
-                if (DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Id)).Contains(NewPlannerNameTextBox.Text))
+                if (DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Name)).Contains(NewPlannerNameTextBox.Text))
                 {
                     if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerIntervalTextBox.Text))
                     {
@@ -214,9 +214,9 @@ namespace Planner
                         {
                             try
                             {
-                                CreatePlanner(this.Participant.Id, NewPlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), GetListBoxSelectedItems(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
+                                CreatePlanner(this.Participant.Name, NewPlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), GetListBoxSelectedItems(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
                                 AdjustPlannerListBox();
-                                OpenPlanner(this.Participant.Id, NewPlannerNameTextBox.Text);
+                                OpenPlanner(this.Participant.Name, NewPlannerNameTextBox.Text);
                             }
                             catch (Exception exception)
                             {
@@ -294,11 +294,11 @@ namespace Planner
             return ListBoxSelectedItems;
         }
 
-        private void CreatePlanner(int participantId, string plannerName, DayOfWeek firstDay, List<DayOfWeek> includedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
+        private void CreatePlanner(string participantName, string plannerName, DayOfWeek firstDay, List<DayOfWeek> includedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
         {
             Utils.Planner planner = new Utils.Planner(plannerName, firstDay, startHour, stopHour, timeSpan);
             DataTable Tasks = GenerateTasks(planner, includedDays);
-            CreatePlanner(participantId, planner, Tasks);
+            CreatePlanner(participantName, planner, Tasks);
         }
 
         private DataTable GenerateTasks(Utils.Planner planner, List<DayOfWeek> includedDays)
@@ -316,9 +316,9 @@ namespace Planner
             return plannerTasks;
         }
 
-        private void CreatePlanner(int participantId, Utils.Planner planner, DataTable plannerTasks)
+        private void CreatePlanner(string participantName, Utils.Planner planner, DataTable plannerTasks)
         {
-            DbAdapter.CreatePlanner(participantId, planner.PlannerName, planner.FirstDayX.ToString(), planner.StartTime.ToString(), planner.StopTime.ToString(), planner.Interval.ToString(), plannerTasks);
+            DbAdapter.CreatePlanner(participantName, planner.PlannerName, planner.FirstDayX.ToString(), planner.StartTime.ToString(), planner.StopTime.ToString(), planner.Interval.ToString(), plannerTasks);
         }
 
         #endregion

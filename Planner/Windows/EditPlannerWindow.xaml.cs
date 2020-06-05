@@ -30,23 +30,23 @@ namespace Planner.Windows
 
         private void RenamePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            RenamePlanner(this.Participant.Id, this.PlannerName, PlannerNewNameTextBox.Text, out bool rename);
+            RenamePlanner(this.Participant.Name, this.PlannerName, PlannerNewNameTextBox.Text, out bool rename);
             if (rename)
             {
                 this.AdjustPlannerListBox();
             }
         }
 
-        private void RenamePlanner(int participantId, string plannerName, string plannerNewName, out bool rename)
+        private void RenamePlanner(string participantName, string plannerName, string plannerNewName, out bool rename)
         {
             rename = false;
             if (plannerNewName.Length != 0)
             {
                 if (plannerName != plannerNewName)
                 {
-                    if (!DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(participantId)).Contains(plannerNewName))
+                    if (!DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(participantName)).Contains(plannerNewName))
                     {
-                        DbAdapter.RenamePlanner(participantId, plannerName, plannerNewName);
+                        DbAdapter.RenamePlanner(participantName, plannerName, plannerNewName);
                         rename = true;
                         AdjustControls(plannerNewName);
                         PlannerNewNameTextBox.Clear();

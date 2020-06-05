@@ -38,7 +38,7 @@ namespace Planner
                                 MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Change password confirmation", System.Windows.MessageBoxButton.YesNo);
                                 if (messageBoxResult == MessageBoxResult.Yes)
                                 {
-                                    DbAdapter.EditPassword(this.Participant.Id, newPassword);
+                                    DbAdapter.EditPassword(this.Participant.Name, newPassword);
                                     this.Participant.Password = newPassword;
                                     MessageBox.Show("Password has been edit");
                                     ClearPasswordBoxes();
@@ -102,7 +102,7 @@ namespace Planner
                         MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete confirmation", System.Windows.MessageBoxButton.YesNo);
                         if (messageBoxResult == MessageBoxResult.Yes)
                         {
-                            DbAdapter.DeleteAccount(this.Participant.Id);
+                            DbAdapter.DeleteAccount(this.Participant.Name);
                             LogInWindow logInWindow = new LogInWindow();
                             logInWindow.Show();
                             CloseWindows();

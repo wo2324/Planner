@@ -59,10 +59,10 @@ namespace Planner
 
         }
 
-        //jaka kolejność?
-        private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)  //Do poprawy!
+        //!
+        private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            e.Row.Header = (e.Row.GetIndex()).ToString() + "Test";
+            e.Row.Header = (e.Row.GetIndex()).ToString() + "Test";//?
 
             int startHour = Int32.Parse(this.Planner.StartHour.Substring(0, 2));
             int startMinute = Int32.Parse(this.Planner.StartHour.Substring(3, 2));
