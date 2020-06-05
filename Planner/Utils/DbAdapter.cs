@@ -164,9 +164,68 @@ namespace Planner.Utils
             }
         }
 
+        public static DataTable GetPlanner(string participantName, string plannerName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "plann.usp_PlannerGet";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+
+                    if (sqlConnection.State == ConnectionState.Closed)
+                    {
+                        sqlConnection.Open();
+                    }
+
+                    DataSet dataSet = new DataSet();
+                    sqlDataAdapter.Fill(dataSet);
+
+                    return dataSet.Tables[0];
+                }
+            }
+        }
+
         #endregion
 
+        #region Task handle
 
+        public static DataTable GetTask(string participantName, string plannerName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "plann.usp_TaskGet";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+
+                    if (sqlConnection.State == ConnectionState.Closed)
+                    {
+                        sqlConnection.Open();
+                    }
+
+                    DataSet dataSet = new DataSet();
+                    sqlDataAdapter.Fill(dataSet);
+
+                    return dataSet.Tables[0];
+                }
+            }
+        }
+
+        #endregion
 
         public static List<string> ExtractTasksTypesList(DataTable dataTable)
         {
@@ -206,63 +265,7 @@ namespace Planner.Utils
             }
         }
 
-        public static DataTable GetPlannerTask(int plannerId)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_PlannerTaskGet";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Task_Planner_Id", plannerId));
-                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-
-                    if (sqlConnection.State == ConnectionState.Closed)
-                    {
-                        sqlConnection.Open();
-                    }
-
-                    DataSet dataSet = new DataSet();
-                    sqlDataAdapter.Fill(dataSet);
-
-                    return dataSet.Tables[0];
-                }
-            }
-        }
-
-        public static DataTable GetPlanner(string participantName, string plannerName)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_WholePlannerGet";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
-
-                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-
-                    if (sqlConnection.State == ConnectionState.Closed)
-                    {
-                        sqlConnection.Open();
-                    }
-
-                    DataSet dataSet = new DataSet();
-                    sqlDataAdapter.Fill(dataSet);
-
-                    return dataSet.Tables[0];
-                }
-            }
-        }
-
-        public static DataTable GetTasksTypes(int plannerId)
+        public static DataTable GetTasksTypes(string participantName, string plannerName)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -273,7 +276,7 @@ namespace Planner.Utils
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.CommandText = "mc.usp_TaskTypeGet";
-                    sqlCommand.Parameters.Add(new SqlParameter("@v_TaskType_Planner_Id", plannerId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@v_TaskType_Planner_Id", plannerName));
 
                     SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
 
@@ -313,8 +316,6 @@ namespace Planner.Utils
             }
         }
 
-        
-
         public static void TaskAdd(int plannerId, DataTable task)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
@@ -333,8 +334,7 @@ namespace Planner.Utils
             }
         }
 
-        //
-        public static void EditTask(int plannerId, DataTable task)
+        public static void EditTask(string participantName, string plannerName, DataTable task)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -345,14 +345,14 @@ namespace Planner.Utils
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.CommandText = "mc.usp_TaskEdit";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Id", plannerId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Id", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_tvp_Task", task));
                     sqlCommand.ExecuteNonQuery();
                 }
             }
         }
 
-        public static void TaskTypeAdd(int plannerId, string taskTypeName, bool taskTypeTextVisibility, string color)
+        public static void TaskTypeAdd(string plannerName, string taskTypeName, bool taskTypeTextVisibility, string color)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -363,7 +363,7 @@ namespace Planner.Utils
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.CommandText = "mc.usp_TaskTypeAdd";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Id", plannerId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Id", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Description", ""));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeTextVisibility));
@@ -429,7 +429,5 @@ namespace Planner.Utils
                 }
             }
         }
-
-        
     }
 }

@@ -63,10 +63,16 @@ namespace Planner
             FirstDayComboBox.SelectedIndex = 0;
         }
 
-        private void ChangeWeekDaysOrder(List<DayOfWeek> WeekDays)
+        public static void ChangeWeekDaysOrder(List<DayOfWeek> WeekDays, DayOfWeek firstDay = DayOfWeek.Monday)
         {
-            WeekDays.Add(WeekDays[0]);
-            WeekDays.RemoveAt(0);
+            WeekDays.Sort();
+            int index = WeekDays.IndexOf(firstDay);
+            while (index > 0)
+            {
+                WeekDays.Add(WeekDays[index - 1]);
+                WeekDays.RemoveAt(index - 1);
+                index--;
+            }
         }
 
         private void AdjustIncludedDaysListBox()
@@ -115,7 +121,7 @@ namespace Planner
 
         private void OpenPlanner(string participantName, string plannerName)
         {
-            PlannerWindow plannerWindow = new PlannerWindow(GetPlanner(participantName, plannerName));
+            PlannerWindow plannerWindow = new PlannerWindow(this.Participant, GetPlanner(participantName, plannerName));
             plannerWindow.Show();
             plannerWindow.PaintPlannerTasks();
         }
@@ -124,10 +130,10 @@ namespace Planner
         {
             DataTable dataTable = DbAdapter.GetPlanner(participantName, plannerName);
             DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dataTable.Rows[0]["Planner_FirstDay"].ToString());
-            ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartHour"].ToString());
-            ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopHour"].ToString());
-            ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_TimeSpan"].ToString());
-            Utils.Planner planner = new Utils.Planner(plannerName, firstDay, startTime, stopTime, interval);
+            ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartTime"].ToString());
+            ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopTime"].ToString());
+            ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_Interval"].ToString());
+            Utils.Planner planner = new Utils.Planner(this.Participant, plannerName, firstDay, startTime, stopTime, interval);
             return planner;
         }
 
@@ -296,7 +302,7 @@ namespace Planner
 
         private void CreatePlanner(string participantName, string plannerName, DayOfWeek firstDay, List<DayOfWeek> includedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
         {
-            Utils.Planner planner = new Utils.Planner(plannerName, firstDay, startHour, stopHour, timeSpan);
+            Utils.Planner planner = new Utils.Planner(this.Participant, plannerName, firstDay, startHour, stopHour, timeSpan);
             DataTable Tasks = GenerateTasks(planner, includedDays);
             CreatePlanner(participantName, planner, Tasks);
         }
@@ -320,7 +326,7 @@ namespace Planner
 
         private void CreatePlanner(string participantName, Utils.Planner planner, DataTable plannerTasks)
         {
-            DbAdapter.CreatePlanner(participantName, planner.PlannerName, planner.FirstDayX.ToString(), planner.StartTime.ToString(), planner.StopTime.ToString(), planner.Interval.ToString(), plannerTasks);
+            DbAdapter.CreatePlanner(participantName, planner.Name, planner.FirstDay.ToString(), planner.StartTime.ToString(), planner.StopTime.ToString(), planner.Interval.ToString(), plannerTasks);
         }
 
         #endregion
