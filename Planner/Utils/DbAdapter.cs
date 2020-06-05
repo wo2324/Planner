@@ -11,6 +11,8 @@ namespace Planner.Utils
 {
     public static class DbAdapter
     {
+        #region Participant handle
+
         public static bool ParticipantCheck(string login, string password)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
@@ -38,6 +40,61 @@ namespace Planner.Utils
                 }
             }
         }
+
+        public static void ParticipantAdd(string login, string password)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "plann.usp_ParticipantAdd";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", login));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Password", password));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void EditPassword(string participantName, string newPassword)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "plann.usp_PasswordEdit";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_NewPassword", newPassword));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteAccount(string participantName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "plann.usp_ParticipantDelete";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        #endregion
 
         public static string ParticipantPasswordGet(string participantName)
         {
@@ -69,24 +126,6 @@ namespace Planner.Utils
                     {
                         return null;
                     }
-                }
-            }
-        }
-
-        public static void ParticipantAdd(string login, string password)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_ParticipantAdd";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", login));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Password", password));
-                    sqlCommand.ExecuteNonQuery();
                 }
             }
         }
@@ -350,42 +389,6 @@ namespace Planner.Utils
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeTextVisibility));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Color", color));
 
-                    sqlCommand.ExecuteNonQuery();
-                }
-            }
-        }
-        //
-
-        public static void EditPassword(string participantName, string newPassword)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_PasswordEdit";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_NewPassword", newPassword));
-                    sqlCommand.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public static void DeleteAccount(string participantName)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_ParticipantDelete";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantName));
                     sqlCommand.ExecuteNonQuery();
                 }
             }
