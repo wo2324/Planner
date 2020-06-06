@@ -158,25 +158,29 @@ namespace Planner
 
             #region columns definition
 
-            List<DayOfWeek> IncludedDays = new List<DayOfWeek>();
-            foreach (DataRow item in taskSample.Rows)
-            {
-                if (item["Task_Time"].ToString() == startTime.ToString())
-                {
-                    IncludedDays.Add((DayOfWeek)Enum.Parse(typeof(DayOfWeek), item["Task_Day"].ToString()));
-                }
-            }
+            List<string> IncludedDaysSample = (taskSample.AsEnumerable().Select(x => x["Task_Day"].ToString()).Distinct().ToList());
+            List<DayOfWeek> IncludedDays = IncludedDaysSample.ConvertAll(new Converter<string, DayOfWeek>(StringToDayOfWeek));
             ChangeWeekDaysOrder(IncludedDays, firstDay);
-            task.Rows.Add(IncludedDays.ToArray());
+            task.Columns.AddRange(IncludedDays.ConvertAll(new Converter<DayOfWeek, DataColumn>(DayOfWeekToDataColumn)).ToArray());
 
             #endregion
 
             #region table values definition
-            //wprowadziæ TaskType_Id do w odpowiednie komórki
+            //wprowadziæ TaskType_Id do w odpowiedniej komórki
 
             #endregion
 
             return task;
+        }
+
+        private DayOfWeek StringToDayOfWeek(string sample)
+        {
+            return (DayOfWeek)Enum.Parse(typeof(DayOfWeek), sample);
+        }
+
+        private DataColumn DayOfWeekToDataColumn(DayOfWeek sample)
+        {
+            return new DataColumn(sample.ToString());
         }
 
         #endregion
@@ -248,7 +252,7 @@ namespace Planner
                         {
                             try
                             {
-                                CreatePlanner(this.Participant.Name, NewPlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), GetListBoxSelectedItems(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
+                                CreatePlanner(this.Participant.Name, NewPlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), ExtractIncludedDays(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
                                 AdjustPlannerListBox();
                                 OpenPlanner(this.Participant.Name, NewPlannerNameTextBox.Text);
                             }
@@ -318,14 +322,14 @@ namespace Planner
             }
         }
 
-        private List<DayOfWeek> GetListBoxSelectedItems(ListBox listBox)
+        private List<DayOfWeek> ExtractIncludedDays(ListBox listBox)
         {
-            List<DayOfWeek> ListBoxSelectedItems = new List<DayOfWeek>();
+            List<DayOfWeek> IncludedDays = new List<DayOfWeek>();
             foreach (var item in listBox.SelectedItems)
             {
-                ListBoxSelectedItems.Add((DayOfWeek)item);
+                IncludedDays.Add((DayOfWeek)item);
             }
-            return ListBoxSelectedItems;
+            return IncludedDays;
         }
 
         private void CreatePlanner(string participantName, string plannerName, DayOfWeek firstDay, List<DayOfWeek> includedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
