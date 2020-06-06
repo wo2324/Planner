@@ -133,7 +133,7 @@ namespace Planner
             ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartTime"].ToString());
             ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopTime"].ToString());
             ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_Interval"].ToString());
-            DataTable task = ExtractTask(DbAdapter.GetTask(participantName, plannerName));
+            DataTable task = ExtractTask(firstDay, startTime, interval, DbAdapter.GetTask(participantName, plannerName));
             Utils.Planner planner = new Utils.Planner(this.Participant, plannerName, firstDay, startTime, stopTime, interval, task);
             return planner;
         }
@@ -152,9 +152,30 @@ namespace Planner
             return new ClockTimeInterval(hourExpression, minuteExpression);
         }
 
-        private DataTable ExtractTask(DataTable taskSample)
+        private DataTable ExtractTask(DayOfWeek firstDay, ClockTime startTime, ClockTimeInterval interval, DataTable taskSample)
         {
             DataTable task = new DataTable("Task");
+
+            #region columns definition
+
+            List<DayOfWeek> IncludedDays = new List<DayOfWeek>();
+            foreach (DataRow item in taskSample.Rows)
+            {
+                if (item["Task_Time"].ToString() == startTime.ToString())
+                {
+                    IncludedDays.Add((DayOfWeek)Enum.Parse(typeof(DayOfWeek), item["Task_Day"].ToString()));
+                }
+            }
+            ChangeWeekDaysOrder(IncludedDays, firstDay);
+            task.Rows.Add(IncludedDays.ToArray());
+
+            #endregion
+
+            #region table values definition
+            //wprowadziæ TaskType_Id do w odpowiednie komórki
+
+            #endregion
+
             return task;
         }
 
