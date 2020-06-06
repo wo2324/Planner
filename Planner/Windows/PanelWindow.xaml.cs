@@ -133,7 +133,7 @@ namespace Planner
             ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartTime"].ToString());
             ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopTime"].ToString());
             ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_Interval"].ToString());
-            DataTable task = ExtractTask(firstDay, startTime, interval, DbAdapter.GetTask(participantName, plannerName));
+            DataTable task = ExtractTask(firstDay, startTime, stopTime, interval, DbAdapter.GetTask(participantName, plannerName));
             Utils.Planner planner = new Utils.Planner(this.Participant, plannerName, firstDay, startTime, stopTime, interval, task);
             return planner;
         }
@@ -152,7 +152,7 @@ namespace Planner
             return new ClockTimeInterval(hourExpression, minuteExpression);
         }
 
-        private DataTable ExtractTask(DayOfWeek firstDay, ClockTime startTime, ClockTimeInterval interval, DataTable taskSample)
+        private DataTable ExtractTask(DayOfWeek firstDay, ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval, DataTable taskSample)
         {
             DataTable task = new DataTable("Task");
 
@@ -166,7 +166,27 @@ namespace Planner
             #endregion
 
             #region table values definition
-            //wprowadziæ TaskType_Id do w odpowiedniej komórki
+
+            List<object> DataRowEquivalent = new List<object>();
+            ClockTime clockTime = new ClockTime(startTime.Hour, startTime.Minute);
+            while (clockTime != stopTime)
+            {
+                DataRow[] dataRows = taskSample.Select($"Task_Time = '{clockTime.ToString()}'");
+                foreach (DataColumn dataColumn in task.Columns)
+                {
+                    foreach (DataRow dataRow in dataRows)
+                    {
+                        if (dataColumn.ColumnName == dataRow["Task_Day"].ToString())
+                        {
+                            DataRowEquivalent.Add(dataRow["Task_TaskType_Id"]);
+                            break;
+                        }
+                    }
+                    task.Rows.Add(DataRowEquivalent.ToArray());
+                    DataRowEquivalent.Clear();
+                }
+                clockTime.AddInterval(interval);
+            }
 
             #endregion
 
