@@ -60,7 +60,10 @@ namespace Planner
 
         }
 
-        //!
+        #endregion
+
+        #region headery tabelki
+
         private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = (e.Row.GetIndex()).ToString() + "Test";//?
@@ -106,28 +109,10 @@ namespace Planner
             }
         }
 
+
         #endregion
 
-        private void Stats()
-        {
-
-            ////pozyskanie wszystkich zadań
-            //List<string> tasksType = ExtractTasksTypesList(DbAdapter.GetTasksTypes(this.Planner.PlannerId));
-
-            ////przeszukanie tabeli w poszukiwaniu komórek z rozpatrywanym zadaniem
-            //foreach (var item in tasksType)
-            //{
-            //    //foreach (var row in this.Planner.Task.Rows)
-            //    //{
-            //    //    string s = row;
-            //    //}
-            //    // this.PlannerDataGrid
-            //    //przeliczenie ilości komórek na czas
-            //    //dodanie elementu do listy
-            //}
-
-
-        }
+        #region Malowanie komórek
 
         public void PaintPlannerTasks()
         {
@@ -210,6 +195,8 @@ namespace Planner
             }
             return child;
         }
+
+        #endregion
 
         #region Buttons
 
@@ -345,5 +332,26 @@ namespace Planner
         }
 
         #endregion
+
+        private void Stats()
+        {
+
+            ////pozyskanie wszystkich zadań
+            //List<string> tasksType = ExtractTasksTypesList(DbAdapter.GetTasksTypes(this.Planner.PlannerId));
+
+            ////przeszukanie tabeli w poszukiwaniu komórek z rozpatrywanym zadaniem
+            //foreach (var item in tasksType)
+            //{
+            //    //foreach (var row in this.Planner.Task.Rows)
+            //    //{
+            //    //    string s = row;
+            //    //}
+            //    // this.PlannerDataGrid
+            //    //przeliczenie ilości komórek na czas
+            //    //dodanie elementu do listy
+            //}
+
+
+        }
     }
 }
