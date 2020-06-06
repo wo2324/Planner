@@ -93,7 +93,7 @@ namespace Planner.Utils
 
         #endregion
 
-        #region Planner handle
+        #region Planner manage
 
         public static DataTable GetPlanners(string participantName)
         {
@@ -164,6 +164,10 @@ namespace Planner.Utils
             }
         }
 
+        #endregion
+
+        #region Planner handle
+
         public static DataTable GetPlanner(string participantName, string plannerName)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
@@ -192,10 +196,6 @@ namespace Planner.Utils
                 }
             }
         }
-
-        #endregion
-
-        #region Task handle
 
         public static DataTable GetTask(string participantName, string plannerName)
         {

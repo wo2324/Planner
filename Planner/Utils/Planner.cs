@@ -22,5 +22,16 @@ namespace Planner.Utils
             this.StopTime = StopHour;
             this.Interval = TimeSpan;
         }
+
+        public Planner(Participant Participant, string PlannerName, DayOfWeek FirstDay, ClockTime StartHour, ClockTime StopHour, ClockTimeInterval TimeSpan, DataTable Task)
+        {
+            this.Participant = Participant;
+            this.Name = PlannerName;
+            this.FirstDay = FirstDay;
+            this.StartTime = StartHour;
+            this.StopTime = StopHour;
+            this.Interval = TimeSpan;
+            this.Task = Task;
+        }
     }
 }

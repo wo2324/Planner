@@ -133,7 +133,8 @@ namespace Planner
             ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartTime"].ToString());
             ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopTime"].ToString());
             ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_Interval"].ToString());
-            Utils.Planner planner = new Utils.Planner(this.Participant, plannerName, firstDay, startTime, stopTime, interval);
+            DataTable task = ExtractTask(DbAdapter.GetTask(participantName, plannerName));
+            Utils.Planner planner = new Utils.Planner(this.Participant, plannerName, firstDay, startTime, stopTime, interval, task);
             return planner;
         }
 
@@ -149,6 +150,12 @@ namespace Planner
             int hourExpression = Convert.ToInt32(timeExpression.Substring(0, 2));
             int minuteExpression = Convert.ToInt32(timeExpression.Substring(3, 2));
             return new ClockTimeInterval(hourExpression, minuteExpression);
+        }
+
+        private DataTable ExtractTask(DataTable taskSample)
+        {
+            DataTable task = new DataTable("Task");
+            return task;
         }
 
         #endregion
