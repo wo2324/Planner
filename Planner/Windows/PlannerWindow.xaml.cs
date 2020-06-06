@@ -39,136 +39,7 @@ namespace Planner
 
         private void AdjustPlannerDataGrid()
         {
-            AdjustTask();
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-        }
-
-        public void AdjustTask()
-        {
-            DataTable taskSample = DbAdapter.GetTask(this.Participant.Name, this.Planner.Name);
-            DataTable task = new DataTable("Task");
-
-            List<DayOfWeek> IncludedDays = new List<DayOfWeek>();
-            foreach (DataRow item in taskSample.Rows)
-            {
-                if (item["Task_Time"].ToString() == this.Planner.StartTime.ToString())
-                {
-                    IncludedDays.Add((DayOfWeek)Enum.Parse(typeof(DayOfWeek), item["Task_Day"].ToString()));
-                }
-            }
-
-            PanelWindow.ChangeWeekDaysOrder(IncludedDays, this.Planner.FirstDay);
-
-
-            #region Dzban
-            DataView dataView = new DataView(taskSample);
-            DataTable distinctValues = dataView.ToTable(true, "Task_Day");
-            List<string> includedDays = new List<string>();
-            foreach (DataRow item in distinctValues.Rows)
-            {
-                includedDays.Add(item["Task_Day"].ToString());
-            }
-
-            int counter = 0;
-            do
-            {
-                task.Columns.Add(includedDays[counter]);
-                counter++;
-            } while (includedDays.Count > counter);
-            #endregion
-
-            #region Wpisywanie odpowiednich wartości do odpowiednich kolumn
-
-            string time;
-            int hour;
-            int minute;
-
-            int startHour = this.Planner.StartTime.Hour;
-            int startMinute = this.Planner.StartTime.Minute;
-
-            int stopHour = this.Planner.StartTime.Hour;
-            int stopMinute = this.Planner.StartTime.Minute;
-
-            int timeSpan = this.Planner.Interval.Minute;
-
-            hour = startHour;
-            minute = startMinute;
-
-            while (!(hour == stopHour && minute == stopMinute))
-            {
-                time = $"{hour.ToString("D2")}:{minute.ToString("D2")}";
-                var results =
-                    from row in taskSample.AsEnumerable()
-                    where row.Field<string>("Task_Time") == time
-                    select row;
-
-                TaskConverter taskConverter = new TaskConverter();
-
-                foreach (var item in results)
-                {
-                    string sample = item["Task_Day"].ToString();
-                    if (sample == " Monday")
-                    {
-                        taskConverter.MondayTask = item["Task_Name"].ToString();
-                    }
-                    else if (sample == " Tuesday")
-                    {
-                        taskConverter.TuesdayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Wednesday")
-                    {
-                        taskConverter.WednesdayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Thursday")
-                    {
-                        taskConverter.ThursdayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "Friday")
-                    {
-                        taskConverter.FridayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "SaturDay")
-                    {
-                        taskConverter.SaturdayTask = item["Task_Name"].ToString();
-                    }
-                    else if (item["Task_Day"].ToString() == "SunDay")
-                    {
-                        taskConverter.SundayTask = item["Task_Name"].ToString();
-                    }
-                }
-
-                //Rozwiązanie problemu: uporządkowanie dni tygodnia od pierwszego dnia poprzez kolejne do końca.
-                //  po przypasowaniu zadania przypisanego do dnia dla rozpartywanej godziny ^, dodanie zadań kolejnych dni do listy
-                //  na końcu przekadanie listy do metody, która na podstawie wielkości listy przekaże odpowiednie argumenty (7 możliwości)
-                #region Collect results
-                List<string> data = new List<string>();
-                data.Add("sample1");
-                data.Add("sample2");
-                task.Rows.Add(data.ToArray());
-                #endregion
-                //result.Rows.Add(taskConverter.MondayTask, taskConverter.TuesdayTask, taskConverter.WednesdayTask, taskConverter.ThursdayTask
-                //        , taskConverter.FridayTask, taskConverter.SaturdayTask, taskConverter.SundayTask);
-
-                if (minute < 60 - timeSpan)
-                {
-                    minute += timeSpan;
-                }
-                else
-                {
-                    if (hour != 23)
-                    {
-                        hour++;
-                    }
-                    else
-                    {
-                        hour = 0;
-                    }
-                    minute = 0;
-                }
-            }
-            this.Planner.Task = task;
-
-            #endregion
         }
 
         private void AdjustAssignedTasksListBox()
@@ -461,7 +332,7 @@ namespace Planner
 
                 DbAdapter.EditTask(this.Participant.Name, this.Planner.Name, dataTable);
                 //wczytaj wszystkie taski
-                AdjustTask();
+                //AdjustTask();
                 PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
 
                 PaintPlannerTasks();
@@ -474,6 +345,5 @@ namespace Planner
         }
 
         #endregion
-
     }
 }
