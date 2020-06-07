@@ -123,7 +123,6 @@ namespace Planner
         {
             PlannerWindow plannerWindow = new PlannerWindow(this.Participant, GetPlanner(participantName, plannerName));
             plannerWindow.Show();
-            plannerWindow.PaintPlannerTasks();
         }
 
         private Classes.Planner GetPlanner(string participantName, string plannerName)

@@ -40,36 +40,12 @@ namespace Planner
         private void AdjustPlannerDataGrid()
         {
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-        }
-
-        private void AdjustAssignedTasksListBox()
-        {
-            List<string> TasksTypes = DbAdapter.ExtractTasksTypesList(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
-            if (TasksTypes.Count == 0)
-            {
-                AssignedTasksListBox.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                AssignedTasksListBox.ItemsSource = TasksTypes;
-            }
-        }
-
-        private void AdjustPlannerDetailsListBox()
-        {
-
-        }
-
-        #endregion
-
-        private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            e.Row.Header = (Planner.StartTime + Planner.Interval * e.Row.GetIndex()).ToString();
+            PaintPlanner();
         }
 
         #region Malowanie komórek
 
-        public void PaintPlannerTasks()
+        public void PaintPlanner()
         {
             DataTable dataTable = DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name);
 
@@ -153,6 +129,31 @@ namespace Planner
 
         #endregion
 
+        private void AdjustAssignedTasksListBox()
+        {
+            List<string> TasksTypes = DbAdapter.ExtractTasksTypesList(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
+            if (TasksTypes.Count == 0)
+            {
+                AssignedTasksListBox.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                AssignedTasksListBox.ItemsSource = TasksTypes;
+            }
+        }
+
+        private void AdjustPlannerDetailsListBox()
+        {
+
+        }
+
+        #endregion
+
+        private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            e.Row.Header = (Planner.StartTime + Planner.Interval * e.Row.GetIndex()).ToString();
+        }
+
         #region Buttons
 
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
@@ -214,7 +215,7 @@ namespace Planner
                 DbAdapter.EditTask(this.Participant.Name, this.Planner.Name, result);
 
                 //GetDataGridRows();
-                PaintPlannerTasks();
+                PaintPlanner();
 
             }
             catch (Exception exception)
@@ -277,7 +278,7 @@ namespace Planner
                 //AdjustTask();
                 PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
 
-                PaintPlannerTasks();
+                PaintPlanner();
 
                 AssignedTasksListBox.SelectedItem = null;
             }
