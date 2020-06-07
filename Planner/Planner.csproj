@@ -62,13 +62,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Classes\ClockTime.cs" />
-    <Compile Include="Classes\DbAdapter.cs" />
+    <Compile Include="Tools\ClockTime.cs" />
+    <Compile Include="Tools\DbAdapter.cs" />
     <Compile Include="Windows\PanelWindow.xaml.cs">
       <DependentUpon>PanelWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\Participant.cs" />
-    <Compile Include="Classes\Planner.cs" />
+    <Compile Include="Tools\Participant.cs" />
+    <Compile Include="Tools\Planner.cs" />
     <Compile Include="Windows\PlannerWindow.xaml.cs">
       <DependentUpon>PlannerWindow.xaml</DependentUpon>
     </Compile>
