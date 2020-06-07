@@ -62,55 +62,10 @@ namespace Planner
 
         #endregion
 
-        #region headery tabelki
-
         private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            e.Row.Header = (e.Row.GetIndex()).ToString() + "Test";//?
-
-            int startHour = this.Planner.StartTime.Hour;
-            int startMinute = this.Planner.StartTime.Minute;
-
-            int stopHour = this.Planner.StopTime.Hour;
-            int stopMinute = this.Planner.StopTime.Minute;
-
-            int timeSpan = this.Planner.Interval.Minute;
-
-            int hour = startHour;
-            int minute = startMinute;
-
-            string rowName;
-
-            while (!(hour == stopHour && minute == stopMinute))
-            {
-                rowName = $"{hour}:{minute}";
-                //e.Row.Header = $"{e.Row.GetIndex() + startHour == 24 ? 0 : 1}:{e.Row.GetIndex() * startMinute}";
-                e.Row.Header = ((e.Row.GetIndex() / (60 / timeSpan)) + startHour >= 24 ? (e.Row.GetIndex() / (60 / timeSpan)) + startHour - 24 : (e.Row.GetIndex() / (60 / timeSpan)) + startHour).ToString("D2") +
-                    ":" +
-                    (e.Row.GetIndex() * timeSpan + startMinute - (e.Row.GetIndex() / (60 / timeSpan) * 60)).ToString("D2");//Do poprawy!
-
-
-                if (minute < 60 - timeSpan)
-                {
-                    minute += timeSpan;
-                }
-                else
-                {
-                    if (hour != 23)
-                    {
-                        hour++;
-                    }
-                    else
-                    {
-                        hour = 0;
-                    }
-                    minute = 0;
-                }
-            }
+            e.Row.Header = (Planner.StartTime + Planner.Interval * e.Row.GetIndex()).ToString();
         }
-
-
-        #endregion
 
         #region Malowanie komórek
 
@@ -350,8 +305,6 @@ namespace Planner
             //    //przeliczenie ilości komórek na czas
             //    //dodanie elementu do listy
             //}
-
-
         }
     }
 }
