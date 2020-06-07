@@ -131,7 +131,7 @@ namespace Planner
 
         private void AdjustAssignedTasksListBox()
         {
-            List<string> TasksTypes = DbAdapter.ExtractTasksTypesList(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
+            List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
             if (TasksTypes.Count == 0)
             {
                 AssignedTasksListBox.Visibility = Visibility.Hidden;
@@ -224,7 +224,7 @@ namespace Planner
             }
         }
 
-        private void ColorPickerButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
+        private void ColorPickerButton_Click(object sender, RoutedEventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
             colorDialog.ShowDialog();

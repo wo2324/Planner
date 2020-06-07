@@ -44,7 +44,7 @@ namespace Planner.Windows
             {
                 if (plannerName != plannerNewName)
                 {
-                    if (!DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(participantName)).Contains(plannerNewName))
+                    if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(participantName)).Contains(plannerNewName))
                     {
                         DbAdapter.RenamePlanner(participantName, plannerName, plannerNewName);
                         rename = true;

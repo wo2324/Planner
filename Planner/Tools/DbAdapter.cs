@@ -122,7 +122,7 @@ namespace Planner.Classes
             }
         }
 
-        public static List<string> ExtractPlannersList(DataTable dataTable)
+        public static List<string> ExtractPlanners(DataTable dataTable)
         {
             List<string> Planners = new List<string>();
             foreach (DataRow dataRow in dataTable.Rows)
@@ -312,7 +312,7 @@ namespace Planner.Classes
             }
         }
 
-        public static List<string> ExtractTasksTypesList(DataTable dataTable)
+        public static List<string> ExtractTasksTypes(DataTable dataTable)
         {
             List<string> TasksTypes = new List<string>();
             foreach (DataRow dataRow in dataTable.Rows)

@@ -35,7 +35,7 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            List<string> Planners = DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Name));
+            List<string> Planners = DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name));
             if (Planners.Count == 0)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
@@ -219,7 +219,7 @@ namespace Planner
             int counter = 1;
             do
             {
-                if (DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerCopyName))
+                if (DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerCopyName))
                 {
                     plannerCopyName = $"{plannerName} - copy ({++counter})";
                 }
@@ -260,7 +260,7 @@ namespace Planner
         {
             if (NewPlannerNameTextBox.Text.Length != 0 && NewPlannerStartTimeTextBox.Text.Length != 0 && NewPlannerStopTimeTextBox.Text.Length != 0 && NewPlannerIntervalTextBox.Text.Length != 0)
             {
-                if (!DbAdapter.ExtractPlannersList(DbAdapter.GetPlanners(this.Participant.Name)).Contains(NewPlannerNameTextBox.Text))
+                if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(NewPlannerNameTextBox.Text))
                 {
                     if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerIntervalTextBox.Text))
                     {
