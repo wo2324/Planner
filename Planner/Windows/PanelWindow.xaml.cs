@@ -209,12 +209,12 @@ namespace Planner
 
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
-            string plannerCopyName = GetPlannerCopyName(PlannerListBox.SelectedItem.ToString());
+            string plannerCopyName = GeneratePlannerCopyName(PlannerListBox.SelectedItem.ToString());
             CopyPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
             AdjustPlannerListBox();
         }
 
-        private string GetPlannerCopyName(string plannerName)
+        private string GeneratePlannerCopyName(string plannerName)
         {
             string plannerCopyName = $"{plannerName} - copy";
             int counter = 1;
