@@ -62,15 +62,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utils\ClockTime.cs" />
-    <Compile Include="Utils\DbAdapter.cs" />
-    <Compile Include="Utils\TaskConverter.cs" />
-    <Compile Include="Utils\MyDayOfWeek.cs" />
+    <Compile Include="Classes\ClockTime.cs" />
+    <Compile Include="Classes\DbAdapter.cs" />
     <Compile Include="Windows\PanelWindow.xaml.cs">
       <DependentUpon>PanelWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils\Participant.cs" />
-    <Compile Include="Utils\Planner.cs" />
+    <Compile Include="Classes\Participant.cs" />
+    <Compile Include="Classes\Planner.cs" />
     <Compile Include="Windows\PlannerWindow.xaml.cs">
       <DependentUpon>PlannerWindow.xaml</DependentUpon>
     </Compile>

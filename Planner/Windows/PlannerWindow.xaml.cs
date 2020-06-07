@@ -1,4 +1,4 @@
-﻿using Planner.Utils;
+﻿using Planner.Classes;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,9 +18,9 @@ namespace Planner
     public partial class PlannerWindow : Window
     {
         public Participant Participant { get; }
-        public Utils.Planner Planner { get; }
+        public Classes.Planner Planner { get; }
 
-        public PlannerWindow(Participant Participant, Utils.Planner Planner)
+        public PlannerWindow(Participant Participant, Classes.Planner Planner)
         {
             this.Participant = Participant;
             this.Planner = Planner;
@@ -283,28 +283,8 @@ namespace Planner
             }
 
             //wywołanie metody która generuje statystyki
-            Stats();
         }
 
         #endregion
-
-        private void Stats()
-        {
-
-            ////pozyskanie wszystkich zadań
-            //List<string> tasksType = ExtractTasksTypesList(DbAdapter.GetTasksTypes(this.Planner.PlannerId));
-
-            ////przeszukanie tabeli w poszukiwaniu komórek z rozpatrywanym zadaniem
-            //foreach (var item in tasksType)
-            //{
-            //    //foreach (var row in this.Planner.Task.Rows)
-            //    //{
-            //    //    string s = row;
-            //    //}
-            //    // this.PlannerDataGrid
-            //    //przeliczenie ilości komórek na czas
-            //    //dodanie elementu do listy
-            //}
-        }
     }
 }

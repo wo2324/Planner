@@ -1,4 +1,4 @@
-﻿namespace Planner.Utils
+﻿namespace Planner.Classes
 {
     public class Participant
     {

@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Planner.Utils
+namespace Planner.Classes
 {
     public static class DbAdapter
     {
@@ -164,6 +164,62 @@ namespace Planner.Utils
             }
         }
 
+        public static void CopyPlanner(string participantName, string plannerName, string plannerCopyName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_CopyPlanner";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_PlannerCopy_Name", plannerCopyName));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void RenamePlanner(string participantName, string plannerName, string plannerNewName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_PlannerRename";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_PlannerNewName", plannerNewName));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeletePlanner(string participantName, string plannerName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_PlannerDelete";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
         #endregion
 
         #region Planner handle
@@ -227,44 +283,6 @@ namespace Planner.Utils
 
         #endregion
 
-        public static List<string> ExtractTasksTypesList(DataTable dataTable)
-        {
-            List<string> TasksTypes = new List<string>();
-            foreach (DataRow dataRow in dataTable.Rows)
-            {
-                TasksTypes.Add(dataRow["TaskType_Name"].ToString());
-            }
-            return TasksTypes;
-        }
-
-        public static int GetPlannerId(string participantName, string plannerName)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_PlannerIdGet";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Participant_Id", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
-                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-
-                    if (sqlConnection.State == ConnectionState.Closed)
-                    {
-                        sqlConnection.Open();
-                    }
-
-                    DataSet dataSet = new DataSet();
-                    sqlDataAdapter.Fill(dataSet);
-
-                    return Convert.ToInt32(dataSet.Tables[0].Rows[0]["Planner_Id"]);
-                }
-            }
-        }
-
         public static DataTable GetTasksTypes(string participantName, string plannerName)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
@@ -275,8 +293,9 @@ namespace Planner.Utils
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_TaskTypeGet";
-                    sqlCommand.Parameters.Add(new SqlParameter("@v_TaskType_Planner_Id", plannerName));
+                    sqlCommand.CommandText = "plann.usp_TasksTypesGet";
+                    sqlCommand.Parameters.Add(new SqlParameter("@v_Participant_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@v_Planner_Name", plannerName));
 
                     SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
 
@@ -293,45 +312,14 @@ namespace Planner.Utils
             }
         }
 
-        public static void CreatePlanner(string participantName, string plannerName, string plannerDescription, string firstDay, string startHour, string stopHour, string timeSpan) //Do poprawy!
+        public static List<string> ExtractTasksTypesList(DataTable dataTable)
         {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            List<string> TasksTypes = new List<string>();
+            foreach (DataRow dataRow in dataTable.Rows)
             {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_PlannerAdd";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Participant_Id", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Description", plannerDescription));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_FirstDay", firstDay));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_StartHour", startHour));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_StopHour", stopHour));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_TimeSpan", timeSpan));
-                    sqlCommand.ExecuteNonQuery();
-                }
+                TasksTypes.Add(dataRow["TaskType_Name"].ToString());
             }
-        }
-
-        public static void TaskAdd(int plannerId, DataTable task)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_TaskAdd";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Task_Planner_Id", plannerId));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_tvp_Task", task));
-                    sqlCommand.ExecuteNonQuery();
-                }
-            }
+            return TasksTypes;
         }
 
         public static void EditTask(string participantName, string plannerName, DataTable task)
@@ -369,62 +357,6 @@ namespace Planner.Utils
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeTextVisibility));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Color", color));
 
-                    sqlCommand.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public static void CopyPlanner(string participantName, string plannerName, string plannerCopyName)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_CopyPlanner";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_NewPlannerName", plannerCopyName));
-                    sqlCommand.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public static void RenamePlanner(string participantName, string plannerName, string plannerNewName)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_PlannerRename";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_PlannerNewName", plannerNewName));
-                    sqlCommand.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public static void DeletePlanner(string participantName, string plannerName)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_PlannerDelete";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Id", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.ExecuteNonQuery();
                 }
             }
