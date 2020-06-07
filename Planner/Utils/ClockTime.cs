@@ -48,6 +48,22 @@ namespace Planner.Utils
             }
         }
 
+        public static ClockTime operator +(ClockTime clockTime, ClockTimeInterval clockTimeInterval)
+        {
+            ClockTime result = new ClockTime();
+            result.Hour = (clockTime.Hour + clockTimeInterval.Hour) % 24;
+            result.Minute = (clockTime.Minute + clockTimeInterval.Minute) % 60;
+            if ((clockTime.Minute + clockTimeInterval.Minute) / 60 != 0)
+            {
+                result.Hour++;
+            }
+            if (result.Hour == 24)
+            {
+                result.Hour = 0;
+            }
+            return result;
+        }
+
         #endregion 
 
         public override string ToString()
@@ -58,11 +74,11 @@ namespace Planner.Utils
         public void AddInterval(ClockTimeInterval interval)
         {
             this.Hour = (this.Hour + interval.Hour) % 24;
+            this.Minute = (this.Minute + interval.Minute) % 60;
             if ((this.Minute + interval.Minute) / 60 != 0)
             {
                 this.Hour++;
             }
-            this.Minute = (this.Minute + interval.Minute) % 60;
             if (this.Hour == 24)
             {
                 this.Hour = 0;
@@ -97,9 +113,26 @@ namespace Planner.Utils
 
     public class ClockTimeInterval : ClockTime
     {
+        public ClockTimeInterval() : base()
+        {
+        }
+
         public ClockTimeInterval(int hour, int minute) : base(hour, minute)
         {
         }
+
+        #region Operators overloading 
+
+        public static ClockTimeInterval operator *(ClockTimeInterval clockTimeInterval, int number)
+        {
+            ClockTimeInterval result = new ClockTimeInterval();
+            result.Hour = clockTimeInterval.Hour * number;
+            result.Hour = result.Hour + clockTimeInterval.Minute * number / 60;
+            result.Minute = (clockTimeInterval.Minute * number) % 60;
+            return result;
+        }
+
+        #endregion 
 
         public static ClockTimeInterval GetInterval(ClockTime clockStartTime, ClockTime clockStopTime)
         {
