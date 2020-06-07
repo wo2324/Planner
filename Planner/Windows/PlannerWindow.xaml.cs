@@ -156,7 +156,7 @@ namespace Planner
 
         #region Buttons
 
-        private void ConfirmButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
+        private void SaveButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
         {
             try
             {

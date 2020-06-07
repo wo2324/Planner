@@ -28,7 +28,7 @@
                           LoadingRow="PlannerDataGrid_LoadingRow"/>
         </ScrollViewer>
         <StackPanel Grid.Column="1">
-            <Button x:Name="ConfirmButton" Style="{StaticResource ButtonStyle}" Content="Confirm" Click="ConfirmButton_Click"/>
+            <Button x:Name="SaveButton" Style="{StaticResource ButtonStyle}" Content="Save" Click="SaveButton_Click"/>
             <Expander Style="{StaticResource ExpanderStyle}" Header="Create task">
                 <StackPanel>
                     <Label Style="{StaticResource Label3Style}" Content="Name"/>
