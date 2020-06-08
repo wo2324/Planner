@@ -144,7 +144,7 @@ namespace Planner
             TaskTypeNameTextBox.Clear();
             TextVisibilityRadioButton.IsChecked = false;
             var brushConverter = new BrushConverter();
-            var brush = (Brush)brushConverter.ConvertFromString("##FFDDDDDD");
+            var brush = (Brush)brushConverter.ConvertFromString("#FFDDDDDD");
             ColorPickerButton.Background = brush;
         }
 
