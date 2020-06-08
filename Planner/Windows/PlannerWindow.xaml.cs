@@ -39,7 +39,7 @@ namespace Planner
         private void AdjustPlannerDataGrid()
         {
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-            PaintPlanner();
+            //PaintPlanner();
         }
 
         #region Malowanie komórek
