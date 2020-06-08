@@ -39,38 +39,39 @@ namespace Planner
         private void AdjustPlannerDataGrid()
         {
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-            CharacterizePlannerDataGrid(PlannerDataGrid);
+            AdjustPlannerDataGrid(PlannerDataGrid);
         }
 
-        #region PlannerDataGrid characterization
+        #region PlannerDataGrid adjustment
 
-        private void CharacterizePlannerDataGrid(System.Windows.Controls.DataGrid dataGrid)
+        private void AdjustPlannerDataGrid(System.Windows.Controls.DataGrid dataGrid)
         {
             DataTable TaskTypes = DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name);
-            foreach (DataRow dataRow in TaskTypes.Rows)
-            {
-                string taskTypeName = dataRow["TaskType_Name"].ToString();
-                bool taskTypeTextVisibility = (bool)dataRow["TaskType_TextVisibility"];
-                Brush taskTypeColor = GetBrush(dataRow["TaskType_Color"].ToString());
 
-                for (int i = 0; i < PlannerDataGrid.Items.Count; i++)
+            for (int i = 0; i < PlannerDataGrid.Items.Count; i++)
+            {
+                for (int j = 0; j < PlannerDataGrid.Columns.Count; j++)
                 {
-                    for (int j = 0; j < PlannerDataGrid.Columns.Count; j++)
+                    DataGridCell dataGridCell = GetCell(dataGrid, i, j);
+                    TextBlock TextBlock = dataGridCell.Content as TextBlock;
+                    if (TextBlock.Text == null)
                     {
-                        //loop throught cell
-                        DataGridCell cell = GetCell(dataGrid, i, j);
-                        TextBlock tb = cell.Content as TextBlock;
-                        if (tb.Text == taskTypeName)
+                        break;
+                    }
+                    foreach (DataRow dataRow in TaskTypes.Rows)
+                    {
+                        if (TextBlock.Text == dataRow["TaskType_Name"].ToString())
                         {
-                            if (taskTypeTextVisibility)
+                            if ((bool)dataRow["TaskType_TextVisibility"])
                             {
-                                cell.Visibility = Visibility.Visible;
+                                dataGridCell.Visibility = Visibility.Visible;
                             }
                             else
                             {
-                                cell.Visibility = Visibility.Hidden;
+                                dataGridCell.Visibility = Visibility.Hidden;
                             }
-                            cell.Background = taskTypeColor;
+                            dataGridCell.Background = GetBrush(dataRow["TaskType_Color"].ToString());
+                            break;
                         }
                     }
                 }
@@ -197,12 +198,12 @@ namespace Planner
 
         #region Buttons
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                DataView value = PlannerDataGrid.ItemsSource as DataView;
-                DataTable dataTable = value.ToTable();
+                DataView dataView = PlannerDataGrid.ItemsSource as DataView;
+                DataTable dataTable = dataView.ToTable();
                 DataTable result = new DataTable("Result");
                 result.Columns.Add("task", typeof(string));
                 result.Columns.Add("day", typeof(string));
