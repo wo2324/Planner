@@ -25,26 +25,26 @@ namespace Planner
             this.Participant = Participant;
             this.Planner = Planner;
             InitializeComponent();
-            AdjustControls();
+            AdjustControls(true);
         }
 
         #region Controls adjustment
 
-        private void AdjustControls()
+        private void AdjustControls(bool initializeCall)
         {
             AdjustPlannerDataGrid();
-            AdjustPlannerPanel(true);
+            AdjustPlannerPanel(initializeCall);
         }
 
         private void AdjustPlannerDataGrid()
         {
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-            //PaintPlanner();
+            CharacterizePlannerDataGrid(PlannerDataGrid);
         }
 
-        #region Malowanie komórek
+        #region PlannerDataGrid characterization
 
-        public void PaintPlanner()
+        private void CharacterizePlannerDataGrid(System.Windows.Controls.DataGrid dataGrid)
         {
             DataTable TaskTypes = DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name);
             foreach (DataRow dataRow in TaskTypes.Rows)
@@ -52,39 +52,34 @@ namespace Planner
                 string taskTypeName = dataRow["TaskType_Name"].ToString();
                 bool taskTypeTextVisibility = (bool)dataRow["TaskType_TextVisibility"];
                 Brush taskTypeColor = GetBrush(dataRow["TaskType_Color"].ToString());
-                GetDataGridRows(taskTypeName, taskTypeTextVisibility, taskTypeColor);
-            }
-        }
 
-        private Brush GetBrush(string sample)
-        {
-            BrushConverter brushConverter = new BrushConverter();
-            Brush brush = (Brush)brushConverter.ConvertFromString(sample);
-            return brush;
-        }
-
-        public void GetDataGridRows(string text, bool textVisibility, Brush color)
-        {
-            for (int i = 0; i < PlannerDataGrid.Items.Count; i++)
-            {
-                for (int j = 0; j < PlannerDataGrid.Columns.Count; j++)
+                for (int i = 0; i < PlannerDataGrid.Items.Count; i++)
                 {
-                    //loop throught cell
-                    DataGridCell cell = GetCell(i, j);
-                    TextBlock tb = cell.Content as TextBlock;
-                    if (tb.Text == task)
+                    for (int j = 0; j < PlannerDataGrid.Columns.Count; j++)
                     {
-                        var converter = new System.Windows.Media.BrushConverter();
-                        var brush = (Brush)converter.ConvertFromString(color);
-                        cell.Background = brush;
+                        //loop throught cell
+                        DataGridCell cell = GetCell(dataGrid, i, j);
+                        TextBlock tb = cell.Content as TextBlock;
+                        if (tb.Text == taskTypeName)
+                        {
+                            if (taskTypeTextVisibility)
+                            {
+                                cell.Visibility = Visibility.Visible;
+                            }
+                            else
+                            {
+                                cell.Visibility = Visibility.Hidden;
+                            }
+                            cell.Background = taskTypeColor;
+                        }
                     }
                 }
             }
         }
 
-        public DataGridCell GetCell(int row, int column)    //Do Poprawy!
+        private DataGridCell GetCell(System.Windows.Controls.DataGrid dataGrid, int row, int column)
         {
-            DataGridRow rowContainer = GetRow(row);
+            DataGridRow rowContainer = GetRow(dataGrid, row);
 
             if (rowContainer != null)
             {
@@ -93,7 +88,7 @@ namespace Planner
                 DataGridCell cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
                 if (cell == null)
                 {
-                    PlannerDataGrid.ScrollIntoView(rowContainer, PlannerDataGrid.Columns[column]);
+                    dataGrid.ScrollIntoView(rowContainer, dataGrid.Columns[column]);
                     cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
                 }
                 return cell;
@@ -101,19 +96,19 @@ namespace Planner
             return null;
         }
 
-        public DataGridRow GetRow(int index)    //Do Poprawy!
+        private DataGridRow GetRow(System.Windows.Controls.DataGrid dataGrid, int index)
         {
-            DataGridRow row = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+            DataGridRow row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(index);
             if (row == null)
             {
-                PlannerDataGrid.UpdateLayout();
-                PlannerDataGrid.ScrollIntoView(PlannerDataGrid.Items[index]);
-                row = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+                dataGrid.UpdateLayout();
+                dataGrid.ScrollIntoView(dataGrid.Items[index]);
+                row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(index);
             }
             return row;
         }
 
-        public static T GetVisualChild<T>(Visual parent) where T : Visual   //Do Poprawy!
+        private static T GetVisualChild<T>(Visual parent) where T : Visual
         {
             T child = default(T);
             int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
@@ -151,6 +146,13 @@ namespace Planner
             TaskTypeNameTextBox.Clear();
             TextVisibilityRadioButton.IsChecked = false;
             ColorPickerButton.Background = GetBrush("#FFDDDDDD");
+        }
+
+        private Brush GetBrush(string sample)
+        {
+            BrushConverter brushConverter = new BrushConverter();
+            Brush brush = (Brush)brushConverter.ConvertFromString(sample);
+            return brush;
         }
 
         private void AdjustAssignedTasksListBox()
@@ -254,7 +256,7 @@ namespace Planner
                 DbAdapter.EditTask(this.Participant.Name, this.Planner.Name, result);
 
                 //GetDataGridRows();
-                PaintPlanner();
+                AdjustPlannerDataGridd();
 
             }
             catch (Exception exception)
@@ -312,7 +314,7 @@ namespace Planner
                 //AdjustTask();
                 PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
 
-                PaintPlanner();
+                AdjustPlannerDataGridd();
 
                 AssignedTasksTypesListBox.SelectedItem = null;
             }
