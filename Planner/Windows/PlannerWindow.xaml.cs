@@ -33,8 +33,7 @@ namespace Planner
         private void AdjustControls()
         {
             AdjustPlannerDataGrid();
-            AdjustAssignedTasksListBox();
-            AdjustPlannerDetailsListBox();
+            AdjustPlannerPanel(true);
         }
 
         private void AdjustPlannerDataGrid()
@@ -129,22 +128,57 @@ namespace Planner
 
         #endregion
 
+        private void AdjustPlannerPanel(bool initializeCall)
+        {
+            AdjustTaskCreationControls();
+            AdjustAssignedTasksListBox();
+            AdjustPlannerDetailsListBox();
+            if (initializeCall)
+            {
+                AdjustExpanders();
+            }
+        }
+
+        private void AdjustTaskCreationControls()
+        {
+            TaskTypeNameTextBox.Clear();
+            TextVisibilityRadioButton.IsChecked = false;
+            var brushConverter = new BrushConverter();
+            var brush = (Brush)brushConverter.ConvertFromString("##FFDDDDDD");
+            ColorPickerButton.Background = brush;
+        }
+
         private void AdjustAssignedTasksListBox()
         {
             List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
             if (TasksTypes.Count == 0)
             {
-                AssignedTasksListBox.Visibility = Visibility.Hidden;
+                AssignedTasksTypesListBox.Visibility = Visibility.Hidden;
             }
             else
             {
-                AssignedTasksListBox.ItemsSource = TasksTypes;
+                AssignedTasksTypesListBox.ItemsSource = TasksTypes;
             }
         }
 
         private void AdjustPlannerDetailsListBox()
         {
 
+        }
+
+        private void AdjustExpanders()
+        {
+            if (AssignedTasksTypesListBox.Items.Count == 0)
+            {
+                CreateTaskTypeExpander.IsExpanded = true;
+                AssignedTasksTypesExpander.IsExpanded = false;
+            }
+            else
+            {
+                CreateTaskTypeExpander.IsExpanded = false;
+                AssignedTasksTypesExpander.IsExpanded = true;
+            }
+            PlannerDetailsExpander.IsExpanded = false;
         }
 
         #endregion
@@ -231,20 +265,15 @@ namespace Planner
             ColorPickerButton.Background = new SolidColorBrush(Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
         }
 
-        private void AddTaskButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!   //Sprawdzić nazewnictwo kontrole TextBox
+        private void AddTaskTypeButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!   //Sprawdzić nazewnictwo kontrole TextBox
         {
-            DbAdapter.TaskTypeAdd(this.Planner.Name, TaskNameTextBox.Text, false, ColorPickerButton.Background.ToString());
-            TaskNameTextBox.Clear();
-            var converter = new System.Windows.Media.BrushConverter();
-            var brush = (Brush)converter.ConvertFromString("#D4D4D4");
-            ColorPickerButton.Background = brush;
-            AdjustAssignedTasksListBox();
-            AssignedTasksExpander.IsExpanded = true;
+            DbAdapter.TaskTypeAdd(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, (bool)TextVisibilityRadioButton.IsChecked, ColorPickerButton.Background.ToString());
+            AdjustPlannerPanel(false);
         }
 
-        private void AssignedTasksListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void AssignedTasksTypesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (AssignedTasksListBox.SelectedItem != null)
+            if (AssignedTasksTypesListBox.SelectedItem != null)
             {
                 IList<DataGridCellInfo> selectedCells = this.PlannerDataGrid.SelectedCells;
                 //foreach (DataGridCellInfo cell in selectedCells)
@@ -260,7 +289,7 @@ namespace Planner
                 //odświerzyć planner
 
                 //..
-                string taskName = AssignedTasksListBox.SelectedItem.ToString();
+                string taskName = AssignedTasksTypesListBox.SelectedItem.ToString();
 
                 DataTable dataTable = new DataTable("Result");
                 dataTable.Columns.Add("task", typeof(string));
@@ -280,7 +309,7 @@ namespace Planner
 
                 PaintPlanner();
 
-                AssignedTasksListBox.SelectedItem = null;
+                AssignedTasksTypesListBox.SelectedItem = null;
             }
 
             //wywołanie metody która generuje statystyki

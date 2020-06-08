@@ -281,6 +281,28 @@ namespace Planner.Classes
             }
         }
 
+        public static void TaskTypeAdd(string participantName, string plannerName, string taskTypeName, bool taskTypeTextVisibility, string taskTypecolor)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "mc.usp_TaskTypeAdd";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeTextVisibility));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Color", taskTypecolor));
+
+                    sqlCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
         #endregion
 
         public static DataTable GetTasksTypes(string participantName, string plannerName)
@@ -340,26 +362,6 @@ namespace Planner.Classes
             }
         }
 
-        public static void TaskTypeAdd(string plannerName, string taskTypeName, bool taskTypeTextVisibility, string color)
-        {
-            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-            {
-                sqlConnection.Open();
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_TaskTypeAdd";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Id", plannerName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Description", ""));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeTextVisibility));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Color", color));
-
-                    sqlCommand.ExecuteNonQuery();
-                }
-            }
-        }
+        
     }
 }

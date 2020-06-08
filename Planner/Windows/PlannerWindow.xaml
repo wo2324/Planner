@@ -29,21 +29,22 @@
         </ScrollViewer>
         <StackPanel Grid.Column="1">
             <Button x:Name="SaveButton" Style="{StaticResource ButtonStyle}" Content="Save" Click="SaveButton_Click"/>
-            <Expander Style="{StaticResource ExpanderStyle}" Header="Create task">
+            <Expander x:Name="CreateTaskTypeExpander" Style="{StaticResource ExpanderStyle}" Header="Create task type">
                 <StackPanel>
                     <Label Style="{StaticResource Label3Style}" Content="Name"/>
-                    <TextBox x:Name="TaskNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox x:Name="TaskTypeNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+                    <RadioButton x:Name="TextVisibilityRadioButton" Content="Text visibility"/>
                     <StackPanel Orientation="Horizontal">
                         <Label Style="{StaticResource Label3Style}" Content="Color"/>
-                        <Button x:Name="ColorPickerButton" Height="20" Width="20" Click="ColorPickerButton_Click"/>
+                        <Button x:Name="ColorPickerButton" Height="20" Width="20" Click="ColorPickerButton_Click" Background="#FFDDDDDD"/>
                     </StackPanel>
-                    <Button x:Name="AddTaskButton" Style="{StaticResource ButtonStyle}" Content="Add task" Click="AddTaskButton_Click"/>
+                    <Button x:Name="AddTaskTypeButton" Style="{StaticResource ButtonStyle}" Content="Add task type" Click="AddTaskTypeButton_Click"/>
                 </StackPanel>
             </Expander>
-            <Expander x:Name="AssignedTasksExpander" Style="{StaticResource ExpanderStyle}" Header="Assigned tasks">
-                <ListBox x:Name="AssignedTasksListBox" Style="{StaticResource ListBoxStyle}" SelectionChanged="AssignedTasksListBox_SelectionChanged"/>
+            <Expander x:Name="AssignedTasksTypesExpander" Style="{StaticResource ExpanderStyle}" Header="Assigned tasks types">
+                <ListBox x:Name="AssignedTasksTypesListBox" Style="{StaticResource ListBoxStyle}" SelectionChanged="AssignedTasksTypesListBox_SelectionChanged"/>
             </Expander>
-            <Expander Style="{StaticResource ExpanderStyle}" Header="Planner details">
+            <Expander x:Name="PlannerDetailsExpander" Style="{StaticResource ExpanderStyle}" Header="Planner details">
                 <ListBox x:Name="PlannerDetailsListBox" Style="{StaticResource ListBoxStyle}"/>
             </Expander>
         </StackPanel>
