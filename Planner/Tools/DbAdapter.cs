@@ -292,7 +292,7 @@ namespace Planner.Classes
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.CommandText = "plann.usp_TasksTypesGet";
-                    sqlCommand.Parameters.Add(new SqlParameter("@v_Participant_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@v_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@v_Planner_Name", plannerName));
 
                     SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);

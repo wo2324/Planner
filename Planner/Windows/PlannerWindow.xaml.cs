@@ -46,17 +46,24 @@ namespace Planner
 
         public void PaintPlanner()
         {
-            DataTable dataTable = DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name);
-
-            foreach (DataRow dataRow in dataTable.Rows)
+            DataTable TaskTypes = DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name);
+            foreach (DataRow dataRow in TaskTypes.Rows)
             {
-                string name = dataRow["TaskType_Name"].ToString();
-                string color = dataRow["TaskType_Color"].ToString();
-                GetDataGridRows(name, color);
+                string taskTypeName = dataRow["TaskType_Name"].ToString();
+                bool taskTypeTextVisibility = (bool)dataRow["TaskType_TextVisibility"];
+                Brush taskTypeColor = GetBrush(dataRow["TaskType_Color"].ToString());
+                GetDataGridRows(taskTypeName, taskTypeTextVisibility, taskTypeColor);
             }
         }
 
-        public void GetDataGridRows(string task, string color)  //Do Poprawy!
+        private Brush GetBrush(string sample)
+        {
+            BrushConverter brushConverter = new BrushConverter();
+            Brush brush = (Brush)brushConverter.ConvertFromString(sample);
+            return brush;
+        }
+
+        public void GetDataGridRows(string text, bool textVisibility, Brush color)
         {
             for (int i = 0; i < PlannerDataGrid.Items.Count; i++)
             {
@@ -143,9 +150,7 @@ namespace Planner
         {
             TaskTypeNameTextBox.Clear();
             TextVisibilityRadioButton.IsChecked = false;
-            var brushConverter = new BrushConverter();
-            var brush = (Brush)brushConverter.ConvertFromString("#FFDDDDDD");
-            ColorPickerButton.Background = brush;
+            ColorPickerButton.Background = GetBrush("#FFDDDDDD");
         }
 
         private void AdjustAssignedTasksListBox()
