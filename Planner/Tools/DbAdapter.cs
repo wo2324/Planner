@@ -134,7 +134,7 @@ namespace Planner.Tools
 
         public static DataTable GetTasksDataTable()
         {
-            DataTable plannerTasks = new DataTable("Task");
+            DataTable plannerTasks = new DataTable();
             plannerTasks.Columns.Add("tvp_Task_Day", typeof(string));
             plannerTasks.Columns.Add("tvp_Task_Time", typeof(string));
             plannerTasks.Columns.Add("tvp_Task_TaskType_Id", typeof(int));

@@ -12,9 +12,9 @@ namespace Planner
     {
         private Participant Participant;
 
-        public SettingsWindow(Participant Participant)
+        public SettingsWindow(Participant participant)
         {
-            this.Participant = Participant;
+            this.Participant = participant;
             InitializeComponent();
         }
 

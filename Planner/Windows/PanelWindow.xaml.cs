@@ -51,9 +51,9 @@ namespace Planner
             PlannerNameTextBox.Clear();
             AdjustFirstDayComboBox();
             AdjustIncludedDaysListBox();
-            AdjustStartHourTextBox();
-            AdjustStopHourTextBox();
-            AdjustTimeSpanTextBox();
+            StartTimeTextBox.Text = "05:00";
+            StopTimeTextBox.Text = "00:00";
+            IntervalTextBox.Text = "00:15";
         }
 
         private void AdjustFirstDayComboBox()
@@ -83,21 +83,6 @@ namespace Planner
             IncludedDaysListBox.ItemsSource = WeekDays;
             IncludedDaysListBox.SelectAll();
         }
-        private void AdjustStartHourTextBox()
-        {
-            ClockTime clockTime = new ClockTime(5, 0);
-            StartTimeTextBox.Text = clockTime.ToString();
-        }
-        private void AdjustStopHourTextBox()
-        {
-            ClockTime clockTime = new ClockTime(0, 0);
-            StopTimeTextBox.Text = clockTime.ToString();
-        }
-        private void AdjustTimeSpanTextBox()
-        {
-            ClockTime clockTime = new ClockTime(0, 15);
-            IntervalTextBox.Text = clockTime.ToString();
-        }
 
         private void AdjustParticipantLabel()
         {
@@ -114,28 +99,34 @@ namespace Planner
             {
                 if (PlannerListBox.SelectedItem != null)
                 {
-                    OpenPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
+                    OpenPlanner(this.Participant, PlannerListBox.SelectedItem.ToString());
                     PlannerListBox.SelectedItem = null;
                 }
             }
         }
 
-        private void OpenPlanner(string participantName, string plannerName)
+        private void OpenPlanner(Participant participant, string plannerName)
         {
-            PlannerWindow plannerWindow = new PlannerWindow(this.Participant, GetPlanner(this.Participant, plannerName));
-            plannerWindow.Show();
+            try
+            {
+                PlannerWindow plannerWindow = new PlannerWindow(this.Participant, GetPlanner(participant, plannerName));
+                plannerWindow.Show();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         private Tools.Planner GetPlanner(Participant participant, string plannerName)
         {
-            DataTable dataTable = DbAdapter.GetPlanner(participant.Name, plannerName);
-            DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dataTable.Rows[0]["Planner_FirstDay"].ToString());
-            ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartTime"].ToString());
-            ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopTime"].ToString());
-            ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_Interval"].ToString());
+            DataTable plannerSample = DbAdapter.GetPlanner(participant.Name, plannerName);
+            DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), plannerSample.Rows[0]["Planner_FirstDay"].ToString());
+            ClockTime startTime = ExtractClockTime(plannerSample.Rows[0]["Planner_StartTime"].ToString());
+            ClockTime stopTime = ExtractClockTime(plannerSample.Rows[0]["Planner_StopTime"].ToString());
+            ClockTimeInterval interval = ExtractClockTimeInterval(plannerSample.Rows[0]["Planner_Interval"].ToString());
             DataTable task = ExtractTask(firstDay, startTime, stopTime, interval, DbAdapter.GetTask(participant.Name, plannerName));
-            Tools.Planner planner = new Tools.Planner(participant, plannerName, firstDay, startTime, stopTime, interval, task);
-            return planner;
+            return new Tools.Planner(participant, plannerName, firstDay, startTime, stopTime, interval, task);
         }
 
         private ClockTime ExtractClockTime(string timeExpression)
@@ -154,7 +145,7 @@ namespace Planner
 
         private DataTable ExtractTask(DayOfWeek firstDay, ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval, DataTable taskSample)
         {
-            DataTable task = new DataTable("Task");
+            DataTable task = new DataTable();
 
             #region columns definition
 
@@ -259,11 +250,11 @@ namespace Planner
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            CreatePlanner(this.Participant.Name, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), ExtractIncludedDays(IncludedDaysListBox), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
+            CreatePlanner(this.Participant, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), IncludedDaysListBox.SelectedItems.Cast<string>().ToList().ConvertAll(new Converter<string, DayOfWeek>(StringToDayOfWeek)), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
             AdjustPlannerCustomizationControls();
         }
 
-        private void CreatePlanner(string participantName, string plannerName, DayOfWeek firstDay, List<DayOfWeek> IncludedDays, string startTimeSample, string stopTimeSample, string intervalSample)
+        private void CreatePlanner(Participant participant, string plannerName, DayOfWeek firstDay, List<DayOfWeek> IncludedDays, string startTimeSample, string stopTimeSample, string intervalSample)
         {
             if (plannerName.Length != 0 && startTimeSample.Length != 0 && stopTimeSample.Length != 0 && intervalSample.Length != 0)
             {
@@ -278,10 +269,10 @@ namespace Planner
                         {
                             try
                             {
-                                DataTable Tasks = GenerateTasks(startTime, stopTime, interval, IncludedDays);
-                                DbAdapter.CreatePlanner(participantName, plannerName, firstDay.ToString(), startTime.ToString(), stopTime.ToString(), interval.ToString(), Tasks);
+                                DataTable task = GenerateTasks(startTime, stopTime, interval, IncludedDays);
+                                DbAdapter.CreatePlanner(participant.Name, plannerName, firstDay.ToString(), startTime.ToString(), stopTime.ToString(), interval.ToString(), task);
                                 AdjustPlannerListBox();
-                                OpenPlanner(participantName, plannerName);
+                                OpenPlanner(participant, plannerName);
                             }
                             catch (Exception exception)
                             {
@@ -307,16 +298,6 @@ namespace Planner
             {
                 MessageBox.Show("All fields must be non-empty");
             }
-        }
-
-        private List<DayOfWeek> ExtractIncludedDays(ListBox listBox)
-        {
-            List<DayOfWeek> IncludedDays = new List<DayOfWeek>();
-            foreach (var item in listBox.SelectedItems)
-            {
-                IncludedDays.Add((DayOfWeek)item);
-            }
-            return IncludedDays;
         }
 
         private bool IsTimeFormatCorrect(string timeExpression)
@@ -353,21 +334,21 @@ namespace Planner
             }
         }
 
-        private DataTable GenerateTasks(ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval, List<DayOfWeek> includedDays)
+        private DataTable GenerateTasks(ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval, List<DayOfWeek> IncludedDays)
         {
-            DataTable Tasks = DbAdapter.GetTasksDataTable();
+            DataTable task = DbAdapter.GetTasksDataTable();
             ClockTime clockTime = new ClockTime();
-            foreach (var day in includedDays)
+            foreach (var day in IncludedDays)
             {
                 clockTime.Hour = startTime.Hour;
                 clockTime.Minute = startTime.Minute;
                 while (clockTime != stopTime)
                 {
-                    Tasks.Rows.Add(day, clockTime.ToString(), null);
+                    task.Rows.Add(day, clockTime.ToString(), null);
                     clockTime.AddInterval(interval);
                 }
             }
-            return Tasks;
+            return task;
         }
 
         #endregion
