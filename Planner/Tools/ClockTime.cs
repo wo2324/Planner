@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Planner.Tools
 {
@@ -24,9 +20,9 @@ namespace Planner.Tools
 
         #region Operators overloading 
 
-        public static bool operator ==(ClockTime clockTimeModel, ClockTime clockTimeSample)
+        public static bool operator ==(ClockTime clockTime, ClockTime clockTimeSample)
         {
-            if (clockTimeModel.Hour == clockTimeSample.Hour && clockTimeModel.Minute == clockTimeSample.Minute)
+            if (clockTime.Hour == clockTimeSample.Hour && clockTime.Minute == clockTimeSample.Minute)
             {
                 return true;
             }
@@ -36,9 +32,9 @@ namespace Planner.Tools
             }
         }
 
-        public static bool operator !=(ClockTime clockTimeModel, ClockTime clockTimeSample)
+        public static bool operator !=(ClockTime clockTime, ClockTime clockTimeSample)
         {
-            if (clockTimeModel.Hour != clockTimeSample.Hour || clockTimeModel.Minute != clockTimeSample.Minute)
+            if (clockTime.Hour != clockTimeSample.Hour || clockTime.Minute != clockTimeSample.Minute)
             {
                 return true;
             }
@@ -50,18 +46,18 @@ namespace Planner.Tools
 
         public static ClockTime operator +(ClockTime clockTime, ClockTimeInterval clockTimeInterval)
         {
-            ClockTime result = new ClockTime();
-            result.Hour = (clockTime.Hour + clockTimeInterval.Hour) % 24;
-            result.Minute = (clockTime.Minute + clockTimeInterval.Minute) % 60;
+            int hour, minute;
+            hour = (clockTime.Hour + clockTimeInterval.Hour) % 24;
+            minute = (clockTime.Minute + clockTimeInterval.Minute) % 60;
             if ((clockTime.Minute + clockTimeInterval.Minute) / 60 != 0)
             {
-                result.Hour++;
+                hour++;
             }
-            if (result.Hour == 24)
+            if (hour == 24)
             {
-                result.Hour = 0;
+                hour = 0;
             }
-            return result;
+            return new ClockTime(hour, minute);
         }
 
         #endregion 
@@ -125,18 +121,18 @@ namespace Planner.Tools
 
         public static ClockTimeInterval operator *(ClockTimeInterval clockTimeInterval, int number)
         {
-            ClockTimeInterval result = new ClockTimeInterval();
-            result.Hour = clockTimeInterval.Hour * number;
-            result.Hour = result.Hour + clockTimeInterval.Minute * number / 60;
-            result.Minute = (clockTimeInterval.Minute * number) % 60;
-            return result;
+            int hour, minute;
+            hour = clockTimeInterval.Hour * number;
+            hour = hour + clockTimeInterval.Minute * number / 60;
+            minute = (clockTimeInterval.Minute * number) % 60;
+            return new ClockTimeInterval(hour, minute);
         }
 
         #endregion 
 
         public static ClockTimeInterval GetInterval(ClockTime clockStartTime, ClockTime clockStopTime)
         {
-            int hour;
+            int hour, minute;
             if (clockStopTime.Hour - clockStartTime.Hour >= 0)
             {
                 hour = clockStopTime.Hour - clockStartTime.Hour;
@@ -145,8 +141,6 @@ namespace Planner.Tools
             {
                 hour = (clockStopTime.Hour - clockStartTime.Hour) + 24;
             }
-
-            int minute;
             if (clockStopTime.Minute - clockStartTime.Minute >= 0)
             {
                 minute = clockStopTime.Minute - clockStartTime.Minute;
@@ -156,7 +150,6 @@ namespace Planner.Tools
                 minute = (clockStopTime.Minute - clockStartTime.Minute) + 60;
                 hour--;
             }
-
             return new ClockTimeInterval(hour, minute);
         }
     }
