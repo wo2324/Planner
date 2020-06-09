@@ -259,28 +259,29 @@ namespace Planner
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            CreatePlanner();
+            CreatePlanner(this.Participant.Name, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), ExtractIncludedDays(IncludedDaysListBox), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
             AdjustPlannerCustomizationControls();
         }
 
-        private void CreatePlanner()
+        private void CreatePlanner(string participantName, string plannerName, DayOfWeek firstDay, List<DayOfWeek> IncludedDays, string startTimeSample, string stopTimeSample, string intervalSample)
         {
-            if (PlannerNameTextBox.Text.Length != 0 && StartTimeTextBox.Text.Length != 0 && StopTimeTextBox.Text.Length != 0 && IntervalTextBox.Text.Length != 0)
+            if (plannerName.Length != 0 && startTimeSample.Length != 0 && stopTimeSample.Length != 0 && intervalSample.Length != 0)
             {
-                if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(PlannerNameTextBox.Text))
+                if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerName))
                 {
-                    if (IsTimeFormatCorrect(StartTimeTextBox.Text) && IsTimeFormatCorrect(StopTimeTextBox.Text) && IsTimeFormatCorrect(IntervalTextBox.Text))
+                    if (IsTimeFormatCorrect(startTimeSample) && IsTimeFormatCorrect(stopTimeSample) && IsTimeFormatCorrect(intervalSample))
                     {
-                        ClockTime clockStartTime = ExtractClockTime(StartTimeTextBox.Text);
-                        ClockTime clockStopTime = ExtractClockTime(StopTimeTextBox.Text);
-                        ClockTimeInterval interval = ExtractClockTimeInterval(IntervalTextBox.Text);
-                        if (IsTimeOverlap(clockStartTime, clockStopTime, interval))
+                        ClockTime startTime = ExtractClockTime(startTimeSample);
+                        ClockTime stopTime = ExtractClockTime(stopTimeSample);
+                        ClockTimeInterval interval = ExtractClockTimeInterval(intervalSample);
+                        if (IsTimeOverlap(startTime, stopTime, interval))
                         {
                             try
                             {
-                                CreatePlanner(this.Participant.Name, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), ExtractIncludedDays(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
+                                DataTable Tasks = GenerateTasks(startTime, stopTime, interval, IncludedDays);
+                                DbAdapter.CreatePlanner(participantName, plannerName, firstDay.ToString(), startTime.ToString(), stopTime.ToString(), interval.ToString(), Tasks);
                                 AdjustPlannerListBox();
-                                OpenPlanner(this.Participant.Name, PlannerNameTextBox.Text);
+                                OpenPlanner(participantName, plannerName);
                             }
                             catch (Exception exception)
                             {
@@ -299,13 +300,23 @@ namespace Planner
                 }
                 else
                 {
-                    MessageBox.Show($"Planner {PlannerNameTextBox.Text} already exists");
+                    MessageBox.Show($"Planner {plannerName} already exists");
                 }
             }
             else
             {
                 MessageBox.Show("All fields must be non-empty");
             }
+        }
+
+        private List<DayOfWeek> ExtractIncludedDays(ListBox listBox)
+        {
+            List<DayOfWeek> IncludedDays = new List<DayOfWeek>();
+            foreach (var item in listBox.SelectedItems)
+            {
+                IncludedDays.Add((DayOfWeek)item);
+            }
+            return IncludedDays;
         }
 
         private bool IsTimeFormatCorrect(string timeExpression)
@@ -325,63 +336,38 @@ namespace Planner
             return false;
         }
 
-        private bool IsTimeOverlap(ClockTime clockStartTime, ClockTime clockStopTime, ClockTimeInterval interval)
+        private bool IsTimeOverlap(ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval)
         {
-            ClockTimeInterval differentialInterval = ClockTimeInterval.GetInterval(clockStartTime, clockStopTime);
+            ClockTimeInterval differentialInterval = ClockTimeInterval.GetInterval(startTime, stopTime);
             while (true)
             {
                 if (differentialInterval.Hour == 0 && differentialInterval.Minute == 0)
                 {
                     return true;
                 }
-                try
-                {
-                    differentialInterval.SubtractInterval(interval);
-                }
-                catch (NegativeIntervalException negativeIntervalException)
+                else if (differentialInterval.Hour < 0 || differentialInterval.Minute < 0)
                 {
                     return false;
                 }
+                differentialInterval.SubtractInterval(interval);
             }
         }
 
-        private List<DayOfWeek> ExtractIncludedDays(ListBox listBox)
+        private DataTable GenerateTasks(ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval, List<DayOfWeek> includedDays)
         {
-            List<DayOfWeek> IncludedDays = new List<DayOfWeek>();
-            foreach (var item in listBox.SelectedItems)
-            {
-                IncludedDays.Add((DayOfWeek)item);
-            }
-            return IncludedDays;
-        }
-
-        private void CreatePlanner(string participantName, string plannerName, DayOfWeek firstDay, List<DayOfWeek> includedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
-        {
-            Tools.Planner planner = new Tools.Planner(this.Participant, plannerName, firstDay, startHour, stopHour, timeSpan);
-            DataTable Tasks = GenerateTasks(planner, includedDays);
-            CreatePlanner(participantName, planner, Tasks);
-        }
-
-        private DataTable GenerateTasks(Tools.Planner planner, List<DayOfWeek> includedDays)
-        {
-            DataTable plannerTasks = DbAdapter.GetTasksDataTable();
+            DataTable Tasks = DbAdapter.GetTasksDataTable();
             ClockTime clockTime = new ClockTime();
             foreach (var day in includedDays)
             {
-                clockTime.Hour = planner.StartTime.Hour;
-                clockTime.Minute = planner.StartTime.Minute;
-                while (clockTime != planner.StopTime)
+                clockTime.Hour = startTime.Hour;
+                clockTime.Minute = startTime.Minute;
+                while (clockTime != stopTime)
                 {
-                    plannerTasks.Rows.Add(day, clockTime.ToString(), null);
-                    clockTime.AddInterval(planner.Interval);
+                    Tasks.Rows.Add(day, clockTime.ToString(), null);
+                    clockTime.AddInterval(interval);
                 }
             }
-            return plannerTasks;
-        }
-
-        private void CreatePlanner(string participantName, Tools.Planner planner, DataTable plannerTasks)
-        {
-            DbAdapter.CreatePlanner(participantName, planner.Name, planner.FirstDay.ToString(), planner.StartTime.ToString(), planner.StopTime.ToString(), planner.Interval.ToString(), plannerTasks);
+            return Tasks;
         }
 
         #endregion
