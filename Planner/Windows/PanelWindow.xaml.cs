@@ -15,7 +15,7 @@ namespace Planner
     /// </summary>
     public partial class PanelWindow : Window
     {
-        public Participant Participant { get; }
+        private Participant Participant;
 
         public PanelWindow(Participant participant)
         {
@@ -121,19 +121,19 @@ namespace Planner
 
         private void OpenPlanner(string participantName, string plannerName)
         {
-            PlannerWindow plannerWindow = new PlannerWindow(this.Participant, GetPlanner(participantName, plannerName));
+            PlannerWindow plannerWindow = new PlannerWindow(this.Participant, GetPlanner(this.Participant, plannerName));
             plannerWindow.Show();
         }
 
-        private Tools.Planner GetPlanner(string participantName, string plannerName)
+        private Tools.Planner GetPlanner(Participant participant, string plannerName)
         {
-            DataTable dataTable = DbAdapter.GetPlanner(participantName, plannerName);
+            DataTable dataTable = DbAdapter.GetPlanner(participant.Name, plannerName);
             DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dataTable.Rows[0]["Planner_FirstDay"].ToString());
             ClockTime startTime = ExtractClockTime(dataTable.Rows[0]["Planner_StartTime"].ToString());
             ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopTime"].ToString());
             ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_Interval"].ToString());
-            DataTable task = ExtractTask(firstDay, startTime, stopTime, interval, DbAdapter.GetTask(participantName, plannerName));
-            Tools.Planner planner = new Tools.Planner(this.Participant, plannerName, firstDay, startTime, stopTime, interval, task);
+            DataTable task = ExtractTask(firstDay, startTime, stopTime, interval, DbAdapter.GetTask(participant.Name, plannerName));
+            Tools.Planner planner = new Tools.Planner(participant, plannerName, firstDay, startTime, stopTime, interval, task);
             return planner;
         }
 
@@ -237,7 +237,7 @@ namespace Planner
 
         private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
         {
-            EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, PlannerListBox.SelectedItem.ToString(), AdjustPlannerListBox);
+            EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
             editPlannerWindow.ShowDialog();
         }
 

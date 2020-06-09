@@ -13,25 +13,25 @@ namespace Planner.Tools
         public ClockTimeInterval Interval { get; }
         public DataTable Task { get; set; }
 
-        public Planner(Participant Participant, string PlannerName, DayOfWeek FirstDay, ClockTime StartHour, ClockTime StopHour, ClockTimeInterval TimeSpan)
+        public Planner(Participant participant, string plannerName, DayOfWeek firstDay, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
         {
-            this.Participant = Participant;
-            this.Name = PlannerName;
-            this.FirstDay = FirstDay;
-            this.StartTime = StartHour;
-            this.StopTime = StopHour;
-            this.Interval = TimeSpan;
+            this.Participant = participant;
+            this.Name = plannerName;
+            this.FirstDay = firstDay;
+            this.StartTime = startHour;
+            this.StopTime = stopHour;
+            this.Interval = timeSpan;
         }
 
-        public Planner(Participant Participant, string PlannerName, DayOfWeek FirstDay, ClockTime StartHour, ClockTime StopHour, ClockTimeInterval TimeSpan, DataTable Task)
+        public Planner(Participant participant, string plannerName, DayOfWeek firstDay, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan, DataTable task)
         {
-            this.Participant = Participant;
-            this.Name = PlannerName;
-            this.FirstDay = FirstDay;
-            this.StartTime = StartHour;
-            this.StopTime = StopHour;
-            this.Interval = TimeSpan;
-            this.Task = Task;
+            this.Participant = participant;
+            this.Name = plannerName;
+            this.FirstDay = firstDay;
+            this.StartTime = startHour;
+            this.StopTime = stopHour;
+            this.Interval = timeSpan;
+            this.Task = task;
         }
     }
 }
