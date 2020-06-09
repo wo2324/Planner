@@ -29,7 +29,7 @@ namespace Planner
         private void AdjustControls()
         {
             AdjustPlannerListBox();
-            AdjustNewPlannerCustomizationControls();
+            AdjustPlannerCustomizationControls();
             AdjustParticipantLabel();
         }
 
@@ -46,13 +46,14 @@ namespace Planner
             }
         }
 
-        private void AdjustNewPlannerCustomizationControls()
+        private void AdjustPlannerCustomizationControls()
         {
+            PlannerNameTextBox.Clear();
             AdjustFirstDayComboBox();
             AdjustIncludedDaysListBox();
-            AdjustNewPlannerStartHourTextBox();
-            AdjustNewPlannerStopHourTextBox();
-            AdjustNewPlannerTimeSpanTextBox();
+            AdjustStartHourTextBox();
+            AdjustStopHourTextBox();
+            AdjustTimeSpanTextBox();
         }
 
         private void AdjustFirstDayComboBox()
@@ -82,20 +83,20 @@ namespace Planner
             IncludedDaysListBox.ItemsSource = WeekDays;
             IncludedDaysListBox.SelectAll();
         }
-        private void AdjustNewPlannerStartHourTextBox()
+        private void AdjustStartHourTextBox()
         {
             ClockTime clockTime = new ClockTime(5, 0);
-            NewPlannerStartTimeTextBox.Text = clockTime.ToString();
+            StartTimeTextBox.Text = clockTime.ToString();
         }
-        private void AdjustNewPlannerStopHourTextBox()
+        private void AdjustStopHourTextBox()
         {
             ClockTime clockTime = new ClockTime(0, 0);
-            NewPlannerStopTimeTextBox.Text = clockTime.ToString();
+            StopTimeTextBox.Text = clockTime.ToString();
         }
-        private void AdjustNewPlannerTimeSpanTextBox()
+        private void AdjustTimeSpanTextBox()
         {
             ClockTime clockTime = new ClockTime(0, 15);
-            NewPlannerIntervalTextBox.Text = clockTime.ToString();
+            IntervalTextBox.Text = clockTime.ToString();
         }
 
         private void AdjustParticipantLabel()
@@ -258,22 +259,28 @@ namespace Planner
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (NewPlannerNameTextBox.Text.Length != 0 && NewPlannerStartTimeTextBox.Text.Length != 0 && NewPlannerStopTimeTextBox.Text.Length != 0 && NewPlannerIntervalTextBox.Text.Length != 0)
+            CreatePlanner();
+            AdjustPlannerCustomizationControls();
+        }
+
+        private void CreatePlanner()
+        {
+            if (PlannerNameTextBox.Text.Length != 0 && StartTimeTextBox.Text.Length != 0 && StopTimeTextBox.Text.Length != 0 && IntervalTextBox.Text.Length != 0)
             {
-                if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(NewPlannerNameTextBox.Text))
+                if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(PlannerNameTextBox.Text))
                 {
-                    if (IsTimeFormatCorrect(NewPlannerStartTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerStopTimeTextBox.Text) && IsTimeFormatCorrect(NewPlannerIntervalTextBox.Text))
+                    if (IsTimeFormatCorrect(StartTimeTextBox.Text) && IsTimeFormatCorrect(StopTimeTextBox.Text) && IsTimeFormatCorrect(IntervalTextBox.Text))
                     {
-                        ClockTime clockStartTime = ExtractClockTime(NewPlannerStartTimeTextBox.Text);
-                        ClockTime clockStopTime = ExtractClockTime(NewPlannerStopTimeTextBox.Text);
-                        ClockTimeInterval interval = ExtractClockTimeInterval(NewPlannerIntervalTextBox.Text);
+                        ClockTime clockStartTime = ExtractClockTime(StartTimeTextBox.Text);
+                        ClockTime clockStopTime = ExtractClockTime(StopTimeTextBox.Text);
+                        ClockTimeInterval interval = ExtractClockTimeInterval(IntervalTextBox.Text);
                         if (IsTimeOverlap(clockStartTime, clockStopTime, interval))
                         {
                             try
                             {
-                                CreatePlanner(this.Participant.Name, NewPlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), ExtractIncludedDays(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
+                                CreatePlanner(this.Participant.Name, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), ExtractIncludedDays(IncludedDaysListBox), clockStartTime, clockStopTime, interval);
                                 AdjustPlannerListBox();
-                                OpenPlanner(this.Participant.Name, NewPlannerNameTextBox.Text);
+                                OpenPlanner(this.Participant.Name, PlannerNameTextBox.Text);
                             }
                             catch (Exception exception)
                             {
@@ -292,16 +299,13 @@ namespace Planner
                 }
                 else
                 {
-                    MessageBox.Show($"Planner {NewPlannerNameTextBox.Text} already exists");
+                    MessageBox.Show($"Planner {PlannerNameTextBox.Text} already exists");
                 }
             }
             else
             {
                 MessageBox.Show("All fields must be non-empty");
             }
-
-            NewPlannerNameTextBox.Clear();
-            AdjustNewPlannerCustomizationControls();
         }
 
         private bool IsTimeFormatCorrect(string timeExpression)

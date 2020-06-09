@@ -35,7 +35,7 @@
                 <Label Style="{StaticResource Label1Style}" Content="Create new planner"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
-                <TextBox x:Name="NewPlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
+                <TextBox x:Name="PlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
                 <Expander Style="{StaticResource ExpanderStyle}" Header="Custom">
                     <ScrollViewer Height="230" ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <StackPanel>
@@ -44,11 +44,11 @@
                             <Label Style="{StaticResource Label3Style}" Content="Included days"/>
                             <ListBox x:Name="IncludedDaysListBox" SelectionMode="Extended"/>
                             <Label Style="{StaticResource Label3Style}" Content="Start time"/>
-                            <TextBox x:Name="NewPlannerStartTimeTextBox" Style="{StaticResource TextBoxStyle}"/>
+                            <TextBox x:Name="StartTimeTextBox" Style="{StaticResource TextBoxStyle}"/>
                             <Label Style="{StaticResource Label3Style}" Content="Stop time"/>
-                            <TextBox x:Name="NewPlannerStopTimeTextBox" Style="{StaticResource TextBoxStyle}"/>
+                            <TextBox x:Name="StopTimeTextBox" Style="{StaticResource TextBoxStyle}"/>
                             <Label Style="{StaticResource Label3Style}" Content="Time interval"/>
-                            <TextBox x:Name="NewPlannerIntervalTextBox" Style="{StaticResource TextBoxStyle}"/>
+                            <TextBox x:Name="IntervalTextBox" Style="{StaticResource TextBoxStyle}"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Expander>
