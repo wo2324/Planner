@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Planner.Classes
+namespace Planner.Tools
 {
     public static class DbAdapter
     {
@@ -137,7 +137,7 @@ namespace Planner.Classes
             DataTable plannerTasks = new DataTable("Task");
             plannerTasks.Columns.Add("tvp_Task_Day", typeof(string));
             plannerTasks.Columns.Add("tvp_Task_Time", typeof(string));
-            plannerTasks.Columns.Add("tvp_Task_TaskType", typeof(int));
+            plannerTasks.Columns.Add("tvp_Task_TaskType_Id", typeof(int));
             return plannerTasks;
         }
 
@@ -342,9 +342,7 @@ namespace Planner.Classes
             }
         }
 
-        #endregion
-
-        public static void EditTask(string participantName, string plannerName, DataTable task)
+        public static void EditTasks(string participantName, string plannerName, DataTable task)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -355,11 +353,44 @@ namespace Planner.Classes
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.CommandText = "mc.usp_TaskEdit";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Id", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_tvp_Task", task));
                     sqlCommand.ExecuteNonQuery();
                 }
             }
         }
+
+        public static DataTable GetTaskType(string participantName, string plannerName, string taskTypeName)
+        {
+            string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = "plann.usp_TaskTypeGet";
+                    sqlCommand.Parameters.Add(new SqlParameter("@v_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@v_Planner_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@v_TaskType_Name", taskTypeName));
+
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
+
+                    if (sqlConnection.State == ConnectionState.Closed)
+                    {
+                        sqlConnection.Open();
+                    }
+
+                    DataSet dataSet = new DataSet();
+                    sqlDataAdapter.Fill(dataSet);
+
+                    return dataSet.Tables[0];
+                }
+            }
+        }
+
+        #endregion
     }
 }

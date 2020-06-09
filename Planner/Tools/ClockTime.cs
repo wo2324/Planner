@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Planner.Classes
+namespace Planner.Tools
 {
     public class ClockTime
     {

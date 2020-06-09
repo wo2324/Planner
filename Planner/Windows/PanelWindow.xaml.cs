@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Planner.Classes;
+using Planner.Tools;
 using Planner.Windows;
 
 namespace Planner
@@ -125,7 +125,7 @@ namespace Planner
             plannerWindow.Show();
         }
 
-        private Classes.Planner GetPlanner(string participantName, string plannerName)
+        private Tools.Planner GetPlanner(string participantName, string plannerName)
         {
             DataTable dataTable = DbAdapter.GetPlanner(participantName, plannerName);
             DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dataTable.Rows[0]["Planner_FirstDay"].ToString());
@@ -133,7 +133,7 @@ namespace Planner
             ClockTime stopTime = ExtractClockTime(dataTable.Rows[0]["Planner_StopTime"].ToString());
             ClockTimeInterval interval = ExtractClockTimeInterval(dataTable.Rows[0]["Planner_Interval"].ToString());
             DataTable task = ExtractTask(firstDay, startTime, stopTime, interval, DbAdapter.GetTask(participantName, plannerName));
-            Classes.Planner planner = new Classes.Planner(this.Participant, plannerName, firstDay, startTime, stopTime, interval, task);
+            Tools.Planner planner = new Tools.Planner(this.Participant, plannerName, firstDay, startTime, stopTime, interval, task);
             return planner;
         }
 
@@ -353,12 +353,12 @@ namespace Planner
 
         private void CreatePlanner(string participantName, string plannerName, DayOfWeek firstDay, List<DayOfWeek> includedDays, ClockTime startHour, ClockTime stopHour, ClockTimeInterval timeSpan)
         {
-            Classes.Planner planner = new Classes.Planner(this.Participant, plannerName, firstDay, startHour, stopHour, timeSpan);
+            Tools.Planner planner = new Tools.Planner(this.Participant, plannerName, firstDay, startHour, stopHour, timeSpan);
             DataTable Tasks = GenerateTasks(planner, includedDays);
             CreatePlanner(participantName, planner, Tasks);
         }
 
-        private DataTable GenerateTasks(Classes.Planner planner, List<DayOfWeek> includedDays)
+        private DataTable GenerateTasks(Tools.Planner planner, List<DayOfWeek> includedDays)
         {
             DataTable plannerTasks = DbAdapter.GetTasksDataTable();
             ClockTime clockTime = new ClockTime();
@@ -375,7 +375,7 @@ namespace Planner
             return plannerTasks;
         }
 
-        private void CreatePlanner(string participantName, Classes.Planner planner, DataTable plannerTasks)
+        private void CreatePlanner(string participantName, Tools.Planner planner, DataTable plannerTasks)
         {
             DbAdapter.CreatePlanner(participantName, planner.Name, planner.FirstDay.ToString(), planner.StartTime.ToString(), planner.StopTime.ToString(), planner.Interval.ToString(), plannerTasks);
         }

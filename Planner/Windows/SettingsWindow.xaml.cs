@@ -1,4 +1,4 @@
-﻿using Planner.Classes;
+﻿using Planner.Tools;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +10,7 @@ namespace Planner
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        public Participant Participant;
+        private Participant Participant;
 
         public SettingsWindow(Participant Participant)
         {
@@ -128,7 +128,6 @@ namespace Planner
             else
             {
                 MessageBox.Show("Password field must be filled");
-                PasswordBox.Clear();
             }
         }
 

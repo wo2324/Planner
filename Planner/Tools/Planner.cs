@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Data;
 
-namespace Planner.Classes
+namespace Planner.Tools
 {
     public class Planner
     {
         public Participant Participant { get; }
-        public string Name { get; }
+        public string Name { get; set;  }
         public DayOfWeek FirstDay { get; set; }
         public ClockTime StartTime { get; }
         public ClockTime StopTime { get; }

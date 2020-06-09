@@ -1,4 +1,5 @@
-﻿using Planner.Classes;
+﻿using Planner.Tools;
+using System;
 using System.Windows;
 
 namespace Planner.Windows
@@ -10,27 +11,27 @@ namespace Planner.Windows
     /// </summary>
     public partial class EditPlannerWindow : Window
     {
-        Participant Participant;
-        string PlannerName;
-        AdjustPlannerListBox AdjustPlannerListBox;
+        private Participant Participant;
+        private Tools.Planner Planner;
+        private AdjustPlannerListBox AdjustPlannerListBox;
 
-        public EditPlannerWindow(Participant participant, string plannerName, AdjustPlannerListBox adjustPlannerListBox)
+        public EditPlannerWindow(Participant participant, Tools.Planner planner, AdjustPlannerListBox adjustPlannerListBox)
         {
             this.Participant = participant;
-            this.PlannerName = plannerName;
+            this.Planner = planner;
             this.AdjustPlannerListBox = adjustPlannerListBox;
             InitializeComponent();
-            AdjustControls(plannerName);
+            AdjustControls();
         }
 
-        private void AdjustControls(string plannerName)
+        private void AdjustControls()
         {
-            PlannerNameTextBox.Text = plannerName;
+            PlannerNameTextBox.Text = this.Planner.Name;
         }
 
         private void RenamePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            RenamePlanner(this.Participant.Name, this.PlannerName, PlannerNewNameTextBox.Text, out bool rename);
+            RenamePlanner(this.Participant.Name, this.Planner.Name, PlannerNewNameTextBox.Text, out bool rename);
             if (rename)
             {
                 this.AdjustPlannerListBox();
@@ -46,22 +47,27 @@ namespace Planner.Windows
                 {
                     if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(participantName)).Contains(plannerNewName))
                     {
-                        DbAdapter.RenamePlanner(participantName, plannerName, plannerNewName);
-                        rename = true;
-                        AdjustControls(plannerNewName);
-                        PlannerNewNameTextBox.Clear();
-                        MessageBox.Show("Planner has been renamed");
+                        try
+                        {
+                            DbAdapter.RenamePlanner(participantName, plannerName, plannerNewName);
+                            this.Planner.Name = plannerNewName;
+                            rename = true;
+                            AdjustControls();
+                            MessageBox.Show("Planner has been renamed");
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show(exception.Message);
+                        }
                     }
                     else
                     {
                         MessageBox.Show($"Planner {plannerNewName} already exists");
-                        PlannerNewNameTextBox.Clear();
                     }
                 }
                 else
                 {
                     MessageBox.Show("The planner new name must be different from the current one");
-                    PlannerNewNameTextBox.Clear();
                 }
             }
             else

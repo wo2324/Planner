@@ -1,4 +1,4 @@
-﻿using Planner.Classes;
+using Planner.Tools;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,9 +18,9 @@ namespace Planner
     public partial class PlannerWindow : Window
     {
         public Participant Participant { get; }
-        public Classes.Planner Planner { get; }
+        public Tools.Planner Planner { get; }
 
-        public PlannerWindow(Participant Participant, Classes.Planner Planner)
+        public PlannerWindow(Participant Participant, Tools.Planner Planner)
         {
             this.Participant = Participant;
             this.Planner = Planner;
