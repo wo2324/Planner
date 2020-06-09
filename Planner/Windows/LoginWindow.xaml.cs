@@ -18,6 +18,7 @@ namespace Planner
         private void LogInButton_Click(object sender, RoutedEventArgs e)
         {
             LogIn(LoginTextBox.Text, PasswordBox.Password);
+            PasswordBox.Clear();
         }
 
         public void LogIn(string login, string password)
@@ -37,19 +38,16 @@ namespace Planner
                     else
                     {
                         MessageBox.Show("Bad user name or password");
-                        PasswordBox.Clear();
                     }
                 }
                 catch (Exception exception)
                 {
                     MessageBox.Show(exception.Message);
-                    PasswordBox.Clear();
                 }
             }
             else
             {
                 MessageBox.Show("All fields must be filled");
-                PasswordBox.Clear();
             }
         }
 

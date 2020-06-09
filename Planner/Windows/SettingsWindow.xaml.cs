@@ -21,6 +21,7 @@ namespace Planner
         private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
         {
             ChangePassword(OldPasswordBox.Password, NewPasswordBox.Password, NewPasswordBox_Retype.Password);
+            ClearPasswordBoxes();
         }
 
         private void ChangePassword(string password, string newPassword, string newPasswordRetype)
@@ -33,49 +34,39 @@ namespace Planner
                     {
                         if (password != newPassword)
                         {
-                            try
+                            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Change password confirmation", System.Windows.MessageBoxButton.YesNo);
+                            if (messageBoxResult == MessageBoxResult.Yes)
                             {
-                                MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Change password confirmation", System.Windows.MessageBoxButton.YesNo);
-                                if (messageBoxResult == MessageBoxResult.Yes)
+                                try
                                 {
                                     DbAdapter.EditPassword(this.Participant.Name, newPassword);
                                     this.Participant.Password = newPassword;
                                     MessageBox.Show("Password has been edit");
-                                    ClearPasswordBoxes();
                                 }
-                                else
+                                catch (Exception exception)
                                 {
-                                    ClearPasswordBoxes();
+                                    MessageBox.Show(exception.Message);
                                 }
-                            }
-                            catch (Exception exception)
-                            {
-                                MessageBox.Show(exception.Message);
-                                ClearPasswordBoxes();
                             }
                         }
                         else
                         {
                             MessageBox.Show("The new password must be different from the current one");
-                            ClearPasswordBoxes();
                         }
                     }
                     else
                     {
                         MessageBox.Show("Given new passwords are non-identical");
-                        ClearPasswordBoxes();
                     }
                 }
                 else
                 {
                     MessageBox.Show("Bad password");
-                    ClearPasswordBoxes();
                 }
             }
             else
             {
                 MessageBox.Show("All fields must be filled");
-                ClearPasswordBoxes();
             }
         }
 
@@ -89,6 +80,7 @@ namespace Planner
         private void DeleteAccountButton_Click(object sender, RoutedEventArgs e)
         {
             DeleteAccount(PasswordBox.Password);
+            PasswordBox.Clear();
         }
 
         private void DeleteAccount(string password)
@@ -97,32 +89,26 @@ namespace Planner
             {
                 if (this.Participant.Password == password)
                 {
-                    try
+                    MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete confirmation", System.Windows.MessageBoxButton.YesNo);
+                    if (messageBoxResult == MessageBoxResult.Yes)
                     {
-                        MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete confirmation", System.Windows.MessageBoxButton.YesNo);
-                        if (messageBoxResult == MessageBoxResult.Yes)
+                        try
                         {
                             DbAdapter.DeleteAccount(this.Participant.Name);
+                            MessageBox.Show($"Account {this.Participant.Name} has been deleted");
                             LogInWindow logInWindow = new LogInWindow();
                             logInWindow.Show();
                             CloseWindows();
-                            MessageBox.Show($"Account {this.Participant.Name} has been deleted");
                         }
-                        else if (messageBoxResult == MessageBoxResult.No)
+                        catch (Exception exception)
                         {
-                            PasswordBox.Clear();
+                            MessageBox.Show(exception.Message);
                         }
-                    }
-                    catch (Exception exception)
-                    {
-                        MessageBox.Show(exception.Message);
-                        PasswordBox.Clear();
                     }
                 }
                 else
                 {
                     MessageBox.Show("Bad password");
-                    PasswordBox.Clear();
                 }
             }
             else

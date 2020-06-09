@@ -19,6 +19,7 @@ namespace Planner
         private void SignUpButton_Click(object sender, RoutedEventArgs e)
         {
             SignUp(LoginTextBox.Text, PasswordBox.Password, PasswordBox_Retype.Password);
+            ClearPasswordBoxes();
         }
 
         private void SignUp(string login, string password, string passwordRetype)
@@ -39,24 +40,20 @@ namespace Planner
                     {
                         MessageBox.Show($"Account {login} already exists");
                         LoginTextBox.Clear();
-                        ClearPasswordBoxes();
                     }
                     catch (Exception exception)
                     {
                         MessageBox.Show(exception.Message);
-                        ClearPasswordBoxes();
                     }
                 }
                 else
                 {
                     MessageBox.Show("Given passwords are non-identical");
-                    ClearPasswordBoxes();
                 }
             }
             else
             {
                 MessageBox.Show("All fields must be filled");
-                ClearPasswordBoxes();
             }
         }
 

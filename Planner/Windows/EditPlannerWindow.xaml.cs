@@ -31,16 +31,12 @@ namespace Planner.Windows
 
         private void RenamePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            RenamePlanner(this.Participant.Name, this.Planner.Name, PlannerNewNameTextBox.Text, out bool rename);
-            if (rename)
-            {
-                this.AdjustPlannerListBox();
-            }
+            RenamePlanner(this.Participant.Name, this.Planner.Name, PlannerNewNameTextBox.Text);
+            this.AdjustPlannerListBox();
         }
 
-        private void RenamePlanner(string participantName, string plannerName, string plannerNewName, out bool rename)
+        private void RenamePlanner(string participantName, string plannerName, string plannerNewName)
         {
-            rename = false;
             if (plannerNewName.Length != 0)
             {
                 if (plannerName != plannerNewName)
@@ -51,7 +47,6 @@ namespace Planner.Windows
                         {
                             DbAdapter.RenamePlanner(participantName, plannerName, plannerNewName);
                             this.Planner.Name = plannerNewName;
-                            rename = true;
                             AdjustControls();
                             MessageBox.Show("Planner has been renamed");
                         }
