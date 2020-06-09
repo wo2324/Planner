@@ -48,7 +48,6 @@ namespace Planner.Tools
         {
             int hour, minute;
             hour = (clockTime.Hour + clockTimeInterval.Hour) % 24;
-            minute = (clockTime.Minute + clockTimeInterval.Minute) % 60;
             if ((clockTime.Minute + clockTimeInterval.Minute) / 60 != 0)
             {
                 hour++;
@@ -57,6 +56,7 @@ namespace Planner.Tools
             {
                 hour = 0;
             }
+            minute = (clockTime.Minute + clockTimeInterval.Minute) % 60;
             return new ClockTime(hour, minute);
         }
 
@@ -70,7 +70,6 @@ namespace Planner.Tools
         public void AddInterval(ClockTimeInterval interval)
         {
             this.Hour = (this.Hour + interval.Hour) % 24;
-            this.Minute = (this.Minute + interval.Minute) % 60;
             if ((this.Minute + interval.Minute) / 60 != 0)
             {
                 this.Hour++;
@@ -79,14 +78,11 @@ namespace Planner.Tools
             {
                 this.Hour = 0;
             }
+            this.Minute = (this.Minute + interval.Minute) % 60;
         }
 
         public void SubtractInterval(ClockTimeInterval interval)
         {
-            if (this.Hour < interval.Hour || this.Hour == interval.Hour && this.Minute < interval.Minute)
-            {
-                throw new NegativeIntervalException();
-            }
             this.Hour = this.Hour - interval.Hour;
             if (this.Minute - interval.Minute >= 0)
             {
@@ -94,16 +90,9 @@ namespace Planner.Tools
             }
             else
             {
-                this.Minute = (this.Minute - interval.Minute) + 60;
                 this.Hour--;
+                this.Minute = (this.Minute - interval.Minute) + 60;
             }
-        }
-    }
-
-    public class NegativeIntervalException : ApplicationException
-    {
-        public NegativeIntervalException()
-        {
         }
     }
 
@@ -147,8 +136,8 @@ namespace Planner.Tools
             }
             else
             {
-                minute = (clockStopTime.Minute - clockStartTime.Minute) + 60;
                 hour--;
+                minute = (clockStopTime.Minute - clockStartTime.Minute) + 60;
             }
             return new ClockTimeInterval(hour, minute);
         }
