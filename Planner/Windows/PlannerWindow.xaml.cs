@@ -1,4 +1,4 @@
-using Planner.Tools;
+﻿using Planner.Tools;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,7 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Media;
 using DataGridCell = System.Windows.Controls.DataGridCell;
-using MessageBox = System.Windows.Forms.MessageBox;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Planner
 {
@@ -17,64 +17,63 @@ namespace Planner
     /// </summary>
     public partial class PlannerWindow : Window
     {
-        public Participant Participant { get; }
-        public Tools.Planner Planner { get; }
+        private Participant Participant;
+        private Tools.Planner Planner;
 
-        public PlannerWindow(Participant Participant, Tools.Planner Planner)
+        public PlannerWindow(Participant participant, Tools.Planner planner)
         {
-            this.Participant = Participant;
-            this.Planner = Planner;
+            this.Participant = participant;
+            this.Planner = planner;
             InitializeComponent();
-            AdjustControls(true);
+            AdjustControls();
         }
 
         #region Controls adjustment
 
-        private void AdjustControls(bool initializeCall)
+        private void AdjustControls()
         {
             AdjustPlannerDataGrid();
-            AdjustPlannerPanel(initializeCall);
+            AdjustPlannerPanel(true);
         }
 
         private void AdjustPlannerDataGrid()
         {
-            PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-            AdjustPlannerDataGrid(PlannerDataGrid);
-        }
-
-        #region PlannerDataGrid adjustment
-
-        private void AdjustPlannerDataGrid(System.Windows.Controls.DataGrid dataGrid)
-        {
-            DataTable TaskTypes = DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name);
-
-            for (int i = 0; i < PlannerDataGrid.Items.Count; i++)
+            try
             {
-                for (int j = 0; j < PlannerDataGrid.Columns.Count; j++)
+                PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
+                DataTable taskType = DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name);
+                for (int i = 0; i < PlannerDataGrid.Items.Count; i++)
                 {
-                    DataGridCell dataGridCell = GetCell(dataGrid, i, j);
-                    TextBlock TextBlock = dataGridCell.Content as TextBlock;
-                    if (TextBlock.Text == null)
+                    for (int j = 0; j < PlannerDataGrid.Columns.Count; j++)
                     {
-                        break;
-                    }
-                    foreach (DataRow dataRow in TaskTypes.Rows)
-                    {
-                        if (TextBlock.Text == dataRow["TaskType_Name"].ToString())
+                        DataGridCell dataGridCell = GetCell(PlannerDataGrid, i, j);
+                        TextBlock TextBlock = dataGridCell.Content as TextBlock;
+                        if (TextBlock.Text == null)
                         {
-                            if ((bool)dataRow["TaskType_TextVisibility"])
-                            {
-                                dataGridCell.Visibility = Visibility.Visible;
-                            }
-                            else
-                            {
-                                dataGridCell.Visibility = Visibility.Hidden;
-                            }
-                            dataGridCell.Background = GetBrush(dataRow["TaskType_Color"].ToString());
                             break;
+                        }
+                        foreach (DataRow dataRow in taskType.Rows)
+                        {
+                            if (TextBlock.Text == dataRow["TaskType_Name"].ToString())
+                            {
+                                if ((bool)dataRow["TaskType_TextVisibility"])
+                                {
+                                    dataGridCell.Visibility = Visibility.Visible;
+                                }
+                                else
+                                {
+                                    dataGridCell.Visibility = Visibility.Hidden;
+                                }
+                                dataGridCell.Background = GetBrush(dataRow["TaskType_Color"].ToString());
+                                break;
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
             }
         }
 
@@ -129,16 +128,21 @@ namespace Planner
             return child;
         }
 
-        #endregion
-
         private void AdjustPlannerPanel(bool initializeCall)
         {
-            AdjustTaskCreationControls();
-            AdjustAssignedTasksListBox();
-            AdjustPlannerDetailsListBox();
-            if (initializeCall)
+            try
             {
-                AdjustExpanders();
+                AdjustTaskCreationControls();
+                AdjustAssignedTasksListBox();
+                AdjustPlannerDetailsListBox();
+                if (initializeCall)
+                {
+                    AdjustExpanders();
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
             }
         }
 
@@ -158,20 +162,35 @@ namespace Planner
 
         private void AdjustAssignedTasksListBox()
         {
-            List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
-            if (TasksTypes.Count == 0)
+            try
             {
-                AssignedTasksTypesListBox.Visibility = Visibility.Hidden;
+                List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
+                if (TasksTypes.Count == 0)
+                {
+                    AssignedTasksTypesListBox.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    AssignedTasksTypesListBox.ItemsSource = TasksTypes;
+                }
             }
-            else
+            catch (Exception)
             {
-                AssignedTasksTypesListBox.ItemsSource = TasksTypes;
+                throw;
             }
         }
 
+        //TODO
         private void AdjustPlannerDetailsListBox()
         {
+            try
+            {
 
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private void AdjustExpanders()
@@ -196,69 +215,27 @@ namespace Planner
             e.Row.Header = (Planner.StartTime + Planner.Interval * e.Row.GetIndex()).ToString();
         }
 
-        #region Buttons
-
         private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            Save(this.Participant.Name, this.Planner.Name, this.Planner.StartTime, this.Planner.StopTime, this.Planner.Interval, this.Planner.Task);
+        }
+
+        private void Save(string participantName, string plannerName, ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval, DataTable taskSample)
         {
             try
             {
-                DataView dataView = PlannerDataGrid.ItemsSource as DataView;
-                DataTable dataTable = dataView.ToTable();
-                DataTable result = new DataTable("Result");
-                result.Columns.Add("task", typeof(string));
-                result.Columns.Add("day", typeof(string));
-                result.Columns.Add("time", typeof(string));
-
-                string StartTime = "05:00";
-                string StopTime = "00:00";
-                string TimeSpan = "00:30";
-
-                int counter = 0;
-                string day;
-                string hour;
-                //value, day, hour
-                int startHour = Int32.Parse(StartTime.Substring(0, 2));
-                int startMinute = Int32.Parse(StartTime.Substring(3, 2));
-                int stopHour = Int32.Parse(StopTime.Substring(0, 2));
-                int stopMinute = Int32.Parse(StopTime.Substring(3, 2));
-                int timeSpanHour = Int32.Parse(TimeSpan.Substring(0, 2));
-                int timeSpanMinute = Int32.Parse(TimeSpan.Substring(3, 2));
-
-                int actualHour = startHour;
-                int actualMinute = startMinute;
-
-                while (actualHour != stopHour)
+                DataTable task = DbAdapter.GetTasksDataTable();
+                ClockTime clockTime = new ClockTime(startTime.Hour, startTime.Minute);
+                int number = 0;
+                while (number < taskSample.Rows.Count)
                 {
-                    while (actualMinute != 60)
+                    foreach (DataColumn dataColumn in taskSample.Columns)
                     {
-                        string time = $"{actualHour.ToString("D2")}:{actualMinute.ToString("D2")}";
-                        result.Rows.Add(dataTable.Rows[counter]["Monday"], "Monday", time);
-                        result.Rows.Add(dataTable.Rows[counter]["Tuesday"], "Tuesday", time);
-                        result.Rows.Add(dataTable.Rows[counter]["Wednesday"], "Wednesday", time);
-                        result.Rows.Add(dataTable.Rows[counter]["Thursday"], "Thursday", time);
-                        result.Rows.Add(dataTable.Rows[counter]["Friday"], "Friday", time);
-                        result.Rows.Add(dataTable.Rows[counter]["Saturday"], "Saturday", time);
-                        result.Rows.Add(dataTable.Rows[counter]["Sunday"], "Sunday", time);
-                        actualMinute += timeSpanMinute;
-                        counter++;
-                        if (counter == 38)
-                        {
-                            int s = 1;
-                        }
+                        task.Rows.Add(dataColumn.ColumnName, clockTime, taskSample.Rows[number++][dataColumn]);
                     }
-                    actualMinute = 0;
-                    actualHour++;
-                    if (actualHour == 24)
-                    {
-                        actualHour = 0;
-                    }
+                    clockTime.AddInterval(interval);
                 }
-
-                DbAdapter.EditTask(this.Participant.Name, this.Planner.Name, result);
-
-                //GetDataGridRows();
-                AdjustPlannerDataGridd();
-
+                DbAdapter.EditTasks(participantName, plannerName, task);
             }
             catch (Exception exception)
             {
@@ -283,46 +260,29 @@ namespace Planner
         {
             if (AssignedTasksTypesListBox.SelectedItem != null)
             {
-                IList<DataGridCellInfo> selectedCells = this.PlannerDataGrid.SelectedCells;
-                //foreach (DataGridCellInfo cell in selectedCells)
-                //{
-                //    string column = cell.Column.Header.ToString();
-                //    DataGridRow row = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(cell.Item);
-                //    //MessageBox.Show($"column: {column}, row index: {row.Header.ToString()}");
-                //}
-
-                //sprawdzić który element ListBoxa został naciśnięty
-                //sprawdzić które elementy plannera zostały wybrane
-                //zasilić tymi danymi procedurę
-                //odświerzyć planner
-
-                //..
                 string taskName = AssignedTasksTypesListBox.SelectedItem.ToString();
-
-                DataTable dataTable = new DataTable("Result");
-                dataTable.Columns.Add("task", typeof(string));
-                dataTable.Columns.Add("day", typeof(string));
-                dataTable.Columns.Add("time", typeof(string));
+                DataTable dataTable = DbAdapter.GetTaskType(this.Participant.Name, this.Planner.Name, taskName);
+                IList<DataGridCellInfo> selectedCells = this.PlannerDataGrid.SelectedCells;
                 foreach (DataGridCellInfo cell in selectedCells)
                 {
-                    string column = cell.Column.Header.ToString();
-                    DataGridRow row = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(cell.Item);
-                    dataTable.Rows.Add(taskName, column, row.Header.ToString());
+                    DataGridCell dataGridCell = (DataGridCell)cell.Column.GetCellContent(cell.Item).Parent;
+                    TextBlock TextBlock = dataGridCell.Content as TextBlock;
+                    TextBlock.Text = taskName;
+                    TextBlock.Background = GetBrush(dataTable.Rows[0]["TaskType_Color"].ToString());
+                    //if ((bool)dataTable.Rows[0]["TaskType_TextVisibility"])
+                    //{
+                    //    TextBlock.Visibility = Visibility.Visible;
+                    //}
+                    //else
+                    //{
+                    //    TextBlock.Visibility = Visibility.Hidden;
+                    //}
                 }
-
-                DbAdapter.EditTask(this.Participant.Name, this.Planner.Name, dataTable);
-                //wczytaj wszystkie taski
-                //AdjustTask();
-                PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-
-                AdjustPlannerDataGridd();
 
                 AssignedTasksTypesListBox.SelectedItem = null;
             }
 
-            //wywołanie metody która generuje statystyki
+            AdjustPlannerDetailsListBox();
         }
-
-        #endregion
     }
 }

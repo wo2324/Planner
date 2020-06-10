@@ -120,13 +120,20 @@ namespace Planner
 
         private Tools.Planner GetPlanner(Participant participant, string plannerName)
         {
-            DataTable plannerSample = DbAdapter.GetPlanner(participant.Name, plannerName);
-            DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), plannerSample.Rows[0]["Planner_FirstDay"].ToString());
-            ClockTime startTime = ExtractClockTime(plannerSample.Rows[0]["Planner_StartTime"].ToString());
-            ClockTime stopTime = ExtractClockTime(plannerSample.Rows[0]["Planner_StopTime"].ToString());
-            ClockTimeInterval interval = ExtractClockTimeInterval(plannerSample.Rows[0]["Planner_Interval"].ToString());
-            DataTable task = ExtractTask(firstDay, startTime, stopTime, interval, DbAdapter.GetTask(participant.Name, plannerName));
-            return new Tools.Planner(participant, plannerName, firstDay, startTime, stopTime, interval, task);
+            try
+            {
+                DataTable plannerSample = DbAdapter.GetPlanner(participant.Name, plannerName);
+                DayOfWeek firstDay = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), plannerSample.Rows[0]["Planner_FirstDay"].ToString());
+                ClockTime startTime = ExtractClockTime(plannerSample.Rows[0]["Planner_StartTime"].ToString());
+                ClockTime stopTime = ExtractClockTime(plannerSample.Rows[0]["Planner_StopTime"].ToString());
+                ClockTimeInterval interval = ExtractClockTimeInterval(plannerSample.Rows[0]["Planner_Interval"].ToString());
+                DataTable task = ExtractTask(firstDay, startTime, stopTime, interval, DbAdapter.GetTask(participant.Name, plannerName));
+                return new Tools.Planner(participant, plannerName, firstDay, startTime, stopTime, interval, task);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private ClockTime ExtractClockTime(string timeExpression)
@@ -247,10 +254,10 @@ namespace Planner
         #endregion
 
         #region Create Planner
-
+        
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            CreatePlanner(this.Participant, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), IncludedDaysListBox.SelectedItems.Cast<string>().ToList().ConvertAll(new Converter<string, DayOfWeek>(StringToDayOfWeek)), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
+            CreatePlanner(this.Participant, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), IncludedDaysListBox.SelectedItems.Cast<DayOfWeek>().ToList(), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
             AdjustPlannerCustomizationControls();
         }
 
