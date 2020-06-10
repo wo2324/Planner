@@ -180,9 +180,9 @@ namespace Planner
                             break;
                         }
                     }
-                    task.Rows.Add(DataRowEquivalent.ToArray());
-                    DataRowEquivalent.Clear();
                 }
+                task.Rows.Add(DataRowEquivalent.ToArray());
+                DataRowEquivalent.Clear();
                 clockTime.AddInterval(interval);
             }
 
