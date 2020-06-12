@@ -32,31 +32,30 @@ namespace Planner
 
         private void AdjustControls()
         {
-            AdjustPlannerDataGrid();
+            PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
             AdjustTaskCreationControls();
             AdjustAssignedTasksListBox();
             AdjustPlannerDetailsListBox();
         }
 
-        private void AdjustPlannerDataGrid()
+        public void AdjustPlannerDataGrid()
         {
             try
             {
-                PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
                 DataTable taskType = DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name);
                 for (int i = 0; i < PlannerDataGrid.Items.Count; i++)
                 {
                     for (int j = 0; j < PlannerDataGrid.Columns.Count; j++)
                     {
                         DataGridCell dataGridCell = DataGridExtension.GetCell(PlannerDataGrid, i, j);
-                        TextBlock TextBlock = dataGridCell.Content as TextBlock;
-                        if (TextBlock.Text == null)
+                        TextBlock textBlock = dataGridCell.Content as TextBlock;
+                        if (textBlock.Text == null)
                         {
                             break;
                         }
                         foreach (DataRow dataRow in taskType.Rows)
                         {
-                            if (TextBlock.Text == dataRow["TaskType_Name"].ToString())
+                            if (textBlock.Text == dataRow["TaskType_Name"].ToString())
                             {
                                 dataGridCell.Foreground = GetBrush(dataRow["TaskType_Foreground"].ToString());
                                 dataGridCell.Background = GetBrush(dataRow["TaskType_Background"].ToString());
@@ -97,6 +96,10 @@ namespace Planner
                 }
                 else
                 {
+                    if (AssignedTasksTypesListBox.Visibility == Visibility.Hidden)
+                    {
+                        AssignedTasksTypesListBox.Visibility = Visibility.Visible;
+                    }
                     AssignedTasksTypesListBox.ItemsSource = TasksTypes;
                 }
             }
@@ -151,6 +154,7 @@ namespace Planner
             if (AssignedTasksTypesListBox.SelectedItem != null)
             {
                 AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells);
+                AdjustPlannerDataGrid();
                 AssignedTasksTypesListBox.SelectedItem = null;
                 AdjustPlannerDetailsListBox();
             }
@@ -169,6 +173,9 @@ namespace Planner
                 DataGridRow dataGridRow = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(selectedCell.Item);
                 time = dataGridRow.Header.ToString();
                 taskTypeName = AssignedTasksTypesListBox.SelectedItem.ToString();
+                DataGridCell dataGridCell = DataGridExtension.GetCell(PlannerDataGrid, dataGridRow.GetIndex(), selectedCell.Column.DisplayIndex);
+                TextBlock textBlock = dataGridCell.Content as TextBlock;
+                textBlock.Text = taskTypeName;
                 task.Rows.Add(day, time, taskTypeName);
             }
             DbAdapter.EditTasks(participantName, plannerName, task);

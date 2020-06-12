@@ -28,7 +28,7 @@
                           LoadingRow="PlannerDataGrid_LoadingRow"/>
         </ScrollViewer>
         <StackPanel Grid.Column="1">
-            <Expander x:Name="CreateTaskTypeExpander" Style="{StaticResource ExpanderStyle}" Header="Create task type">
+            <Expander Style="{StaticResource ExpanderStyle}" Header="Create task type">
                 <StackPanel>
                     <Label Style="{StaticResource Label3Style}" Content="Name"/>
                     <TextBox x:Name="TaskTypeNameTextBox" Style="{StaticResource TextBoxStyle}"/>
@@ -43,10 +43,10 @@
                     <Button x:Name="AddTaskTypeButton" Style="{StaticResource ButtonStyle}" Content="Add task type" Click="AddTaskTypeButton_Click"/>
                 </StackPanel>
             </Expander>
-            <Expander x:Name="AssignedTasksTypesExpander" Style="{StaticResource ExpanderStyle}" Header="Assigned tasks types">
+            <Expander Style="{StaticResource ExpanderStyle}" Header="Assigned tasks types">
                 <ListBox x:Name="AssignedTasksTypesListBox" Style="{StaticResource ListBoxStyle}" SelectionChanged="AssignedTasksTypesListBox_SelectionChanged"/>
             </Expander>
-            <Expander x:Name="PlannerDetailsExpander" Style="{StaticResource ExpanderStyle}" Header="Planner details">
+            <Expander Style="{StaticResource ExpanderStyle}" Header="Planner details">
                 <ListBox x:Name="PlannerDetailsListBox" Style="{StaticResource ListBoxStyle}"/>
             </Expander>
         </StackPanel>

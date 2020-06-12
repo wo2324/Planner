@@ -111,6 +111,7 @@ namespace Planner
             {
                 PlannerWindow plannerWindow = new PlannerWindow(this.Participant, GetPlanner(participant, plannerName));
                 plannerWindow.Show();
+                plannerWindow.AdjustPlannerDataGrid();
             }
             catch (Exception exception)
             {
@@ -176,7 +177,7 @@ namespace Planner
                     {
                         if (dataColumn.ColumnName == dataRow["Task_Day"].ToString())
                         {
-                            DataRowEquivalent.Add(dataRow["Task_TaskType_Id"]);
+                            DataRowEquivalent.Add(dataRow["TaskType_Name"]);
                             break;
                         }
                     }

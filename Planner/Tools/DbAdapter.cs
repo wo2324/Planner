@@ -212,7 +212,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "plann.usp_PlannerDelete";
+                    sqlCommand.CommandText = "plann.usp_DeletePlanner";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.ExecuteNonQuery();
@@ -334,8 +334,8 @@ namespace Planner.Tools
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeForeground));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Color", taskTypeBackground));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Foreground", taskTypeForeground));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Background", taskTypeBackground));
 
                     sqlCommand.ExecuteNonQuery();
                 }
