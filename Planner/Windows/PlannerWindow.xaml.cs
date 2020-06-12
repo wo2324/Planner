@@ -113,52 +113,25 @@ namespace Planner
         {
             try
             {
-                List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
-                DataTable task = DbAdapter.GetTask(this.Participant.Name, this.Planner.Name);
-                List<PlannerDetails> PlannerDetails = new List<PlannerDetails>();
-
-                for (int i = 0; i < task.Rows.Count; i++)
-                {
-                    for (int j = 0; j < task.Columns.Count; j++)
-                    {
-                        if (task.Rows[i].ItemArray[j] == null)
-                        {
-                            break;
-                        }
-                        foreach (var taskType in TasksTypes)
-                        {
-                            if (taskType == task.Rows[i].ItemArray[j].ToString())
-                            {
-                                if (PlannerDetails.Count != 0)
-                                {
-                                    for (int k = 0; k < PlannerDetails.Count; k++)
-                                    {
-                                        if (PlannerDetails[k].TaskTypeName == taskType)
-                                        {
-                                            PlannerDetails[k].OccurrencesNumber = 12;
-                                        }
-                                    }
-                                    PlannerDetails.Add(new Planner.PlannerDetails(taskType));
-                                }
-                                else
-                                {
-                                    PlannerDetails.Add(new Planner.PlannerDetails(taskType));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                //definiuję strukturę
-                //pętla przez wszystkie komórki
-                //jeżeli wartość komórki nie jest null to foreach dla każdego typu; jak się spasuje to dodaj wartość i brake
-                //zbierz wyniki
-                //przekaż wyniki do funkcji wypisania podsumownaia
+                PlannerDetailsTextBox.Text = GetDetails(this.Participant.Name, Planner.Name);
             }
             catch (Exception)
             {
                 throw;
             }
+        }
+
+        private string GetDetails(string participantName, string plannerName)
+        {
+            string details = "";
+            List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(participantName, plannerName));
+            foreach (var taskType in TasksTypes)
+            {
+                DataTable dataTable = DbAdapter.GetOccurrencesNumber(participantName, plannerName, taskType);
+                int occurrencesNumber = Convert.ToInt32(dataTable.Rows[0]["OccurrencesNumber"].ToString());
+                details += $"{taskType}: {this.Planner.Interval * occurrencesNumber}\n";
+            }
+            return details.Substring(0, details.Length - 1);
         }
 
         #endregion
@@ -219,18 +192,6 @@ namespace Planner
                 task.Rows.Add(day, time, taskTypeName);
             }
             DbAdapter.EditTasks(participantName, plannerName, task);
-        }
-    }
-
-    public class PlannerDetails
-    {
-        public string TaskTypeName { get; }
-        public int OccurrencesNumber { get; set; }
-
-        public PlannerDetails(string taskTypeName)
-        {
-            TaskTypeName = taskTypeName;
-            OccurrencesNumber = 1;
         }
     }
 }
