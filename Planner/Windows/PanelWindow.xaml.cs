@@ -67,12 +67,12 @@ namespace Planner
         public static void ChangeWeekDaysOrder(List<DayOfWeek> WeekDays, DayOfWeek firstDay = DayOfWeek.Monday)
         {
             WeekDays.Sort();
-            int index = WeekDays.IndexOf(firstDay);
-            while (index > 0)
+            int counter = WeekDays.IndexOf(firstDay);
+            while (counter > 0)
             {
-                WeekDays.Add(WeekDays[index - 1]);
-                WeekDays.RemoveAt(index - 1);
-                index--;
+                WeekDays.Add(WeekDays[0]);
+                WeekDays.RemoveAt(0);
+                counter--;
             }
         }
 
