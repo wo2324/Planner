@@ -35,7 +35,7 @@ namespace Planner
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
             AdjustTaskCreationControls();
             AdjustAssignedTasksListBox();
-            AdjustPlannerDetailsListBox();
+            AdjustPlannerDetailsTextBox();
         }
 
         public void AdjustPlannerDataGrid()
@@ -109,11 +109,51 @@ namespace Planner
             }
         }
 
-        private void AdjustPlannerDetailsListBox()
+        private void AdjustPlannerDetailsTextBox()
         {
             try
             {
+                List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
+                DataTable task = DbAdapter.GetTask(this.Participant.Name, this.Planner.Name);
+                List<PlannerDetails> PlannerDetails = new List<PlannerDetails>();
 
+                for (int i = 0; i < task.Rows.Count; i++)
+                {
+                    for (int j = 0; j < task.Columns.Count; j++)
+                    {
+                        if (task.Rows[i].ItemArray[j] == null)
+                        {
+                            break;
+                        }
+                        foreach (var taskType in TasksTypes)
+                        {
+                            if (taskType == task.Rows[i].ItemArray[j].ToString())
+                            {
+                                if (PlannerDetails.Count != 0)
+                                {
+                                    for (int k = 0; k < PlannerDetails.Count; k++)
+                                    {
+                                        if (PlannerDetails[k].TaskTypeName == taskType)
+                                        {
+                                            PlannerDetails[k].OccurrencesNumber = 12;
+                                        }
+                                    }
+                                    PlannerDetails.Add(new Planner.PlannerDetails(taskType));
+                                }
+                                else
+                                {
+                                    PlannerDetails.Add(new Planner.PlannerDetails(taskType));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //definiuję strukturę
+                //pętla przez wszystkie komórki
+                //jeżeli wartość komórki nie jest null to foreach dla każdego typu; jak się spasuje to dodaj wartość i brake
+                //zbierz wyniki
+                //przekaż wyniki do funkcji wypisania podsumownaia
             }
             catch (Exception)
             {
@@ -156,7 +196,7 @@ namespace Planner
                 AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells);
                 AdjustPlannerDataGrid();
                 AssignedTasksTypesListBox.SelectedItem = null;
-                AdjustPlannerDetailsListBox();
+                AdjustPlannerDetailsTextBox();
             }
         }
 
@@ -179,6 +219,18 @@ namespace Planner
                 task.Rows.Add(day, time, taskTypeName);
             }
             DbAdapter.EditTasks(participantName, plannerName, task);
+        }
+    }
+
+    public class PlannerDetails
+    {
+        public string TaskTypeName { get; }
+        public int OccurrencesNumber { get; set; }
+
+        public PlannerDetails(string taskTypeName)
+        {
+            TaskTypeName = taskTypeName;
+            OccurrencesNumber = 1;
         }
     }
 }
