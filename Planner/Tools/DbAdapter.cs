@@ -174,7 +174,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_CopyPlanner";
+                    sqlCommand.CommandText = "plann.usp_CopyPlanner";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_PlannerCopy_Name", plannerCopyName));
@@ -193,7 +193,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_PlannerRename";
+                    sqlCommand.CommandText = "plann.usp_PlannerRename";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_PlannerNewName", plannerNewName));
@@ -212,7 +212,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_PlannerDelete";
+                    sqlCommand.CommandText = "plann.usp_PlannerDelete";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.ExecuteNonQuery();
@@ -352,7 +352,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "mc.usp_TaskEdit";
+                    sqlCommand.CommandText = "plann.usp_TaskEdit";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_tvp_Task", task));
