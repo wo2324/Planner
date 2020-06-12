@@ -58,15 +58,8 @@ namespace Planner
                         {
                             if (TextBlock.Text == dataRow["TaskType_Name"].ToString())
                             {
-                                if ((bool)dataRow["TaskType_TextVisibility"])
-                                {
-                                    dataGridCell.Visibility = Visibility.Visible;
-                                }
-                                else
-                                {
-                                    dataGridCell.Visibility = Visibility.Hidden;
-                                }
-                                dataGridCell.Background = GetBrush(dataRow["TaskType_Color"].ToString());
+                                dataGridCell.Foreground = GetBrush(dataRow["TaskType_Foreground"].ToString());
+                                dataGridCell.Background = GetBrush(dataRow["TaskType_Background"].ToString());
                                 break;
                             }
                         }
@@ -82,7 +75,8 @@ namespace Planner
         private void AdjustTaskCreationControls()
         {
             TaskTypeNameTextBox.Clear();
-            BackgroundColorPickerButton.Background = GetBrush("#FFDDDDDD");
+            ForegroundPickerButton.Background = GetBrush("#FFDDDDDD");
+            BackgroundPickerButton.Background = GetBrush("#FFDDDDDD");
         }
 
         private Brush GetBrush(string sample)
@@ -131,17 +125,25 @@ namespace Planner
             e.Row.Header = (Planner.StartTime + Planner.Interval * e.Row.GetIndex()).ToString();
         }
 
-        private void ColorPickerButton_Click(object sender, RoutedEventArgs e)
+        private void ForegroundPickerButton_Click(object sender, RoutedEventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
             colorDialog.ShowDialog();
-            ColorPickerButton.Background = new SolidColorBrush(Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+            ForegroundPickerButton.Background = new SolidColorBrush(Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
         }
 
-        private void AddTaskTypeButton_Click(object sender, RoutedEventArgs e)  //Do poprawy!   //Sprawdzić nazewnictwo kontrole TextBox
+        private void BackgroundPickerButton_Click(object sender, RoutedEventArgs e)
         {
-            DbAdapter.TaskTypeAdd(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, (bool)TextVisibilityRadioButton.IsChecked, ColorPickerButton.Background.ToString());
-            AdjustPlannerPanel(false);
+            ColorDialog colorDialog = new ColorDialog();
+            colorDialog.ShowDialog();
+            BackgroundPickerButton.Background = new SolidColorBrush(Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+        }
+
+        private void AddTaskTypeButton_Click(object sender, RoutedEventArgs e)
+        {
+            DbAdapter.TaskTypeAdd(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, ForegroundPickerButton.Background.ToString(), BackgroundPickerButton.Background.ToString());
+            AdjustTaskCreationControls();
+            AdjustAssignedTasksListBox();
         }
 
         private void AssignedTasksTypesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -150,6 +152,7 @@ namespace Planner
             {
                 AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells);
                 AssignedTasksTypesListBox.SelectedItem = null;
+                AdjustPlannerDetailsListBox();
             }
         }
 

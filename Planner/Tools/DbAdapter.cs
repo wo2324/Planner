@@ -320,7 +320,7 @@ namespace Planner.Tools
             return TasksTypes;
         }
 
-        public static void TaskTypeAdd(string participantName, string plannerName, string taskTypeName, bool taskTypeTextVisibility, string taskTypecolor)
+        public static void TaskTypeAdd(string participantName, string plannerName, string taskTypeName, string taskTypeForeground, string taskTypeBackground)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -334,8 +334,8 @@ namespace Planner.Tools
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeTextVisibility));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Color", taskTypecolor));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_TextVisibility", taskTypeForeground));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Color", taskTypeBackground));
 
                     sqlCommand.ExecuteNonQuery();
                 }
