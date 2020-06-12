@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Media;
+using WpfExtensions;
 using DataGridCell = System.Windows.Controls.DataGridCell;
 using MessageBox = System.Windows.MessageBox;
 
@@ -33,7 +33,9 @@ namespace Planner
         private void AdjustControls()
         {
             AdjustPlannerDataGrid();
-            AdjustPlannerPanel(true);
+            AdjustTaskCreationControls();
+            AdjustAssignedTasksListBox();
+            AdjustPlannerDetailsListBox();
         }
 
         private void AdjustPlannerDataGrid()
@@ -46,7 +48,7 @@ namespace Planner
                 {
                     for (int j = 0; j < PlannerDataGrid.Columns.Count; j++)
                     {
-                        DataGridCell dataGridCell = GetCell(PlannerDataGrid, i, j);
+                        DataGridCell dataGridCell = DataGridExtension.GetCell(PlannerDataGrid, i, j);
                         TextBlock TextBlock = dataGridCell.Content as TextBlock;
                         if (TextBlock.Text == null)
                         {
@@ -77,80 +79,10 @@ namespace Planner
             }
         }
 
-        private DataGridCell GetCell(System.Windows.Controls.DataGrid dataGrid, int row, int column)
-        {
-            DataGridRow rowContainer = GetRow(dataGrid, row);
-
-            if (rowContainer != null)
-            {
-                DataGridCellsPresenter presenter = GetVisualChild<DataGridCellsPresenter>(rowContainer);
-
-                DataGridCell cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
-                if (cell == null)
-                {
-                    dataGrid.ScrollIntoView(rowContainer, dataGrid.Columns[column]);
-                    cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
-                }
-                return cell;
-            }
-            return null;
-        }
-
-        private DataGridRow GetRow(System.Windows.Controls.DataGrid dataGrid, int index)
-        {
-            DataGridRow row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(index);
-            if (row == null)
-            {
-                dataGrid.UpdateLayout();
-                dataGrid.ScrollIntoView(dataGrid.Items[index]);
-                row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(index);
-            }
-            return row;
-        }
-
-        private static T GetVisualChild<T>(Visual parent) where T : Visual
-        {
-            T child = default(T);
-            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < numVisuals; i++)
-            {
-                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
-                child = v as T;
-                if (child == null)
-                {
-                    child = GetVisualChild<T>(v);
-                }
-                if (child != null)
-                {
-                    break;
-                }
-            }
-            return child;
-        }
-
-        private void AdjustPlannerPanel(bool initializeCall)
-        {
-            try
-            {
-                AdjustTaskCreationControls();
-                AdjustAssignedTasksListBox();
-                AdjustPlannerDetailsListBox();
-                if (initializeCall)
-                {
-                    AdjustExpanders();
-                }
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
-        }
-
         private void AdjustTaskCreationControls()
         {
             TaskTypeNameTextBox.Clear();
-            TextVisibilityRadioButton.IsChecked = false;
-            ColorPickerButton.Background = GetBrush("#FFDDDDDD");
+            BackgroundColorPickerButton.Background = GetBrush("#FFDDDDDD");
         }
 
         private Brush GetBrush(string sample)
@@ -180,7 +112,6 @@ namespace Planner
             }
         }
 
-        //TODO
         private void AdjustPlannerDetailsListBox()
         {
             try
@@ -193,54 +124,11 @@ namespace Planner
             }
         }
 
-        private void AdjustExpanders()
-        {
-            if (AssignedTasksTypesListBox.Items.Count == 0)
-            {
-                CreateTaskTypeExpander.IsExpanded = true;
-                AssignedTasksTypesExpander.IsExpanded = false;
-            }
-            else
-            {
-                CreateTaskTypeExpander.IsExpanded = false;
-                AssignedTasksTypesExpander.IsExpanded = true;
-            }
-            PlannerDetailsExpander.IsExpanded = false;
-        }
-
         #endregion
 
         private void PlannerDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = (Planner.StartTime + Planner.Interval * e.Row.GetIndex()).ToString();
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            Save(this.Participant.Name, this.Planner.Name, this.Planner.StartTime, this.Planner.StopTime, this.Planner.Interval, this.Planner.Task);
-        }
-
-        private void Save(string participantName, string plannerName, ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval, DataTable taskSample)
-        {
-            try
-            {
-                DataTable task = DbAdapter.GetTasksDataTable();
-                ClockTime clockTime = new ClockTime(startTime.Hour, startTime.Minute);
-                int number = 0;
-                while (number < taskSample.Rows.Count)
-                {
-                    foreach (DataColumn dataColumn in taskSample.Columns)
-                    {
-                        task.Rows.Add(dataColumn.ColumnName, clockTime, taskSample.Rows[number++][dataColumn]);
-                    }
-                    clockTime.AddInterval(interval);
-                }
-                DbAdapter.EditTasks(participantName, plannerName, task);
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
         }
 
         private void ColorPickerButton_Click(object sender, RoutedEventArgs e)
@@ -260,29 +148,27 @@ namespace Planner
         {
             if (AssignedTasksTypesListBox.SelectedItem != null)
             {
-                string taskName = AssignedTasksTypesListBox.SelectedItem.ToString();
-                DataTable dataTable = DbAdapter.GetTaskType(this.Participant.Name, this.Planner.Name, taskName);
-                IList<DataGridCellInfo> selectedCells = this.PlannerDataGrid.SelectedCells;
-                foreach (DataGridCellInfo cell in selectedCells)
-                {
-                    DataGridCell dataGridCell = (DataGridCell)cell.Column.GetCellContent(cell.Item).Parent;
-                    TextBlock TextBlock = dataGridCell.Content as TextBlock;
-                    TextBlock.Text = taskName;
-                    TextBlock.Background = GetBrush(dataTable.Rows[0]["TaskType_Color"].ToString());
-                    //if ((bool)dataTable.Rows[0]["TaskType_TextVisibility"])
-                    //{
-                    //    TextBlock.Visibility = Visibility.Visible;
-                    //}
-                    //else
-                    //{
-                    //    TextBlock.Visibility = Visibility.Hidden;
-                    //}
-                }
-
+                AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells);
                 AssignedTasksTypesListBox.SelectedItem = null;
             }
+        }
 
-            AdjustPlannerDetailsListBox();
+        private void AssignTaskType(string participantName, string plannerName, IList<DataGridCellInfo> selectedCells)
+        {
+            string day, time, taskTypeName;
+            DataTable task = new DataTable();
+            task.Columns.Add("tvp_Task_Day");
+            task.Columns.Add("tvp_Task_Time");
+            task.Columns.Add("tvp_Task_TaskType_Name");
+            foreach (DataGridCellInfo selectedCell in selectedCells)
+            {
+                day = selectedCell.Column.Header.ToString();
+                DataGridRow dataGridRow = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(selectedCell.Item);
+                time = dataGridRow.Header.ToString();
+                taskTypeName = AssignedTasksTypesListBox.SelectedItem.ToString();
+                task.Rows.Add(day, time, taskTypeName);
+            }
+            DbAdapter.EditTasks(participantName, plannerName, task);
         }
     }
 }

@@ -137,5 +137,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WpfExtension\WpfExtensions.csproj">
+      <Project>{96747E5E-3A48-4743-BEA0-FCB636B47D66}</Project>
+      <Name>WpfExtensions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

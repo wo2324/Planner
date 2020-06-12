@@ -28,15 +28,17 @@
                           LoadingRow="PlannerDataGrid_LoadingRow"/>
         </ScrollViewer>
         <StackPanel Grid.Column="1">
-            <Button x:Name="SaveButton" Style="{StaticResource ButtonStyle}" Content="Save" Click="SaveButton_Click"/>
             <Expander x:Name="CreateTaskTypeExpander" Style="{StaticResource ExpanderStyle}" Header="Create task type">
                 <StackPanel>
                     <Label Style="{StaticResource Label3Style}" Content="Name"/>
                     <TextBox x:Name="TaskTypeNameTextBox" Style="{StaticResource TextBoxStyle}"/>
-                    <RadioButton x:Name="TextVisibilityRadioButton" Content="Text visibility"/>
                     <StackPanel Orientation="Horizontal">
-                        <Label Style="{StaticResource Label3Style}" Content="Color"/>
-                        <Button x:Name="ColorPickerButton" Height="20" Width="20" Click="ColorPickerButton_Click" Background="#FFDDDDDD"/>
+                        <Label Style="{StaticResource Label3Style}" Content="Foreground color"/>
+                        <Button x:Name="ForegroundColorPickerButton" Height="20" Width="20" Click="ColorPickerButton_Click" Background="#FFDDDDDD"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Style="{StaticResource Label3Style}" Content="Background color"/>
+                        <Button x:Name="BackgroundColorPickerButton" Height="20" Width="20" Click="ColorPickerButton_Click" Background="#FFDDDDDD"/>
                     </StackPanel>
                     <Button x:Name="AddTaskTypeButton" Style="{StaticResource ButtonStyle}" Content="Add task type" Click="AddTaskTypeButton_Click"/>
                 </StackPanel>
