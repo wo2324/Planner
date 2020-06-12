@@ -40,7 +40,7 @@
                     <ScrollViewer Height="230" ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <Label Style="{StaticResource Label3Style}" Content="First day in week"/>
-                            <ComboBox x:Name="FirstDayComboBox"/>
+                            <ComboBox x:Name="FirstDayComboBox" SelectionChanged="FirstDayComboBox_SelectionChanged"/>
                             <Label Style="{StaticResource Label3Style}" Content="Included days"/>
                             <ListBox x:Name="IncludedDaysListBox" SelectionMode="Extended"/>
                             <Label Style="{StaticResource Label3Style}" Content="Start time"/>

@@ -50,7 +50,7 @@ namespace Planner
         {
             PlannerNameTextBox.Clear();
             AdjustFirstDayComboBox();
-            AdjustIncludedDaysListBox();
+            IncludedDaysListBox.SelectAll();
             StartTimeTextBox.Text = "05:00";
             StopTimeTextBox.Text = "00:00";
             IntervalTextBox.Text = "00:15";
@@ -76,12 +76,11 @@ namespace Planner
             }
         }
 
-        private void AdjustIncludedDaysListBox()
+        private void AdjustIncludedDaysListBox(DayOfWeek firstDay = DayOfWeek.Monday)
         {
             List<DayOfWeek> WeekDays = Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToList();
-            ChangeWeekDaysOrder(WeekDays);
+            ChangeWeekDaysOrder(WeekDays, firstDay);
             IncludedDaysListBox.ItemsSource = WeekDays;
-            IncludedDaysListBox.SelectAll();
         }
 
         private void AdjustParticipantLabel()
@@ -90,6 +89,11 @@ namespace Planner
         }
 
         #endregion
+
+        private void FirstDayComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            AdjustIncludedDaysListBox((DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.SelectedItem.ToString()));
+        }
 
         #region Open Planner
 
@@ -255,7 +259,7 @@ namespace Planner
         #endregion
 
         #region Create Planner
-        
+
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
             CreatePlanner(this.Participant, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), IncludedDaysListBox.SelectedItems.Cast<DayOfWeek>().ToList(), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
