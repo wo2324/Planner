@@ -213,7 +213,7 @@ namespace Planner
         private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
         {
             string plannerCopyName = GeneratePlannerCopyName(PlannerListBox.SelectedItem.ToString());
-            CopyPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
+            DbAdapter.CopyPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
             AdjustPlannerListBox();
         }
 
@@ -234,11 +234,6 @@ namespace Planner
             } while (true);
         }
 
-        private void CopyPlanner(string participantName, string plannerName, string plannerCopyName)
-        {
-            DbAdapter.CopyPlanner(participantName, plannerName, plannerCopyName);
-        }
-
         private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
         {
             EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
@@ -247,13 +242,8 @@ namespace Planner
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
-            DeletePlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
+            DbAdapter.DeletePlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
             AdjustPlannerListBox();
-        }
-
-        private void DeletePlanner(string participantName, string plannerName)
-        {
-            DbAdapter.DeletePlanner(participantName, plannerName);
         }
 
         #endregion
