@@ -49,9 +49,11 @@ namespace Planner
                     {
                         DataGridCell dataGridCell = DataGridExtension.GetCell(PlannerDataGrid, i, j);
                         TextBlock textBlock = dataGridCell.Content as TextBlock;
-                        if (textBlock.Text == null)
+                        if (String.IsNullOrEmpty(textBlock.Text))
                         {
-                            break;
+                            dataGridCell.Foreground = GetBrush("#FF000000");
+                            dataGridCell.Background = GetBrush("#FFF0F0F0");
+                            continue;
                         }
                         foreach (DataRow dataRow in taskType.Rows)
                         {
@@ -143,17 +145,9 @@ namespace Planner
 
         private void MenuItem_Click_PlannerDataGrid_Delete(object sender, RoutedEventArgs e)
         {
-            DeleteTask(this.Participant.Name, this.Planner.Name,  this.PlannerDataGrid.SelectedCells);
+            AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, null);
             AdjustPlannerDataGrid();
             AdjustPlannerDetailsTextBox();
-        }
-
-        private void DeleteTask(string participantName, string plannerName, IList<DataGridCellInfo> selectedCells)
-        {
-            foreach (DataGridCellInfo selectedCell in selectedCells)
-            {
-                //DbAdapter.DeleteTask(this.Participant.Name, this.Planner.Name, PlannerDataGrid.SelectedItem.ToString());
-            }
         }
 
         private void ForegroundPickerButton_Click(object sender, RoutedEventArgs e)
@@ -181,16 +175,16 @@ namespace Planner
         {
             if (AssignedTaskTypeListBox.SelectedItem != null)
             {
-                AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells);
+                AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, AssignedTaskTypeListBox.SelectedItem.ToString());
                 AdjustPlannerDataGrid();
                 AssignedTaskTypeListBox.SelectedItem = null;
                 AdjustPlannerDetailsTextBox();
             }
         }
 
-        private void AssignTaskType(string participantName, string plannerName, IList<DataGridCellInfo> selectedCells)
+        private void AssignTaskType(string participantName, string plannerName, IList<DataGridCellInfo> selectedCells, string taskTypeName)
         {
-            string day, time, taskTypeName;
+            string day, time;
             DataTable task = new DataTable();
             task.Columns.Add("tvp_Task_Day");
             task.Columns.Add("tvp_Task_Time");
@@ -200,7 +194,6 @@ namespace Planner
                 day = selectedCell.Column.Header.ToString();
                 DataGridRow dataGridRow = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(selectedCell.Item);
                 time = dataGridRow.Header.ToString();
-                taskTypeName = AssignedTaskTypeListBox.SelectedItem.ToString();
                 DataGridCell dataGridCell = DataGridExtension.GetCell(PlannerDataGrid, dataGridRow.GetIndex(), selectedCell.Column.DisplayIndex);
                 TextBlock textBlock = dataGridCell.Content as TextBlock;
                 textBlock.Text = taskTypeName;
@@ -215,7 +208,7 @@ namespace Planner
 
         private void MenuItem_Click_AssignedTaskTypeListBox_Delete(object sender, RoutedEventArgs e)
         {
-            DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString());
+            //DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString());
             AdjustPlannerDataGrid();
             AdjustAssignedTaskTypeListBox();
             AdjustPlannerDetailsTextBox();
