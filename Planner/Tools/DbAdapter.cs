@@ -361,7 +361,7 @@ namespace Planner.Tools
             }
         }
 
-        public static DataTable GetTaskType(string participantName, string plannerName, string taskTypeName)
+        public static void DeleteTaskType(string participantName, string plannerName, string taskTypeName)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -371,22 +371,11 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "plann.usp_TaskTypeGet";
-                    sqlCommand.Parameters.Add(new SqlParameter("@v_Participant_Name", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@v_Planner_Name", plannerName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@v_TaskType_Name", taskTypeName));
-
-                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-
-                    if (sqlConnection.State == ConnectionState.Closed)
-                    {
-                        sqlConnection.Open();
-                    }
-
-                    DataSet dataSet = new DataSet();
-                    sqlDataAdapter.Fill(dataSet);
-
-                    return dataSet.Tables[0];
+                    sqlCommand.CommandText = "plann.usp_TaskTypeDelete";
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
+                    sqlCommand.ExecuteNonQuery();
                 }
             }
         }

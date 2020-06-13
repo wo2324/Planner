@@ -5,6 +5,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media;
 using WpfExtensions;
 using DataGridCell = System.Windows.Controls.DataGridCell;
@@ -55,14 +56,22 @@ namespace Planner
                             dataGridCell.Background = GetBrush("#FFF0F0F0");
                             continue;
                         }
+                        bool match = false;
                         foreach (DataRow dataRow in taskType.Rows)
                         {
                             if (textBlock.Text == dataRow["TaskType_Name"].ToString())
                             {
+                                match = true;
                                 dataGridCell.Foreground = GetBrush(dataRow["TaskType_Foreground"].ToString());
                                 dataGridCell.Background = GetBrush(dataRow["TaskType_Background"].ToString());
                                 break;
                             }
+                        }
+                        if (!match)
+                        {
+                            textBlock.Text = null;
+                            dataGridCell.Foreground = GetBrush("#FF000000");
+                            dataGridCell.Background = GetBrush("#FFF0F0F0");
                         }
                     }
                 }
@@ -115,7 +124,19 @@ namespace Planner
         {
             try
             {
-                PlannerDetailsTextBox.Text = GetDetails(this.Participant.Name, Planner.Name);
+                string details = GetDetails(this.Participant.Name, Planner.Name);
+                if (String.IsNullOrEmpty(details))
+                {
+                    PlannerDetailsTextBox.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    if (PlannerDetailsTextBox.Visibility == Visibility.Hidden)
+                    {
+                        PlannerDetailsTextBox.Visibility = Visibility.Visible;
+                    }
+                    PlannerDetailsTextBox.Text = details;
+                }
             }
             catch (Exception)
             {
@@ -133,7 +154,14 @@ namespace Planner
                 int occurrencesNumber = Convert.ToInt32(dataTable.Rows[0]["OccurrencesNumber"].ToString());
                 details += $"{taskType}: {this.Planner.Interval * occurrencesNumber}\n";
             }
-            return details.Substring(0, details.Length - 1);
+            if (!String.IsNullOrEmpty(details))
+            {
+                return details.Substring(0, details.Length - 1);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -173,12 +201,15 @@ namespace Planner
 
         private void AssignedTaskTypeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (AssignedTaskTypeListBox.SelectedItem != null)
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, AssignedTaskTypeListBox.SelectedItem.ToString());
-                AdjustPlannerDataGrid();
-                AssignedTaskTypeListBox.SelectedItem = null;
-                AdjustPlannerDetailsTextBox();
+                if (AssignedTaskTypeListBox.SelectedItem != null)
+                {
+                    AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, AssignedTaskTypeListBox.SelectedItem.ToString());
+                    AdjustPlannerDataGrid();
+                    AssignedTaskTypeListBox.SelectedItem = null;
+                    AdjustPlannerDetailsTextBox();
+                }
             }
         }
 
@@ -202,13 +233,9 @@ namespace Planner
             DbAdapter.EditTasks(participantName, plannerName, task);
         }
 
-        #region MyRegion
-
-        #endregion
-
         private void MenuItem_Click_AssignedTaskTypeListBox_Delete(object sender, RoutedEventArgs e)
         {
-            //DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString());
+            DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString());
             AdjustPlannerDataGrid();
             AdjustAssignedTaskTypeListBox();
             AdjustPlannerDetailsTextBox();
