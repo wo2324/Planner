@@ -220,11 +220,11 @@ namespace Planner
             } while (true);
         }
 
-        //private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
-        //{
-        //    EditTaskTypeWindow editTaskTypeWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
-        //    editTaskTypeWindow.ShowDialog();
-        //}
+        private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
+        {
+            EditTaskTypeWindow editTaskTypeWindow = new EditTaskTypeWindow(this.Participant, this.Planner, AssignedTaskTypeListBox.SelectedItem.ToString(), AdjustPlannerDataGrid, AdjustAssignedTaskTypeListBox, AdjustPlannerDetailsTextBox);
+            editTaskTypeWindow.ShowDialog();
+        }
 
         private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
         {
