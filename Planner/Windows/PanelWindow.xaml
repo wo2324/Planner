@@ -22,9 +22,9 @@
                 <ListBox x:Name="PlannerListBox" Height="300" Style="{StaticResource ListBoxStyle}" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="PlannerListBox_SelectionChanged">
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Copy" Click="MenuItem_Click_Copy"/>
-                            <MenuItem Header="Rename" Click="MenuItem_Click_Edit"/>
-                            <MenuItem Header="Delete" Click="MenuItem_Click_Delete"/>
+                            <MenuItem Header="Copy" Click="MenuItem_Click_PlannerListBox_Copy"/>
+                            <MenuItem Header="Rename" Click="MenuItem_Click_PlannerListBox_Edit"/>
+                            <MenuItem Header="Delete" Click="MenuItem_Click_PlannerListBox_Delete"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>

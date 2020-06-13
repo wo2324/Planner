@@ -141,6 +141,21 @@ namespace Planner
             e.Row.Header = (Planner.StartTime + Planner.Interval * e.Row.GetIndex()).ToString();
         }
 
+        private void MenuItem_Click_PlannerDataGrid_Delete(object sender, RoutedEventArgs e)
+        {
+            DeleteTask(this.Participant.Name, this.Planner.Name,  this.PlannerDataGrid.SelectedCells);
+            AdjustPlannerDataGrid();
+            AdjustPlannerDetailsTextBox();
+        }
+
+        private void DeleteTask(string participantName, string plannerName, IList<DataGridCellInfo> selectedCells)
+        {
+            foreach (DataGridCellInfo selectedCell in selectedCells)
+            {
+                //DbAdapter.DeleteTask(this.Participant.Name, this.Planner.Name, PlannerDataGrid.SelectedItem.ToString());
+            }
+        }
+
         private void ForegroundPickerButton_Click(object sender, RoutedEventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
@@ -194,46 +209,16 @@ namespace Planner
             DbAdapter.EditTasks(participantName, plannerName, task);
         }
 
-        #region AssignedTasksTypesListBox ContextMenu handle
+        #region MyRegion
 
-        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
-        {
-            string taskTypeCopyName = GenerateTaskTypeCopyName(AssignedTaskTypeListBox.SelectedItem.ToString());
-            DbAdapter.CopyTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString(), taskTypeCopyName);
-            AdjustAssignedTaskTypeListBox();
-        }
+        #endregion
 
-        private string GenerateTaskTypeCopyName(string taskTypeName)
-        {
-            string taskTypeCopyName = $"{taskTypeName} - copy";
-            int counter = 1;
-            do
-            {
-                if (DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name)).Contains(taskTypeCopyName))
-                {
-                    taskTypeCopyName = $"{taskTypeName} - copy ({++counter})";
-                }
-                else
-                {
-                    return taskTypeCopyName;
-                }
-            } while (true);
-        }
-
-        private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
-        {
-            EditTaskTypeWindow editTaskTypeWindow = new EditTaskTypeWindow(this.Participant, this.Planner, AssignedTaskTypeListBox.SelectedItem.ToString(), AdjustPlannerDataGrid, AdjustAssignedTaskTypeListBox, AdjustPlannerDetailsTextBox);
-            editTaskTypeWindow.ShowDialog();
-        }
-
-        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        private void MenuItem_Click_AssignedTaskTypeListBox_Delete(object sender, RoutedEventArgs e)
         {
             DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString());
             AdjustPlannerDataGrid();
             AdjustAssignedTaskTypeListBox();
             AdjustPlannerDetailsTextBox();
         }
-
-        #endregion
     }
 }

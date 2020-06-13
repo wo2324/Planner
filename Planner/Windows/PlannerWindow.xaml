@@ -25,7 +25,13 @@
                           CanUserAddRows="False"
                           SelectionUnit="Cell"
                           SelectionMode="Extended"
-                          LoadingRow="PlannerDataGrid_LoadingRow"/>
+                          LoadingRow="PlannerDataGrid_LoadingRow">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Delete" Click="MenuItem_Click_PlannerDataGrid_Delete"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
         </ScrollViewer>
         <StackPanel Grid.Column="1">
             <Expander Style="{StaticResource ExpanderStyle}" Header="Create task type">
@@ -47,9 +53,7 @@
                 <ListBox x:Name="AssignedTaskTypeListBox" Style="{StaticResource ListBoxStyle}" SelectionChanged="AssignedTaskTypeListBox_SelectionChanged">
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Copy" Click="MenuItem_Click_Copy"/>
-                            <MenuItem Header="Rename" Click="MenuItem_Click_Edit"/>
-                            <MenuItem Header="Delete" Click="MenuItem_Click_Delete"/>
+                            <MenuItem Header="Delete" Click="MenuItem_Click_AssignedTaskTypeListBox_Delete"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
