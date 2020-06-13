@@ -41,7 +41,7 @@ namespace Planner.Windows
             {
                 if (plannerName != plannerNewName)
                 {
-                    if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(participantName)).Contains(plannerNewName))
+                    if (!PanelWindow.ExtractPlanners(DbAdapter.GetPlanners(participantName)).Contains(plannerNewName))
                     {
                         try
                         {

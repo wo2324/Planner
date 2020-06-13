@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,7 +9,7 @@ namespace Planner.Tools
     {
         #region Participant handle
 
-        public static bool ParticipantCheck(string login, string password)
+        public static DataTable ParticipantCheck(string participantName, string participantPassword)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -21,8 +20,8 @@ namespace Planner.Tools
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.CommandText = "plann.usp_ParticipantCheck";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", login));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Password", password));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Password", participantPassword));
                     SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(sqlCommand);
 
                     if (sqlConnection.State == ConnectionState.Closed)
@@ -33,12 +32,12 @@ namespace Planner.Tools
                     DataSet dataSet = new DataSet();
                     sqlDataAdapter.Fill(dataSet);
 
-                    return Convert.ToBoolean(dataSet.Tables[0].Rows[0]["CheckSentence"]);
+                    return dataSet.Tables[0];
                 }
             }
         }
 
-        public static void ParticipantAdd(string login, string password)
+        public static void ParticipantAdd(string participantName, string participantPassword)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -49,14 +48,14 @@ namespace Planner.Tools
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.CommandText = "plann.usp_ParticipantAdd";
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", login));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Password", password));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Password", participantPassword));
                     sqlCommand.ExecuteNonQuery();
                 }
             }
         }
 
-        public static void EditPassword(string participantName, string newPassword)
+        public static void EditPassword(string participantName, string participantNewPassword)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -68,7 +67,7 @@ namespace Planner.Tools
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.CommandText = "plann.usp_PasswordEdit";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_NewPassword", newPassword));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_NewPassword", participantNewPassword));
                     sqlCommand.ExecuteNonQuery();
                 }
             }
@@ -122,26 +121,7 @@ namespace Planner.Tools
             }
         }
 
-        public static List<string> ExtractPlanners(DataTable dataTable)
-        {
-            List<string> Planners = new List<string>();
-            foreach (DataRow dataRow in dataTable.Rows)
-            {
-                Planners.Add(dataRow["Planner_Name"].ToString());
-            }
-            return Planners;
-        }
-
-        public static DataTable GetTasksDataTable()
-        {
-            DataTable plannerTasks = new DataTable();
-            plannerTasks.Columns.Add("tvp_Task_Day", typeof(string));
-            plannerTasks.Columns.Add("tvp_Task_Time", typeof(string));
-            plannerTasks.Columns.Add("tvp_Task_TaskType_Id", typeof(int));
-            return plannerTasks;
-        }
-
-        public static void CreatePlanner(string participantName, string plannerName, string firstDay, string startHour, string stopHour, string timeSpan, DataTable task)
+        public static void CreatePlanner(string participantName, string plannerName, string firstDay, string startTime, string stopTime, string interval, DataTable task)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -155,9 +135,9 @@ namespace Planner.Tools
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_FirstDay", firstDay));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_StartTime", startHour));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_StopTime", stopHour));
-                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Interval", timeSpan));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_StartTime", startTime));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_StopTime", stopTime));
+                    sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Interval", interval));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_tvp_Task", task));
                     sqlCommand.ExecuteNonQuery();
                 }
@@ -310,16 +290,6 @@ namespace Planner.Tools
             }
         }
 
-        public static List<string> ExtractTasksTypes(DataTable dataTable)
-        {
-            List<string> TasksTypes = new List<string>();
-            foreach (DataRow dataRow in dataTable.Rows)
-            {
-                TasksTypes.Add(dataRow["TaskType_Name"].ToString());
-            }
-            return TasksTypes;
-        }
-
         public static void TaskTypeAdd(string participantName, string plannerName, string taskTypeName, string taskTypeForeground, string taskTypeBackground)
         {
             string connectionString = ConfigurationManager.AppSettings["connectionStirng"].ToString();
@@ -371,7 +341,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "plann.usp_TaskTypeDelete";
+                    sqlCommand.CommandText = "plann.usp_DeleteTaskType";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));

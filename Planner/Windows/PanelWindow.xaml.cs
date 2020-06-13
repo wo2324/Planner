@@ -35,7 +35,7 @@ namespace Planner
 
         private void AdjustPlannerListBox()
         {
-            List<string> Planners = DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name));
+            List<string> Planners = ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name));
             if (Planners.Count == 0)
             {
                 PlannerListBox.Visibility = Visibility.Hidden;
@@ -44,6 +44,16 @@ namespace Planner
             {
                 PlannerListBox.ItemsSource = Planners;
             }
+        }
+
+        public static List<string> ExtractPlanners(DataTable dataTable)
+        {
+            List<string> Planners = new List<string>();
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                Planners.Add(dataRow["Planner_Name"].ToString());
+            }
+            return Planners;
         }
 
         private void AdjustPlannerCustomizationControls()
@@ -223,7 +233,7 @@ namespace Planner
             int counter = 1;
             do
             {
-                if (DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerCopyName))
+                if (ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerCopyName))
                 {
                     plannerCopyName = $"{plannerName} - copy ({++counter})";
                 }
@@ -260,7 +270,7 @@ namespace Planner
         {
             if (plannerName.Length != 0 && startTimeSample.Length != 0 && stopTimeSample.Length != 0 && intervalSample.Length != 0)
             {
-                if (!DbAdapter.ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerName))
+                if (!ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerName))
                 {
                     if (IsTimeFormatCorrect(startTimeSample) && IsTimeFormatCorrect(stopTimeSample) && IsTimeFormatCorrect(intervalSample))
                     {
@@ -338,7 +348,7 @@ namespace Planner
 
         private DataTable GenerateTasks(ClockTime startTime, ClockTime stopTime, ClockTimeInterval interval, List<DayOfWeek> IncludedDays)
         {
-            DataTable task = DbAdapter.GetTasksDataTable();
+            DataTable task = GetTasksDataTable();
             ClockTime clockTime = new ClockTime();
             foreach (var day in IncludedDays)
             {
@@ -351,6 +361,15 @@ namespace Planner
                 }
             }
             return task;
+        }
+
+        public static DataTable GetTasksDataTable()
+        {
+            DataTable plannerTasks = new DataTable();
+            plannerTasks.Columns.Add("tvp_Task_Day", typeof(string));
+            plannerTasks.Columns.Add("tvp_Task_Time", typeof(string));
+            plannerTasks.Columns.Add("tvp_Task_TaskType_Id", typeof(int));
+            return plannerTasks;
         }
 
         #endregion

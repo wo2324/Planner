@@ -100,7 +100,7 @@ namespace Planner
         {
             try
             {
-                List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
+                List<string> TasksTypes = ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
                 if (TasksTypes.Count == 0)
                 {
                     AssignedTaskTypeListBox.Visibility = Visibility.Hidden;
@@ -118,6 +118,16 @@ namespace Planner
             {
                 throw;
             }
+        }
+
+        public static List<string> ExtractTasksTypes(DataTable dataTable)
+        {
+            List<string> TasksTypes = new List<string>();
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                TasksTypes.Add(dataRow["TaskType_Name"].ToString());
+            }
+            return TasksTypes;
         }
 
         private void AdjustPlannerDetailsTextBox()
@@ -147,7 +157,7 @@ namespace Planner
         private string GetDetails(string participantName, string plannerName)
         {
             string details = "";
-            List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(participantName, plannerName));
+            List<string> TasksTypes = ExtractTasksTypes(DbAdapter.GetTasksTypes(participantName, plannerName));
             foreach (var taskType in TasksTypes)
             {
                 DataTable dataTable = DbAdapter.GetOccurrencesNumber(participantName, plannerName, taskType);

@@ -1,5 +1,6 @@
 ﻿using Planner.Tools;
 using System;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -21,16 +22,16 @@ namespace Planner
             PasswordBox.Clear();
         }
 
-        public void LogIn(string login, string password)
+        public void LogIn(string participantName, string participantPassword)
         {
-            if (login.Length != 0 && password.Length != 0)
+            if (participantName.Length != 0 && participantPassword.Length != 0)
             {
                 try
                 {
-                    bool checkSentence = DbAdapter.ParticipantCheck(login, password);
-                    if (checkSentence)
+                    DataTable dataTable = DbAdapter.ParticipantCheck(participantName, participantPassword);
+                    if (Convert.ToBoolean(dataTable.Rows[0]["CheckSentence"]))
                     {
-                        Participant participant = new Participant(login, password);
+                        Participant participant = new Participant(participantName, participantPassword);
                         PanelWindow panelWindow = new PanelWindow(participant);
                         panelWindow.Show();
                         this.Close();
