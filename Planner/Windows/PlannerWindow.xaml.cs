@@ -34,7 +34,7 @@ namespace Planner
         {
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
             AdjustTaskCreationControls();
-            AdjustAssignedTasksListBox();
+            AdjustAssignedTaskTypeListBox();
             AdjustPlannerDetailsTextBox();
         }
 
@@ -85,22 +85,22 @@ namespace Planner
             return brush;
         }
 
-        private void AdjustAssignedTasksListBox()
+        private void AdjustAssignedTaskTypeListBox()
         {
             try
             {
                 List<string> TasksTypes = DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
                 if (TasksTypes.Count == 0)
                 {
-                    AssignedTasksTypesListBox.Visibility = Visibility.Hidden;
+                    AssignedTaskTypeListBox.Visibility = Visibility.Hidden;
                 }
                 else
                 {
-                    if (AssignedTasksTypesListBox.Visibility == Visibility.Hidden)
+                    if (AssignedTaskTypeListBox.Visibility == Visibility.Hidden)
                     {
-                        AssignedTasksTypesListBox.Visibility = Visibility.Visible;
+                        AssignedTaskTypeListBox.Visibility = Visibility.Visible;
                     }
-                    AssignedTasksTypesListBox.ItemsSource = TasksTypes;
+                    AssignedTaskTypeListBox.ItemsSource = TasksTypes;
                 }
             }
             catch (Exception)
@@ -159,16 +159,16 @@ namespace Planner
         {
             DbAdapter.TaskTypeAdd(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, ForegroundPickerButton.Background.ToString(), BackgroundPickerButton.Background.ToString());
             AdjustTaskCreationControls();
-            AdjustAssignedTasksListBox();
+            AdjustAssignedTaskTypeListBox();
         }
 
-        private void AssignedTasksTypesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void AssignedTaskTypeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (AssignedTasksTypesListBox.SelectedItem != null)
+            if (AssignedTaskTypeListBox.SelectedItem != null)
             {
                 AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells);
                 AdjustPlannerDataGrid();
-                AssignedTasksTypesListBox.SelectedItem = null;
+                AssignedTaskTypeListBox.SelectedItem = null;
                 AdjustPlannerDetailsTextBox();
             }
         }
@@ -185,7 +185,7 @@ namespace Planner
                 day = selectedCell.Column.Header.ToString();
                 DataGridRow dataGridRow = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(selectedCell.Item);
                 time = dataGridRow.Header.ToString();
-                taskTypeName = AssignedTasksTypesListBox.SelectedItem.ToString();
+                taskTypeName = AssignedTaskTypeListBox.SelectedItem.ToString();
                 DataGridCell dataGridCell = DataGridExtension.GetCell(PlannerDataGrid, dataGridRow.GetIndex(), selectedCell.Column.DisplayIndex);
                 TextBlock textBlock = dataGridCell.Content as TextBlock;
                 textBlock.Text = taskTypeName;
@@ -193,5 +193,47 @@ namespace Planner
             }
             DbAdapter.EditTasks(participantName, plannerName, task);
         }
+
+        #region AssignedTasksTypesListBox ContextMenu handle
+
+        private void MenuItem_Click_Copy(object sender, RoutedEventArgs e)
+        {
+            string taskTypeCopyName = GenerateTaskTypeCopyName(AssignedTaskTypeListBox.SelectedItem.ToString());
+            DbAdapter.CopyTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString(), taskTypeCopyName);
+            AdjustAssignedTaskTypeListBox();
+        }
+
+        private string GenerateTaskTypeCopyName(string taskTypeName)
+        {
+            string taskTypeCopyName = $"{taskTypeName} - copy";
+            int counter = 1;
+            do
+            {
+                if (DbAdapter.ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name)).Contains(taskTypeCopyName))
+                {
+                    taskTypeCopyName = $"{taskTypeName} - copy ({++counter})";
+                }
+                else
+                {
+                    return taskTypeCopyName;
+                }
+            } while (true);
+        }
+
+        //private void MenuItem_Click_Edit(object sender, RoutedEventArgs e)
+        //{
+        //    EditTaskTypeWindow editTaskTypeWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
+        //    editTaskTypeWindow.ShowDialog();
+        //}
+
+        private void MenuItem_Click_Delete(object sender, RoutedEventArgs e)
+        {
+            DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString());
+            AdjustPlannerDataGrid();
+            AdjustAssignedTaskTypeListBox();
+            AdjustPlannerDetailsTextBox();
+        }
+
+        #endregion
     }
 }

@@ -44,7 +44,15 @@
                 </StackPanel>
             </Expander>
             <Expander Style="{StaticResource ExpanderStyle}" Header="Assigned tasks types">
-                <ListBox x:Name="AssignedTasksTypesListBox" Style="{StaticResource ListBoxStyle}" SelectionChanged="AssignedTasksTypesListBox_SelectionChanged"/>
+                <ListBox x:Name="AssignedTaskTypeListBox" Style="{StaticResource ListBoxStyle}" SelectionChanged="AssignedTaskTypeListBox_SelectionChanged">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Click="MenuItem_Click_Copy"/>
+                            <MenuItem Header="Rename" Click="MenuItem_Click_Edit"/>
+                            <MenuItem Header="Delete" Click="MenuItem_Click_Delete"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
             </Expander>
             <Expander Style="{StaticResource ExpanderStyle}" Header="Planner details">
                 <TextBox x:Name="PlannerDetailsTextBox"/>
