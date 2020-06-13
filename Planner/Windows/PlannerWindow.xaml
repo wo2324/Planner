@@ -28,7 +28,7 @@
                           LoadingRow="PlannerDataGrid_LoadingRow">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Delete" Click="MenuItem_Click_PlannerDataGrid_Delete"/>
+                        <MenuItem Header="Delete" Click="PlannerDataGrid_Delete"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>
@@ -50,10 +50,10 @@
                 </StackPanel>
             </Expander>
             <Expander Style="{StaticResource ExpanderStyle}" Header="Assigned tasks types">
-                <ListBox x:Name="AssignedTaskTypeListBox" Style="{StaticResource ListBoxStyle}" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="AssignedTaskTypeListBox_SelectionChanged">
+                <ListBox x:Name="TaskTypeListBox" Style="{StaticResource ListBoxStyle}" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="TaskTypeListBox_SelectionChanged">
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Delete" Click="MenuItem_Click_AssignedTaskTypeListBox_Delete"/>
+                            <MenuItem Header="Delete" Click="TaskTypeListBox_Delete"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>

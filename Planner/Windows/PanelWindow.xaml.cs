@@ -220,7 +220,7 @@ namespace Planner
 
         #region PlannerListBox ContextMenu handle
 
-        private void MenuItem_Click_PlannerListBox_Copy(object sender, RoutedEventArgs e)
+        private void PlannerListBox_Copy(object sender, RoutedEventArgs e)
         {
             string plannerCopyName = GeneratePlannerCopyName(PlannerListBox.SelectedItem.ToString());
             DbAdapter.CopyPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
@@ -244,13 +244,13 @@ namespace Planner
             } while (true);
         }
 
-        private void MenuItem_Click_PlannerListBox_Edit(object sender, RoutedEventArgs e)
+        private void PlannerListBox_Edit(object sender, RoutedEventArgs e)
         {
             EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
             editPlannerWindow.ShowDialog();
         }
 
-        private void MenuItem_Click_PlannerListBox_Delete(object sender, RoutedEventArgs e)
+        private void PlannerListBox_Delete(object sender, RoutedEventArgs e)
         {
             DbAdapter.DeletePlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
             AdjustPlannerListBox();

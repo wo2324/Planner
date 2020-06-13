@@ -35,7 +35,7 @@ namespace Planner
         {
             PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
             AdjustTaskCreationControls();
-            AdjustAssignedTaskTypeListBox();
+            AdjustTaskTypeListBox();
             AdjustPlannerDetailsTextBox();
         }
 
@@ -96,22 +96,22 @@ namespace Planner
             return brush;
         }
 
-        private void AdjustAssignedTaskTypeListBox()
+        private void AdjustTaskTypeListBox()
         {
             try
             {
                 List<string> TasksTypes = ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name));
                 if (TasksTypes.Count == 0)
                 {
-                    AssignedTaskTypeListBox.Visibility = Visibility.Hidden;
+                    TaskTypeListBox.Visibility = Visibility.Hidden;
                 }
                 else
                 {
-                    if (AssignedTaskTypeListBox.Visibility == Visibility.Hidden)
+                    if (TaskTypeListBox.Visibility == Visibility.Hidden)
                     {
-                        AssignedTaskTypeListBox.Visibility = Visibility.Visible;
+                        TaskTypeListBox.Visibility = Visibility.Visible;
                     }
-                    AssignedTaskTypeListBox.ItemsSource = TasksTypes;
+                    TaskTypeListBox.ItemsSource = TasksTypes;
                 }
             }
             catch (Exception)
@@ -120,10 +120,10 @@ namespace Planner
             }
         }
 
-        public static List<string> ExtractTasksTypes(DataTable dataTable)
+        public static List<string> ExtractTasksTypes(DataTable sample)
         {
             List<string> TasksTypes = new List<string>();
-            foreach (DataRow dataRow in dataTable.Rows)
+            foreach (DataRow dataRow in sample.Rows)
             {
                 TasksTypes.Add(dataRow["TaskType_Name"].ToString());
             }
@@ -181,12 +181,14 @@ namespace Planner
             e.Row.Header = (Planner.StartTime + Planner.Interval * e.Row.GetIndex()).ToString();
         }
 
-        private void MenuItem_Click_PlannerDataGrid_Delete(object sender, RoutedEventArgs e)
+        private void PlannerDataGrid_Delete(object sender, RoutedEventArgs e)
         {
             AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, null);
             AdjustPlannerDataGrid();
             AdjustPlannerDetailsTextBox();
         }
+
+        #region Creation events
 
         private void ForegroundPickerButton_Click(object sender, RoutedEventArgs e)
         {
@@ -206,18 +208,20 @@ namespace Planner
         {
             DbAdapter.TaskTypeAdd(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, ForegroundPickerButton.Background.ToString(), BackgroundPickerButton.Background.ToString());
             AdjustTaskCreationControls();
-            AdjustAssignedTaskTypeListBox();
+            AdjustTaskTypeListBox();
         }
 
-        private void AssignedTaskTypeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        #endregion
+
+        private void TaskTypeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                if (AssignedTaskTypeListBox.SelectedItem != null)
+                if (TaskTypeListBox.SelectedItem != null)
                 {
-                    AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, AssignedTaskTypeListBox.SelectedItem.ToString());
+                    AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, TaskTypeListBox.SelectedItem.ToString());
                     AdjustPlannerDataGrid();
-                    AssignedTaskTypeListBox.SelectedItem = null;
+                    TaskTypeListBox.SelectedItem = null;
                     AdjustPlannerDetailsTextBox();
                 }
             }
@@ -243,11 +247,11 @@ namespace Planner
             DbAdapter.EditTasks(participantName, plannerName, task);
         }
 
-        private void MenuItem_Click_AssignedTaskTypeListBox_Delete(object sender, RoutedEventArgs e)
+        private void TaskTypeListBox_Delete(object sender, RoutedEventArgs e)
         {
-            DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, AssignedTaskTypeListBox.SelectedItem.ToString());
+            DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, TaskTypeListBox.SelectedItem.ToString());
             AdjustPlannerDataGrid();
-            AdjustAssignedTaskTypeListBox();
+            AdjustTaskTypeListBox();
             AdjustPlannerDetailsTextBox();
         }
     }
