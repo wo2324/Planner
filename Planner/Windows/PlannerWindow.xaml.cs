@@ -197,19 +197,16 @@ namespace Planner
 
         private void PlannerDataGrid_Delete(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete task type confirmation", MessageBoxButton.YesNo);
-            if (messageBoxResult == MessageBoxResult.Yes)
+
+            try
             {
-                try
-                {
-                    AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, null);
-                    AdjustPlannerDataGrid();
-                    AdjustPlannerDetailsTextBox();
-                }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.Message);
-                }
+                AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, null);
+                AdjustPlannerDataGrid();
+                AdjustPlannerDetailsTextBox();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
             }
         }
 
@@ -231,15 +228,34 @@ namespace Planner
 
         private void AddTaskTypeButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            AddTaskType(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, ForegroundPickerButton.Background.ToString(), BackgroundPickerButton.Background.ToString());
+            AdjustTaskCreationControls();
+        }
+
+        private void AddTaskType(string participantName, string plannerName, string taskTypeName, string foregroundSample, string backgroundSample)
+        {
+            if (taskTypeName.Length != 0)
             {
-                DbAdapter.TaskTypeAdd(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, ForegroundPickerButton.Background.ToString(), BackgroundPickerButton.Background.ToString());
-                AdjustTaskCreationControls();
-                AdjustTaskTypeListBox();
+                if (!ExtractTasksTypes(DbAdapter.GetTasksTypes(this.Participant.Name, this.Planner.Name)).Contains(taskTypeName))
+                {
+                    try
+                    {
+                        DbAdapter.TaskTypeAdd(participantName, plannerName, taskTypeName, foregroundSample, backgroundSample);
+                        AdjustTaskTypeListBox();
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"Task type {taskTypeName} already exists");
+                }
             }
-            catch (Exception exception)
+            else
             {
-                MessageBox.Show(exception.Message);
+                MessageBox.Show("Task type name field must be filled");
             }
         }
 
@@ -260,7 +276,9 @@ namespace Planner
                     }
                     catch (Exception exception)
                     {
+                        MessageBox.Show(exception.Message);
                     }
+                    TaskTypeListBox.SelectedItem = null;
                 }
             }
         }
@@ -294,16 +312,20 @@ namespace Planner
 
         private void TaskTypeListBox_Delete(object sender, RoutedEventArgs e)
         {
-            try
+            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete task type confirmation", MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
             {
-                DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, TaskTypeListBox.SelectedItem.ToString());
-                AdjustPlannerDataGrid();
-                AdjustTaskTypeListBox();
-                AdjustPlannerDetailsTextBox();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
+                try
+                {
+                    DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, TaskTypeListBox.SelectedItem.ToString());
+                    AdjustPlannerDataGrid();
+                    AdjustTaskTypeListBox();
+                    AdjustPlannerDetailsTextBox();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
             }
         }
     }

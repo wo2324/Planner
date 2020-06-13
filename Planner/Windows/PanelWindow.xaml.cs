@@ -51,6 +51,10 @@ namespace Planner
                 }
                 else
                 {
+                    if (PlannerListBox.Visibility == Visibility.Hidden)
+                    {
+                        PlannerListBox.Visibility = Visibility.Visible;
+                    }
                     PlannerListBox.ItemsSource = Planners;
                 }
             }
@@ -130,6 +134,7 @@ namespace Planner
                     OpenPlanner(this.Participant, PlannerListBox.SelectedItem.ToString());
                     PlannerListBox.SelectedItem = null;
                 }
+                PlannerListBox.SelectedItem = null;
             }
         }
 
