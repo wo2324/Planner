@@ -236,38 +236,66 @@ namespace Planner
 
         private void PlannerListBox_Copy(object sender, RoutedEventArgs e)
         {
-            string plannerCopyName = GeneratePlannerCopyName(PlannerListBox.SelectedItem.ToString());
-            DbAdapter.CopyPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
-            AdjustPlannerListBox();
+            try
+            {
+                string plannerCopyName = GeneratePlannerCopyName(PlannerListBox.SelectedItem.ToString());
+                DbAdapter.CopyPlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString(), plannerCopyName);
+                AdjustPlannerListBox();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         private string GeneratePlannerCopyName(string plannerName)
         {
-            string plannerCopyName = $"{plannerName} - copy";
-            int counter = 1;
-            do
+            try
             {
-                if (ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerCopyName))
+                string plannerCopyName = $"{plannerName} - copy";
+                int counter = 1;
+                do
                 {
-                    plannerCopyName = $"{plannerName} - copy ({++counter})";
-                }
-                else
-                {
-                    return plannerCopyName;
-                }
-            } while (true);
+                    if (ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name)).Contains(plannerCopyName))
+                    {
+                        plannerCopyName = $"{plannerName} - copy ({++counter})";
+                    }
+                    else
+                    {
+                        return plannerCopyName;
+                    }
+                } while (true);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private void PlannerListBox_Edit(object sender, RoutedEventArgs e)
         {
-            EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
-            editPlannerWindow.ShowDialog();
+            try
+            {
+                EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
+                editPlannerWindow.ShowDialog();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         private void PlannerListBox_Delete(object sender, RoutedEventArgs e)
         {
-            DbAdapter.DeletePlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
-            AdjustPlannerListBox();
+            try
+            {
+                DbAdapter.DeletePlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
+                AdjustPlannerListBox();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         #endregion
@@ -276,8 +304,15 @@ namespace Planner
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            CreatePlanner(this.Participant, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), IncludedDaysListBox.SelectedItems.Cast<DayOfWeek>().ToList(), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
-            AdjustPlannerCustomizationControls();
+            try
+            {
+                CreatePlanner(this.Participant, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), IncludedDaysListBox.SelectedItems.Cast<DayOfWeek>().ToList(), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
+                AdjustPlannerCustomizationControls();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         private void CreatePlanner(Participant participant, string plannerName, DayOfWeek firstDay, List<DayOfWeek> IncludedDays, string startTimeSample, string stopTimeSample, string intervalSample)
@@ -300,9 +335,9 @@ namespace Planner
                                 AdjustPlannerListBox();
                                 OpenPlanner(participant, plannerName);
                             }
-                            catch (Exception exception)
+                            catch (Exception )
                             {
-                                MessageBox.Show(exception.Message);
+                                throw;
                             }
                         }
                         else
