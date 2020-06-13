@@ -231,9 +231,16 @@ namespace Planner
 
         private void AddTaskTypeButton_Click(object sender, RoutedEventArgs e)
         {
-            DbAdapter.TaskTypeAdd(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, ForegroundPickerButton.Background.ToString(), BackgroundPickerButton.Background.ToString());
-            AdjustTaskCreationControls();
-            AdjustTaskTypeListBox();
+            try
+            {
+                DbAdapter.TaskTypeAdd(this.Participant.Name, this.Planner.Name, TaskTypeNameTextBox.Text, ForegroundPickerButton.Background.ToString(), BackgroundPickerButton.Background.ToString());
+                AdjustTaskCreationControls();
+                AdjustTaskTypeListBox();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         #endregion
@@ -253,7 +260,6 @@ namespace Planner
                     }
                     catch (Exception exception)
                     {
-                        MessageBox.Show(exception.Message);
                     }
                 }
             }
