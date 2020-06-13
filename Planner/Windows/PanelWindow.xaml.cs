@@ -274,27 +274,24 @@ namespace Planner
 
         private void PlannerListBox_Edit(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
-                editPlannerWindow.ShowDialog();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
+            EditPlannerWindow editPlannerWindow = new EditPlannerWindow(this.Participant, GetPlanner(this.Participant, PlannerListBox.SelectedItem.ToString()), AdjustPlannerListBox);
+            editPlannerWindow.ShowDialog();
         }
 
         private void PlannerListBox_Delete(object sender, RoutedEventArgs e)
         {
-            try
+            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete planner confirmation", MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
             {
-                DbAdapter.DeletePlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
-                AdjustPlannerListBox();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
+                try
+                {
+                    DbAdapter.DeletePlanner(this.Participant.Name, PlannerListBox.SelectedItem.ToString());
+                    AdjustPlannerListBox();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
             }
         }
 
@@ -304,15 +301,8 @@ namespace Planner
 
         private void CreatePlannerButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                CreatePlanner(this.Participant, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), IncludedDaysListBox.SelectedItems.Cast<DayOfWeek>().ToList(), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
-                AdjustPlannerCustomizationControls();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
+            CreatePlanner(this.Participant, PlannerNameTextBox.Text, (DayOfWeek)Enum.Parse(typeof(DayOfWeek), FirstDayComboBox.Text), IncludedDaysListBox.SelectedItems.Cast<DayOfWeek>().ToList(), StartTimeTextBox.Text, StopTimeTextBox.Text, IntervalTextBox.Text);
+            AdjustPlannerCustomizationControls();
         }
 
         private void CreatePlanner(Participant participant, string plannerName, DayOfWeek firstDay, List<DayOfWeek> IncludedDays, string startTimeSample, string stopTimeSample, string intervalSample)
@@ -335,9 +325,9 @@ namespace Planner
                                 AdjustPlannerListBox();
                                 OpenPlanner(participant, plannerName);
                             }
-                            catch (Exception )
+                            catch (Exception exception)
                             {
-                                throw;
+                                MessageBox.Show(exception.Message);
                             }
                         }
                         else

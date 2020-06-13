@@ -197,15 +197,19 @@ namespace Planner
 
         private void PlannerDataGrid_Delete(object sender, RoutedEventArgs e)
         {
-            try
+            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete task type confirmation", MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
             {
-                AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, null);
-                AdjustPlannerDataGrid();
-                AdjustPlannerDetailsTextBox();
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
+                try
+                {
+                    AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, null);
+                    AdjustPlannerDataGrid();
+                    AdjustPlannerDetailsTextBox();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
             }
         }
 

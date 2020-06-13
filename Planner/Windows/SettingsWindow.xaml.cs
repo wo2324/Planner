@@ -34,7 +34,7 @@ namespace Planner
                     {
                         if (password != newPassword)
                         {
-                            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Change password confirmation", System.Windows.MessageBoxButton.YesNo);
+                            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Change password confirmation", MessageBoxButton.YesNo);
                             if (messageBoxResult == MessageBoxResult.Yes)
                             {
                                 try
@@ -89,7 +89,7 @@ namespace Planner
             {
                 if (this.Participant.Password == password)
                 {
-                    MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete confirmation", System.Windows.MessageBoxButton.YesNo);
+                    MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Delete confirmation", MessageBoxButton.YesNo);
                     if (messageBoxResult == MessageBoxResult.Yes)
                     {
                         try
