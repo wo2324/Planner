@@ -131,7 +131,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "plann.usp_CreatePlanner";
+                    sqlCommand.CommandText = "plann.usp_PlannerAdd";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_FirstDay", firstDay));
@@ -154,7 +154,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "plann.usp_CopyPlanner";
+                    sqlCommand.CommandText = "plann.usp_PlannerCopy";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_PlannerCopy_Name", plannerCopyName));
@@ -192,7 +192,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "plann.usp_DeletePlanner";
+                    sqlCommand.CommandText = "plann.usp_PlannerDelete";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.ExecuteNonQuery();
@@ -341,7 +341,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "plann.usp_DeleteTaskType";
+                    sqlCommand.CommandText = "plann.usp_TaskTypeDelete";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
@@ -364,7 +364,7 @@ namespace Planner.Tools
                 {
                     sqlCommand.Connection = sqlConnection;
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.CommandText = "meta.usp_GetOccurrencesNumber";
+                    sqlCommand.CommandText = "meta.usp_OccurrencesNumberGet";
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Participant_Name", participantName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_Planner_Name", plannerName));
                     sqlCommand.Parameters.Add(new SqlParameter("@p_TaskType_Name", taskTypeName));
