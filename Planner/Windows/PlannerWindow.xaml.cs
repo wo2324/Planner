@@ -33,10 +33,17 @@ namespace Planner
 
         private void AdjustControls()
         {
-            PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
-            AdjustTaskCreationControls();
-            AdjustTaskTypeListBox();
-            AdjustPlannerDetailsTextBox();
+            try
+            {
+                PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
+                AdjustTaskCreationControls();
+                AdjustTaskTypeListBox();
+                AdjustPlannerDetailsTextBox();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         public void AdjustPlannerDataGrid()
@@ -76,9 +83,9 @@ namespace Planner
                     }
                 }
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                MessageBox.Show(exception.Message);
+                throw;
             }
         }
 
@@ -156,21 +163,28 @@ namespace Planner
 
         private string GetDetails(string participantName, string plannerName)
         {
-            string details = "";
-            List<string> TasksTypes = ExtractTasksTypes(DbAdapter.GetTasksTypes(participantName, plannerName));
-            foreach (var taskType in TasksTypes)
+            try
             {
-                DataTable dataTable = DbAdapter.GetOccurrencesNumber(participantName, plannerName, taskType);
-                int occurrencesNumber = Convert.ToInt32(dataTable.Rows[0]["OccurrencesNumber"].ToString());
-                details += $"{taskType}: {this.Planner.Interval * occurrencesNumber}\n";
+                string details = "";
+                List<string> TasksTypes = ExtractTasksTypes(DbAdapter.GetTasksTypes(participantName, plannerName));
+                foreach (var taskType in TasksTypes)
+                {
+                    DataTable dataTable = DbAdapter.GetOccurrencesNumber(participantName, plannerName, taskType);
+                    int occurrencesNumber = Convert.ToInt32(dataTable.Rows[0]["OccurrencesNumber"].ToString());
+                    details += $"{taskType}: {this.Planner.Interval * occurrencesNumber}\n";
+                }
+                if (!String.IsNullOrEmpty(details))
+                {
+                    return details.Substring(0, details.Length - 1);
+                }
+                else
+                {
+                    return null;
+                }
             }
-            if (!String.IsNullOrEmpty(details))
+            catch (Exception)
             {
-                return details.Substring(0, details.Length - 1);
-            }
-            else
-            {
-                return null;
+                throw;
             }
         }
 
@@ -183,12 +197,19 @@ namespace Planner
 
         private void PlannerDataGrid_Delete(object sender, RoutedEventArgs e)
         {
-            AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, null);
-            AdjustPlannerDataGrid();
-            AdjustPlannerDetailsTextBox();
+            try
+            {
+                AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, null);
+                AdjustPlannerDataGrid();
+                AdjustPlannerDetailsTextBox();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
-        #region Creation events
+        #region Task type creation events
 
         private void ForegroundPickerButton_Click(object sender, RoutedEventArgs e)
         {
@@ -219,40 +240,61 @@ namespace Planner
             {
                 if (TaskTypeListBox.SelectedItem != null)
                 {
-                    AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, TaskTypeListBox.SelectedItem.ToString());
-                    AdjustPlannerDataGrid();
-                    TaskTypeListBox.SelectedItem = null;
-                    AdjustPlannerDetailsTextBox();
+                    try
+                    {
+                        AssignTaskType(this.Participant.Name, this.Planner.Name, this.PlannerDataGrid.SelectedCells, TaskTypeListBox.SelectedItem.ToString());
+                        AdjustPlannerDataGrid();
+                        TaskTypeListBox.SelectedItem = null;
+                        AdjustPlannerDetailsTextBox();
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message);
+                    }
                 }
             }
         }
 
         private void AssignTaskType(string participantName, string plannerName, IList<DataGridCellInfo> selectedCells, string taskTypeName)
         {
-            string day, time;
-            DataTable task = new DataTable();
-            task.Columns.Add("tvp_Task_Day");
-            task.Columns.Add("tvp_Task_Time");
-            task.Columns.Add("tvp_Task_TaskType_Name");
-            foreach (DataGridCellInfo selectedCell in selectedCells)
+            try
             {
-                day = selectedCell.Column.Header.ToString();
-                DataGridRow dataGridRow = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(selectedCell.Item);
-                time = dataGridRow.Header.ToString();
-                DataGridCell dataGridCell = DataGridExtension.GetCell(PlannerDataGrid, dataGridRow.GetIndex(), selectedCell.Column.DisplayIndex);
-                TextBlock textBlock = dataGridCell.Content as TextBlock;
-                textBlock.Text = taskTypeName;
-                task.Rows.Add(day, time, taskTypeName);
+                string day, time;
+                DataTable task = new DataTable();
+                task.Columns.Add("tvp_Task_Day");
+                task.Columns.Add("tvp_Task_Time");
+                task.Columns.Add("tvp_Task_TaskType_Name");
+                foreach (DataGridCellInfo selectedCell in selectedCells)
+                {
+                    day = selectedCell.Column.Header.ToString();
+                    DataGridRow dataGridRow = (DataGridRow)PlannerDataGrid.ItemContainerGenerator.ContainerFromItem(selectedCell.Item);
+                    time = dataGridRow.Header.ToString();
+                    DataGridCell dataGridCell = DataGridExtension.GetCell(PlannerDataGrid, dataGridRow.GetIndex(), selectedCell.Column.DisplayIndex);
+                    TextBlock textBlock = dataGridCell.Content as TextBlock;
+                    textBlock.Text = taskTypeName;
+                    task.Rows.Add(day, time, taskTypeName);
+                }
+                DbAdapter.EditTasks(participantName, plannerName, task);
             }
-            DbAdapter.EditTasks(participantName, plannerName, task);
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private void TaskTypeListBox_Delete(object sender, RoutedEventArgs e)
         {
-            DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, TaskTypeListBox.SelectedItem.ToString());
-            AdjustPlannerDataGrid();
-            AdjustTaskTypeListBox();
-            AdjustPlannerDetailsTextBox();
+            try
+            {
+                DbAdapter.DeleteTaskType(this.Participant.Name, this.Planner.Name, TaskTypeListBox.SelectedItem.ToString());
+                AdjustPlannerDataGrid();
+                AdjustTaskTypeListBox();
+                AdjustPlannerDetailsTextBox();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
     }
 }

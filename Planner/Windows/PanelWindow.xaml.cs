@@ -28,21 +28,35 @@ namespace Planner
 
         private void AdjustControls()
         {
-            AdjustPlannerListBox();
-            AdjustPlannerCustomizationControls();
-            AdjustParticipantLabel();
+            try
+            {
+                AdjustPlannerListBox();
+                AdjustPlannerCustomizationControls();
+                AdjustParticipantLabel();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         private void AdjustPlannerListBox()
         {
-            List<string> Planners = ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name));
-            if (Planners.Count == 0)
+            try
             {
-                PlannerListBox.Visibility = Visibility.Hidden;
+                List<string> Planners = ExtractPlanners(DbAdapter.GetPlanners(this.Participant.Name));
+                if (Planners.Count == 0)
+                {
+                    PlannerListBox.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    PlannerListBox.ItemsSource = Planners;
+                }
             }
-            else
+            catch (Exception)
             {
-                PlannerListBox.ItemsSource = Planners;
+                throw;
             }
         }
 
