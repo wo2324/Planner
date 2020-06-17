@@ -39,11 +39,11 @@
                     <Label Style="{StaticResource Label3Style}" Content="Name"/>
                     <TextBox x:Name="TaskTypeNameTextBox" Style="{StaticResource TextBoxStyle}"/>
                     <StackPanel Orientation="Horizontal">
-                        <Label Style="{StaticResource Label3Style}" Content="Foreground"/>
+                        <Label Style="{StaticResource Label3Style}" Width="80" Content="Foreground"/>
                         <Button x:Name="ForegroundPickerButton" Height="20" Width="20" Click="ForegroundPickerButton_Click" Background="#FFDDDDDD"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Label Style="{StaticResource Label3Style}" Content="Background"/>
+                        <Label Style="{StaticResource Label3Style}" Width="80" Content="Background"/>
                         <Button x:Name="BackgroundPickerButton" Height="20" Width="20" Click="BackgroundPickerButton_Click" Background="#FFDDDDDD"/>
                     </StackPanel>
                     <Button x:Name="AddTaskTypeButton" Style="{StaticResource ButtonStyle}" Content="Add task type" Click="AddTaskTypeButton_Click"/>

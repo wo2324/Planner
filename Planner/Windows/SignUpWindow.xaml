@@ -8,7 +8,7 @@
         Title="SignUpWindow" Height="450" Width="800"
         Style="{StaticResource WindowStyle}">
     <Grid>
-        <Border Style="{StaticResource BorderStyle}" Height="260" Width="230">
+        <Border Style="{StaticResource BorderStyle}" Height="280" Width="230">
             <StackPanel Style="{StaticResource StackPanelStyle}">
                 <Label Style="{StaticResource Label1Style}" Content="Sign up"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
@@ -18,7 +18,7 @@
                 <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Confirm password"/>
                 <PasswordBox x:Name="PasswordBox_Retype" Style="{StaticResource PasswordBoxStyle}"/>
-                <Button x:Name="SignUpButton" Style="{StaticResource ButtonStyle}" Content="Sign in" HorizontalAlignment="Right" Click="SignUpButton_Click"/>
+                <Button x:Name="SignUpButton" Style="{StaticResource ButtonStyle}" Content="Sign in" HorizontalAlignment="Right" Margin="0,10,0,0" Click="SignUpButton_Click"/>
                 <StackPanel Orientation="Horizontal">
                     <Label Style="{StaticResource Label3Style}" Content="Already have an account"/>
                     <Button x:Name="LogInButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="#D4D4D4" Click="LogInButton_Click">

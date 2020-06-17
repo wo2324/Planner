@@ -16,7 +16,7 @@
                 <TextBox x:Name="PlannerNameTextBox" Style="{StaticResource TextBoxStyle}" IsEnabled="False"/>
                 <Label Style="{StaticResource Label2Style}" Content="Planner new name"/>
                 <TextBox x:Name="PlannerNewNameTextBox" Style="{StaticResource TextBoxStyle}"/>
-                <Button x:Name="RenamePlannerButton"  Style="{StaticResource ButtonStyle}" Content="Rename" HorizontalAlignment="Right" Click="RenamePlannerButton_Click"/>
+                <Button x:Name="RenamePlannerButton"  Style="{StaticResource ButtonStyle}" Content="Rename" HorizontalAlignment="Right" Margin="0,10,0,0" Click="RenamePlannerButton_Click"/>
             </StackPanel>
         </Border>
     </Grid>

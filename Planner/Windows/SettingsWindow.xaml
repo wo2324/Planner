@@ -18,12 +18,12 @@
                 <PasswordBox x:Name="NewPasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Confirm new password"/>
                 <PasswordBox x:Name="NewPasswordBox_Retype" Style="{StaticResource PasswordBoxStyle}"/>
-                <Button x:Name="ChangePasswordButton"  Style="{StaticResource ButtonStyle}" Content="Change" HorizontalAlignment="Right" Click="ChangePasswordButton_Click"/>
+                <Button x:Name="ChangePasswordButton"  Style="{StaticResource ButtonStyle}" Content="Change" HorizontalAlignment="Right" Margin="0,10,0,0" Click="ChangePasswordButton_Click"/>
                 <Label Style="{StaticResource Label1Style}" Content="Delete account"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Password"/>
                 <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
-                <Button x:Name="DeleteAccountButton"  Style="{StaticResource ButtonStyle}" Content="Delete" HorizontalAlignment="Right" Click="DeleteAccountButton_Click"/>
+                <Button x:Name="DeleteAccountButton"  Style="{StaticResource ButtonStyle}" Content="Delete" HorizontalAlignment="Right" Margin="0,10,0,0" Click="DeleteAccountButton_Click"/>
             </StackPanel>
         </Border>
     </Grid>
