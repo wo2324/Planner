@@ -38,6 +38,10 @@ namespace Planner
                 PlannerDataGrid.ItemsSource = Planner.Task.DefaultView;
                 AdjustTaskCreationControls();
                 AdjustTaskTypeListBox();
+                if (TaskTypeListBox.Items.Count > 0)
+                {
+                    TaskTypeExpander.IsExpanded = true;
+                }
                 AdjustPlannerDetailsTextBox();
             }
             catch (Exception exception)

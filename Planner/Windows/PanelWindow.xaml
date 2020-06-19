@@ -36,7 +36,7 @@
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label Style="{StaticResource Label2Style}" Content="Planner name"/>
                 <TextBox x:Name="PlannerNameTextBox" Style="{StaticResource TextBoxStyle}"/>
-                <Expander Style="{StaticResource ExpanderStyle}" Header="Custom">
+                <Expander x:Name="PlannerCustomizationExpander" Style="{StaticResource ExpanderStyle}" Header="Custom">
                     <ScrollViewer Height="230" ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <Label Style="{StaticResource Label3Style}" Content="First day in week"/>

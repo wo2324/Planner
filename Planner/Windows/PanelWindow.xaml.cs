@@ -82,6 +82,7 @@ namespace Planner
             StartTimeTextBox.Text = "05:00";
             StopTimeTextBox.Text = "00:00";
             IntervalTextBox.Text = "00:15";
+            PlannerCustomizationExpander.IsExpanded = false;
         }
 
         private void AdjustFirstDayComboBox()
