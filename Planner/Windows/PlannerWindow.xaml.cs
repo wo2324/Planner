@@ -42,6 +42,10 @@ namespace Planner
                 {
                     TaskTypeExpander.IsExpanded = true;
                 }
+                else
+                {
+                    TaskTypeCreationExpander.IsExpanded = true;
+                }
                 AdjustPlannerDetailsTextBox();
             }
             catch (Exception exception)

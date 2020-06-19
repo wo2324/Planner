@@ -58,7 +58,7 @@
                     </ListBox.ContextMenu>
                 </ListBox>
             </Expander>
-            <Expander x:Name="PlannerDetailsExpander" Style="{StaticResource ExpanderStyle}" Header="Planner details">
+            <Expander Style="{StaticResource ExpanderStyle}" Header="Planner details">
                 <TextBox x:Name="PlannerDetailsTextBox"/>
             </Expander>
         </StackPanel>
