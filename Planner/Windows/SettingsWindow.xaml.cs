@@ -34,19 +34,15 @@ namespace Planner
                     {
                         if (password != newPassword)
                         {
-                            MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure?", "Change password confirmation", MessageBoxButton.YesNo);
-                            if (messageBoxResult == MessageBoxResult.Yes)
+                            try
                             {
-                                try
-                                {
-                                    DbAdapter.EditPassword(this.Participant.Name, newPassword);
-                                    this.Participant.Password = newPassword;
-                                    MessageBox.Show("Password has been edit");
-                                }
-                                catch (Exception exception)
-                                {
-                                    MessageBox.Show(exception.Message);
-                                }
+                                DbAdapter.EditPassword(this.Participant.Name, newPassword);
+                                this.Participant.Password = newPassword;
+                                MessageBox.Show("Password has been edit");
+                            }
+                            catch (Exception exception)
+                            {
+                                MessageBox.Show(exception.Message);
                             }
                         }
                         else
