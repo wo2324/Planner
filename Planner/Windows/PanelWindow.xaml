@@ -60,7 +60,7 @@
                 <Label Style="{StaticResource Label1Style}" Content="Account"/>
                 <Separator Style="{StaticResource SeparatorStyle}"/>
                 <Label x:Name="ParticipantLabel" Style="{StaticResource Label2Style}" HorizontalAlignment="Right"/>
-                <Button x:Name="LogOutButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" HorizontalAlignment="Right" Padding="2, 1, 2, 2" Foreground="#D4D4D4" Click="LogOutButton_Click">
+                <Button x:Name="LogOutButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" HorizontalAlignment="Right" Padding="2, 1, 2, 2" Foreground="#F5F5F5" Click="LogOutButton_Click">
                     <TextBlock TextDecorations="Underline">Log out</TextBlock>
                 </Button>
                 <Button x:Name="SettingsButton" Style="{StaticResource ButtonStyle}" Content="Settings" HorizontalAlignment="Left" Click="SettingsButton_Click"/>

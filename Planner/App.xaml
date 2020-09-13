@@ -21,7 +21,7 @@
         <Style x:Key="Label1Style" TargetType="Label">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Foreground" Value="#D4D4D4"/>
+            <Setter Property="Foreground" Value="#F5F5F5"/>
         </Style>
         <Style x:Key="SeparatorStyle" TargetType="Separator">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -29,28 +29,28 @@
         </Style>
         <Style x:Key="Label2Style" TargetType="Label">
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="#D4D4D4"/>
+            <Setter Property="Foreground" Value="#F5F5F5"/>
         </Style>
         <Style x:Key="Label3Style" TargetType="Label">
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Foreground" Value="#D4D4D4"/>
+            <Setter Property="Foreground" Value="#F5F5F5"/>
         </Style>
         <Style x:Key="TextBoxStyle" TargetType="TextBox">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="Foreground" Value="#747474"/>
+            <Setter Property="Foreground" Value="#141414"/>
             <Setter Property="Background" Value="#E9E9E9"/>
         </Style>
         <Style x:Key="PasswordBoxStyle" TargetType="PasswordBox">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="Foreground" Value="#747474"/>
+            <Setter Property="Foreground" Value="#141414"/>
             <Setter Property="Background" Value="#E9E9E9"/>
         </Style>
         <Style x:Key="ButtonStyle" TargetType="Button">
-            <Setter Property="Foreground" Value="#50514F"/>
+            <Setter Property="Foreground" Value="#141414"/>
             <Setter Property="Background" Value="#D4D4D4"/>
         </Style>
         <Style x:Key="ListBoxStyle" TargetType="ListBox">
-            <Setter Property="Foreground" Value="#50514F"/>
+            <Setter Property="Foreground" Value="#141414"/>
             <Setter Property="Background" Value="#D4D4D4"/>
         </Style>
         <Style x:Key="ExpanderStyle" TargetType="Expander">

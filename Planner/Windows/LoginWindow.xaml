@@ -19,7 +19,7 @@
                 <Button x:Name="LogInButton" Style="{StaticResource ButtonStyle}" Content="Log in" HorizontalAlignment="Right" Margin="0,10,0,0" Click="LogInButton_Click"/>
                 <StackPanel Orientation="Horizontal">
                     <Label Style="{StaticResource Label3Style}" Content="Don't have an account?"/>
-                    <Button x:Name="SignUpButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="#D4D4D4" Click="SignUpButton_Click">
+                    <Button x:Name="SignUpButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="#F5F5F5" Click="SignUpButton_Click">
                         <TextBlock TextDecorations="Underline">Sign up</TextBlock>
                     </Button>
                 </StackPanel>
